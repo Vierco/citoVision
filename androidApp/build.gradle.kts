@@ -6,15 +6,15 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
-
 }
 
 android {
     namespace = "dev.lovelace.citovision"
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+        version =
+            release(36) {
+                minorApiLevel = 1
+            }
     }
 
     defaultConfig {
@@ -44,7 +44,6 @@ android {
     buildFeatures {
         compose = true
     }
-
 }
 
 ktlint {
@@ -64,10 +63,8 @@ tasks.withType<Detekt>().configureEach {
         xml.required.set(true)
         html.required.set(true)
         txt.required.set(false)
-
     }
 }
-
 
 dependencies {
     implementation(project(":shared"))
