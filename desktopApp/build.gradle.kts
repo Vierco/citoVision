@@ -27,7 +27,11 @@ compose.desktop {
         mainClass = "dev.lovelace.citovision.MainKt"
 
         nativeDistributions {
-            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+            targetFormats(
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
+            )
             packageName = "citoVIsion"
             packageVersion = "1.0.0"
         }
@@ -37,6 +41,9 @@ compose.desktop {
 ktlint {
     outputToConsole.set(true)
     ignoreFailures.set(false)
+    filter {
+        exclude { it.file.path.contains("build/") }
+    }
 }
 
 detekt {

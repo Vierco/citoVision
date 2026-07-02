@@ -50,6 +50,9 @@ ktlint {
     android.set(true)
     outputToConsole.set(true)
     ignoreFailures.set(false)
+    filter {
+        exclude { it.file.path.contains("build/") }
+    }
 }
 
 detekt {

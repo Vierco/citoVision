@@ -5,10 +5,11 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "citoVIsion") {
-        MaterialTheme {
-            Text("Hello desktop")
+fun main() =
+    application {
+        Window(onCloseRequest = ::exitApplication, title = "citoVIsion") {
+            MaterialTheme {
+                Text("Hello desktop")
+            }
         }
     }
-}
