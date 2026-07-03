@@ -10,7 +10,7 @@ kotlin = "2.1.0"
 composeBom = "2026.02.01"
 ktlintGradle = "14.2.0"
 detekt = "1.23.8"
-compose-multiplatform = "1.7.3"
+compose-multiplatform = "1.10.3"
 koin = "4.0.0"
 ktor = "3.0.1"
 sqlDelight = "2.0.2"
@@ -18,6 +18,7 @@ napier = "2.7.1"
 datastore = "1.1.1"
 jetbrains-lifecycle = "2.9.6"
 jetbrains-navigation = "2.9.2"
+coroutines = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +49,7 @@ lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "life
 lifecycle-viewmodel-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "jetbrains-lifecycle" }
 lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "jetbrains-lifecycle" }
 navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "jetbrains-navigation" }
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "coroutines" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
