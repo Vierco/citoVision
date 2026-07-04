@@ -2,10 +2,29 @@ package dev.lovelace.citovision.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Primary
+val primary = Color(0xFF2FA7F0)
+val primaryPressed = Color(0xFF227FC0)
+val onPrimary = Color(0xFFFFFFFF)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Secondary
+val secondary = Color(0xFF2FD38A)
+val secondaryPressed = Color(0xFF1E9E67)
+val onSecondary = Color(0xFFFFFFFF)
+
+// Tertiary
+val tertiary = Color(0xFFA56AE3)
+val onTertiary = Color(0xFFFFFFFF)
+
+// Background & Surface
+val background = Color(0xFFFFFFFF)
+val surface = Color(0xFFFFFFFF)
+val onBackground = Color(0xFF282828)
+val onSurface = Color(0xFF6F6F6F)
+
+// Semantic Colors
+val success = Color(0xFF2FD38A)
+val warning = Color(0xFFF59E3A)
+val error = Color(0xFFF53A63)
+val errorPressed = Color(0xFFC71C43)
+val info = Color(0xFF2FA7F0)
