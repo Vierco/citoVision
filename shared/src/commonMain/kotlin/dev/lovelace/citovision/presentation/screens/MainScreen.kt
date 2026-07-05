@@ -22,6 +22,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 
 private enum class MainTab(
@@ -66,7 +70,32 @@ fun MainScreen(onNavigateToSettings: () -> Unit) {
             }
         },
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .drawBehind {
+                    // Fondo blanco base
+                    drawRect(Color.White)
+
+                    // Efecto de resplandor azul horizontal (rectángulo desenfocado)
+                    val primaryColor = Color(0xFF2FA7F0)
+                    scale(scaleX = 2.2f, scaleY = 1.6f, pivot = center) {
+                        drawCircle(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    primaryColor.copy(alpha = 0.25f),
+                                    Color.Transparent,
+                                ),
+                                center = center,
+                                radius = size.width * 0.4f,
+                            ),
+                            radius = size.width * 0.4f,
+                            center = center,
+                        )
+                    }
+                },
+        ) {
             when (selectedTab) {
                 MainTab.ANALYSIS -> AnalysisScreen()
                 MainTab.HISTORY -> HistoryScreen()
