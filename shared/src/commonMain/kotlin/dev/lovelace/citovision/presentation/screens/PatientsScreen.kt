@@ -17,16 +17,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -64,6 +63,7 @@ fun PatientsScreen() {
     var isLoading by remember { mutableStateOf(false) }
     var showResults by remember { mutableStateOf(false) }
     var noResultsFound by remember { mutableStateOf(false) }
+    var showEmptyQueryError by remember { mutableStateOf(false) }
 
     val mockResults = listOf(
         PatientAnalysisItem(
@@ -254,7 +254,9 @@ fun PatientsScreen() {
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text("Ej: PAC-2023-8942 o Juan Pére") },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true,
+                        maxLines = 1
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -263,6 +265,8 @@ fun PatientsScreen() {
                         onClick = {
                             if (searchQuery.isNotBlank()) {
                                 isLoading = true
+                            } else {
+                                showEmptyQueryError = true
                             }
                         },
                         modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -285,5 +289,31 @@ fun PatientsScreen() {
                 }
             }
         }
+    }
+
+    if (showEmptyQueryError) {
+        AlertDialog(
+            onDismissRequest = { showEmptyQueryError = false },
+            confirmButton = {
+                OutlinedButton(onClick = { showEmptyQueryError = false }) {
+                    Text("Cerrar", color = Color(0xFF2FA7F0))
+                }
+            },
+            title = {
+                Text(
+                    "Búsqueda vacía",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFF282828)
+                )
+            },
+            text = {
+                Text(
+                    "Por favor, introduzca un ID de paciente o nombre para realizar la búsqueda.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(28.dp)
+        )
     }
 }

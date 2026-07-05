@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -60,6 +61,12 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    var showEmailError by remember { mutableStateOf(false) }
+    var showPasswordError by remember { mutableStateOf(false) }
+
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-z]{2,}$".toRegex()
+    val passwordRegex = "^[A-Za-z0-9]*$".toRegex()
 
     Box(
         modifier = Modifier
@@ -127,7 +134,7 @@ fun LoginScreen(
                 ) {
                     // Campo Usuario
                     Text(
-                        text = "Correo Electrónico o Usuario",
+                        text = "Correo Electrónico",
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF282828) // onBackground
@@ -139,7 +146,8 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text("doctor@clinica.com") },
                         leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -154,7 +162,13 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = password,
-                        onValueChange = { password = it },
+                        onValueChange = {
+                            if (passwordRegex.matches(it)) {
+                                password = it
+                            } else {
+                                showPasswordError = true
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text("••••••••") },
                         leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
@@ -170,7 +184,8 @@ fun LoginScreen(
                             }
                         },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
                     )
 
                     TextButton(
@@ -188,7 +203,13 @@ fun LoginScreen(
 
                     // Botón Iniciar Sesión (Primary)
                     Button(
-                        onClick = onLoginClick,
+                        onClick = {
+                            if (emailRegex.matches(email)) {
+                                onLoginClick()
+                            } else {
+                                showEmailError = true
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -273,5 +294,51 @@ fun LoginScreen(
                 }
             }
         }
+    }
+
+    if (showEmailError) {
+        AlertDialog(
+            onDismissRequest = { showEmailError = false },
+            confirmButton = {
+                OutlinedButton(onClick = { showEmailError = false }) {
+                    Text("Cerrar", color = Color(0xFF2FA7F0))
+                }
+            },
+            title = {
+                Text(
+                    "Formato de correo electrónico incorrecto",
+                    color = Color(0xFF282828), // onBackground
+                    style = MaterialTheme.typography.titleMedium
+                )
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(28.dp)
+        )
+    }
+
+    if (showPasswordError) {
+        AlertDialog(
+            onDismissRequest = { showPasswordError = false },
+            confirmButton = {
+                OutlinedButton(onClick = { showPasswordError = false }) {
+                    Text("Cerrar", color = Color(0xFF2FA7F0))
+                }
+            },
+            title = {
+                Text(
+                    "Caracteres no admitidos",
+                    color = Color(0xFF282828),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            },
+            text = {
+                Text(
+                    "Solo se admiten mayúsculas, minúsculas y números.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(28.dp)
+        )
     }
 }
