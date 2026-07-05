@@ -1,7 +1,12 @@
 package dev.lovelace.citovision.presentation.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +16,10 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.unit.dp
+import citovision.shared.generated.resources.Res
+import citovision.shared.generated.resources.celula
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SplashScreen() {
@@ -40,9 +49,19 @@ fun SplashScreen() {
             },
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = "citoVision",
-            style = MaterialTheme.typography.displayLarge,
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.celula),
+                contentDescription = null,
+                modifier = Modifier.size(200.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Iniciando sistema…",
+                style = MaterialTheme.typography.displayLarge,
+            )
+        }
     }
 }
