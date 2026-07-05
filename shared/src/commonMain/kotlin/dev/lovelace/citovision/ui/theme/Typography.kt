@@ -24,37 +24,44 @@ fun getTypography(): Typography {
         displayLarge = TextStyle(
             fontFamily = dongleFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 42.sp
+            fontSize = 72.sp,
+            lineHeight = 64.sp
         ),
         headlineLarge = TextStyle(
             fontFamily = dongleFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 34.sp
+            fontSize = 56.sp,
+            lineHeight = 48.sp
         ),
         headlineMedium = TextStyle(
             fontFamily = dongleFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 30.sp
+            fontSize = 48.sp,
+            lineHeight = 40.sp
         ),
         titleLarge = TextStyle(
             fontFamily = dongleFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 24.sp
+            fontSize = 40.sp,
+            lineHeight = 32.sp
         ),
         bodyLarge = TextStyle(
             fontFamily = dongleFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 20.sp
+            fontSize = 32.sp,
+            lineHeight = 28.sp
         ),
         bodyMedium = TextStyle(
             fontFamily = dongleFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 18.sp
+            fontSize = 28.sp,
+            lineHeight = 24.sp
         ),
         labelLarge = TextStyle(
             fontFamily = dongleFontFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = 18.sp
+            fontWeight = FontWeight.Bold,
+            fontSize = 28.sp,
+            lineHeight = 24.sp
         )
     )
 }

@@ -60,7 +60,7 @@ fun SplashScreen() {
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Iniciando sistema…",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.headlineMedium,
             )
         }
     }
