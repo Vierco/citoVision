@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,10 +32,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.lovelace.citovision.presentation.components.AnalysisCard
+import dev.lovelace.citovision.presentation.components.AnalysisDetailDialog
+
+private data class AnalysisItem(
+    val title: String,
+    val date: String,
+    val patient: String,
+    val description: String,
+    val cellCount: String
+)
 
 @Composable
 fun HistoryScreen() {
     var hasData by remember { mutableStateOf(false) }
+    var selectedAnalysis by remember { mutableStateOf<AnalysisItem?>(null) }
+
+    val tempData = listOf(
+        AnalysisItem(
+            title = "Análisis de Sangre - Muestra A",
+            date = "01/11/2023",
+            patient = "PAC-2023-001",
+            description = "Detección de glóbulos blancos completada satisfactoriamente.",
+            cellCount = "Leucocitos: 7.500/µL, Neutrófilos: 60%, Linfocitos: 30%"
+        ),
+        AnalysisItem(
+            title = "Análisis de Sangre - Muestra B",
+            date = "02/11/2023",
+            patient = "PAC-2023-002",
+            description = "Presencia de anomalías en el conteo de plaquetas detectada.",
+            cellCount = "Plaquetas: 120.000/µL (Bajo), Hematíes: 4.8M/µL"
+        )
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (!hasData) {
@@ -83,27 +111,28 @@ fun HistoryScreen() {
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
+                items(tempData) { item ->
                     AnalysisCard(
-                        title = "Análisis de Sangre - Muestra A",
-                        date = "01/11/2023",
-                        patient = "PAC-2023-001",
-                        description = "Detección de glóbulos blancos completada satisfactoriamente.",
-                        image = ColorPainter(Color.LightGray),
-                        onClick = {}
-                    )
-                }
-                item {
-                    AnalysisCard(
-                        title = "Análisis de Sangre - Muestra B",
-                        date = "02/11/2023",
-                        patient = "PAC-2023-002",
-                        description = "Presencia de anomalías en el conteo de plaquetas detectada.",
-                        image = ColorPainter(Color.Gray),
-                        onClick = {}
+                        title = item.title,
+                        date = item.date,
+                        patient = item.patient,
+                        description = item.description,
+                        image = ColorPainter(if (item.patient.endsWith("1")) Color.LightGray else Color.Gray),
+                        onClick = { selectedAnalysis = item }
                     )
                 }
             }
+        }
+
+        // Dialog de Detalle
+        selectedAnalysis?.let { analysis ->
+            AnalysisDetailDialog(
+                title = analysis.title,
+                patient = analysis.patient,
+                date = analysis.date,
+                cellCount = analysis.cellCount,
+                onDismissRequest = { selectedAnalysis = null }
+            )
         }
 
         // Interruptor temporal abajo a la derecha

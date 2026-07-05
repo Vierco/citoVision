@@ -3,8 +3,11 @@ package dev.lovelace.citovision.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -14,6 +17,95 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.lovelace.citovision.ui.theme.getTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun AnalysisDetailDialog(
+    title: String,
+    patient: String,
+    date: String,
+    cellCount: String,
+    onDismissRequest: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            OutlinedButton(
+                onClick = onDismissRequest,
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color(0xFF2FA7F0) // Primary
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Cerrar",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
+        },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF282828)
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column {
+                    Text(
+                        text = "Paciente",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF6F6F6F)
+                    )
+                    Text(
+                        text = patient,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color(0xFF282828)
+                    )
+                }
+
+                Column {
+                    Text(
+                        text = "Fecha de análisis",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF6F6F6F)
+                    )
+                    Text(
+                        text = date,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color(0xFF282828)
+                    )
+                }
+
+                Column {
+                    Text(
+                        text = "Conteo Celular (Resumen)",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF6F6F6F)
+                    )
+                    Text(
+                        text = cellCount,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color(0xFF282828)
+                    )
+                }
+            }
+        },
+        shape = RoundedCornerShape(28.dp),
+        containerColor = Color.White
+    )
+}
 
 @Composable
 @Preview
