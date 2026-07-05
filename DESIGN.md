@@ -116,13 +116,13 @@ fontFamily: Dongle (regular and bold)
 ## Scale
 
 ```yaml
-  displayLarge: 40sp
-  headlineLarge: 32sp
-  headlineMedium: 28sp
-  titleLarge: 22sp
-  bodyLarge: 18sp
-  bodyMedium: 16sp
-  labelLarge: 16sp
+  displayLarge: 42sp
+  headlineLarge: 34sp
+  headlineMedium: 30sp
+  titleLarge: 24sp
+  bodyLarge: 20sp
+  bodyMedium: 18sp
+  labelLarge: 18sp
 ```
 
 ---
