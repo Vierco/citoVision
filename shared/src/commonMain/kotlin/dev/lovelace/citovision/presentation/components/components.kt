@@ -12,19 +12,22 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.lovelace.citovision.ui.theme.getTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
 fun AnalysisCardPreview() {
-    AnalysisCard(
-        title = "Análisis de Sangre - Muestra B",
-        date = "24/10/2023",
-        patient = "PAC-2023-8942",
-        description = "Conteo celular completado. Se han detectado neutrófilos y linfocitos según el patrón estándar.",
-        image = ColorPainter(Color.LightGray),
-        onClick = {}
-    )
+    MaterialTheme(typography = getTypography()) {
+        AnalysisCard(
+            title = "Análisis de Sangre - Muestra B",
+            date = "24/10/2023",
+            patient = "PAC-2023-8942",
+            description = "Conteo celular completado. Se han detectado neutrófilos y linfocitos según el patrón estándar.",
+            image = ColorPainter(Color.LightGray),
+            onClick = {}
+        )
+    }
 }
 
 @Composable
