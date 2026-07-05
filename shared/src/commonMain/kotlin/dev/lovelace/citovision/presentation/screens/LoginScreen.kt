@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -49,6 +48,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.celula
+import citovision.shared.generated.resources.icons_g_144
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -242,9 +242,10 @@ fun LoginScreen(
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.AccountCircle,
+                                painter = painterResource(Res.drawable.icons_g_144),
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
+                                tint = Color.Unspecified
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
