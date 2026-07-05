@@ -31,8 +31,10 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import citovision.shared.generated.resources.*
 import dev.lovelace.citovision.presentation.components.AnalysisCard
 import dev.lovelace.citovision.presentation.components.AnalysisDetailDialog
+import org.jetbrains.compose.resources.stringResource
 
 private data class AnalysisItem(
     val title: String,
@@ -87,7 +89,7 @@ fun HistoryScreen() {
                     Spacer(modifier = Modifier.height(32.dp))
 
                     Text(
-                        text = "No hay análisis previos",
+                        text = stringResource(Res.string.history_empty_title),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF6F6F6F),
@@ -97,7 +99,7 @@ fun HistoryScreen() {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Los análisis guardados aparecerán aquí.",
+                        text = stringResource(Res.string.history_empty_desc),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color(0xFF6F6F6F).copy(alpha = 0.8f),
                         textAlign = TextAlign.Center

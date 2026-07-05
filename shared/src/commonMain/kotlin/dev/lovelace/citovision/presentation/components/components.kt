@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import citovision.shared.generated.resources.*
 import dev.lovelace.citovision.ui.theme.getTypography
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -43,7 +45,7 @@ fun AnalysisDetailDialog(
                 ) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Cerrar",
+                        text = stringResource(Res.string.common_close),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -61,7 +63,7 @@ fun AnalysisDetailDialog(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Column {
                     Text(
-                        text = "Paciente",
+                        text = stringResource(Res.string.dialog_patient_label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF6F6F6F)
@@ -75,7 +77,7 @@ fun AnalysisDetailDialog(
 
                 Column {
                     Text(
-                        text = "Fecha de análisis",
+                        text = stringResource(Res.string.dialog_date_label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF6F6F6F)
@@ -89,7 +91,7 @@ fun AnalysisDetailDialog(
 
                 Column {
                     Text(
-                        text = "Conteo Celular (Resumen)",
+                        text = stringResource(Res.string.dialog_cell_count_label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF6F6F6F)
@@ -166,7 +168,7 @@ fun AnalysisCard(
 
                 // Meta información: Fecha y Paciente
                 Text(
-                    text = "Fecha: $date | Paciente: $patient",
+                    text = stringResource(Res.string.card_metadata, date, patient),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF6F6F6F) // onSurface
                 )
@@ -194,7 +196,7 @@ fun AnalysisCard(
                     shape = RoundedCornerShape(16.dp) // medium
                 ) {
                     Text(
-                        text = "Ver Detalle",
+                        text = stringResource(Res.string.card_view_detail),
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.White
                     )

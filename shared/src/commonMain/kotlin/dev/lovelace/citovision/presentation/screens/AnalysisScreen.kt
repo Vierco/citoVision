@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import citovision.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AnalysisScreen() {
@@ -49,7 +51,7 @@ fun AnalysisScreen() {
         Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "Subir Muestra",
+            text = stringResource(Res.string.analysis_upload_title),
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF282828)
@@ -58,7 +60,7 @@ fun AnalysisScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Selecciona o toma una fotografía de la muestra citológica para su análisis",
+            text = stringResource(Res.string.analysis_upload_desc),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = Color(0xFF6F6F6F)
@@ -112,14 +114,14 @@ fun AnalysisScreen() {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.AddPhotoAlternate, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Seleccionar Imagen", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(Res.string.analysis_select_image), style = MaterialTheme.typography.labelLarge)
                     }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Formatos soportados: JPG, PNG, DICOM",
+                    text = stringResource(Res.string.analysis_supported_formats),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color = Color(0xFF6F6F6F)
@@ -145,7 +147,7 @@ fun AnalysisScreen() {
                 Icon(Icons.Default.QrCodeScanner, contentDescription = null, tint = Color(0xFF6F6F6F).copy(alpha = 0.7f))
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    "Iniciar Escáner",
+                    stringResource(Res.string.analysis_button_scan),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color(0xFF6F6F6F).copy(alpha = 0.7f)
                 )
@@ -155,7 +157,7 @@ fun AnalysisScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "*Requiere cargar una imagen válida para iniciar",
+            text = stringResource(Res.string.analysis_scan_hint),
             style = MaterialTheme.typography.bodySmall,
             color = Color(0xFF6F6F6F)
         )

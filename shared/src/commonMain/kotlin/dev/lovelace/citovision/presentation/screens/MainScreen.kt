@@ -29,14 +29,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import citovision.shared.generated.resources.*
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 
 private enum class MainTab(
-    val label: String,
+    val labelRes: StringResource,
     val icon: ImageVector,
 ) {
-    ANALYSIS("Análisis", Icons.Default.Search),
-    HISTORY("Historial", Icons.Default.List),
-    PATIENTS("Pacientes", Icons.Default.Person),
+    ANALYSIS(Res.string.nav_analysis, Icons.Default.Search),
+    HISTORY(Res.string.nav_history, Icons.Default.List),
+    PATIENTS(Res.string.nav_patients, Icons.Default.Person),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,12 +51,12 @@ fun MainScreen(onNavigateToSettings: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(selectedTab.label) },
+                title = { Text(stringResource(selectedTab.labelRes)) },
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Ajustes",
+                            contentDescription = stringResource(Res.string.nav_settings),
                         )
                     }
                 },
@@ -68,8 +71,8 @@ fun MainScreen(onNavigateToSettings: () -> Unit) {
                     NavigationBarItem(
                         selected = selectedTabIndex == tab.ordinal,
                         onClick = { selectedTabIndex = tab.ordinal },
-                        icon = { Icon(tab.icon, contentDescription = tab.label) },
-                        label = { Text(tab.label) },
+                        icon = { Icon(tab.icon, contentDescription = stringResource(tab.labelRes)) },
+                        label = { Text(stringResource(tab.labelRes)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             indicatorColor = Color(0xFF2FD38A) // Secondary

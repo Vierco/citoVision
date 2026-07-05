@@ -47,8 +47,10 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import citovision.shared.generated.resources.*
 import dev.lovelace.citovision.presentation.components.AnalysisCard
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.stringResource
 
 private data class PatientAnalysisItem(
     val title: String,
@@ -102,7 +104,7 @@ fun PatientsScreen() {
         // Título y Subtítulo/Nombre Paciente
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "Búsqueda de Pacientes",
+                text = stringResource(Res.string.patients_search_title),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF282828)
@@ -116,7 +118,7 @@ fun PatientsScreen() {
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (showResults) searchQuery else "Encuentre rápidamente historiales clínicos y resultados de análisis.",
+                    text = if (showResults) searchQuery else stringResource(Res.string.patients_search_desc_default),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF6F6F6F),
                     modifier = Modifier.weight(1f)
@@ -128,7 +130,7 @@ fun PatientsScreen() {
                         isLoading = false
                     }) {
                         Text(
-                            text = "Cerrar ficha",
+                            text = stringResource(Res.string.patients_close_file),
                             color = Color(0xFF2FA7F0),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold
@@ -182,7 +184,7 @@ fun PatientsScreen() {
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Text(
-                        text = "Sin resultados activos",
+                        text = stringResource(Res.string.patients_no_results_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF282828)
@@ -191,7 +193,7 @@ fun PatientsScreen() {
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "Ingrese el ID de paciente o su nombre completo en el buscador superior para acceder al historial clínico.",
+                        text = stringResource(Res.string.patients_no_results_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
                         color = Color(0xFF6F6F6F)
@@ -207,7 +209,7 @@ fun PatientsScreen() {
                         modifier = Modifier.fillMaxWidth().height(56.dp),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Volver", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(Res.string.common_back), style = MaterialTheme.typography.labelLarge)
                     }
                 }
             }
@@ -240,7 +242,7 @@ fun PatientsScreen() {
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text(
-                        text = "ID de Paciente / Nombre",
+                        text = stringResource(Res.string.patients_id_name_label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF282828)
@@ -252,7 +254,7 @@ fun PatientsScreen() {
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("Ej: PAC-2023-8942 o Juan Pére") },
+                        placeholder = { Text(stringResource(Res.string.patients_search_placeholder)) },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
@@ -280,7 +282,7 @@ fun PatientsScreen() {
                             Icon(Icons.Default.Search, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Buscar",
+                                text = stringResource(Res.string.patients_button_search),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = Color.White
                             )
@@ -296,19 +298,19 @@ fun PatientsScreen() {
             onDismissRequest = { showEmptyQueryError = false },
             confirmButton = {
                 OutlinedButton(onClick = { showEmptyQueryError = false }) {
-                    Text("Cerrar", color = Color(0xFF2FA7F0))
+                    Text(stringResource(Res.string.common_close), color = Color(0xFF2FA7F0))
                 }
             },
             title = {
                 Text(
-                    "Búsqueda vacía",
+                    stringResource(Res.string.patients_error_empty_title),
                     style = MaterialTheme.typography.titleMedium,
                     color = Color(0xFF282828)
                 )
             },
             text = {
                 Text(
-                    "Por favor, introduzca un ID de paciente o nombre para realizar la búsqueda.",
+                    stringResource(Res.string.patients_error_empty_desc),
                     style = MaterialTheme.typography.bodyMedium
                 )
             },

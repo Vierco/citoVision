@@ -19,7 +19,9 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.unit.dp
 import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.celula
+import citovision.shared.generated.resources.splash_initializing
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SplashScreen() {
@@ -59,7 +61,7 @@ fun SplashScreen() {
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Iniciando sistema…",
+                text = stringResource(Res.string.splash_initializing),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
