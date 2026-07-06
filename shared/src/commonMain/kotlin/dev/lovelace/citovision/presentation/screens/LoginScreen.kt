@@ -1,6 +1,5 @@
 package dev.lovelace.citovision.presentation.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,7 +46,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import citovision.shared.generated.resources.*
+import citovision.shared.generated.resources.Res
+import citovision.shared.generated.resources.app_name
+import citovision.shared.generated.resources.common_close
+import citovision.shared.generated.resources.icons_g_144
+import citovision.shared.generated.resources.login_button_sign_in
+import citovision.shared.generated.resources.login_email_label
+import citovision.shared.generated.resources.login_email_placeholder
+import citovision.shared.generated.resources.login_error_email_format
+import citovision.shared.generated.resources.login_error_password_chars
+import citovision.shared.generated.resources.login_error_password_desc
+import citovision.shared.generated.resources.login_forgot_password
+import citovision.shared.generated.resources.login_google_button
+import citovision.shared.generated.resources.login_guest_button
+import citovision.shared.generated.resources.login_hide_password
+import citovision.shared.generated.resources.login_or_separator
+import citovision.shared.generated.resources.login_password_label
+import citovision.shared.generated.resources.login_password_placeholder
+import citovision.shared.generated.resources.login_secure_access
+import citovision.shared.generated.resources.login_show_password
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
