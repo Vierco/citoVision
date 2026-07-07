@@ -67,6 +67,7 @@ kotlin {
             // GitLive declara sin versión (p.ej. firebase-common-ktx).
             implementation(project.dependencies.platform(libs.firebase.bom))
             implementation(libs.firebase.kmp.app)
+            implementation(libs.firebase.kmp.auth)
         }
 
         val desktopMain by getting {

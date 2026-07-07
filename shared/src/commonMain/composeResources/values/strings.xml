@@ -19,6 +19,13 @@
     <string name="login_error_email_format">Formato de correo electrónico incorrecto</string>
     <string name="login_error_password_chars">Caracteres no admitidos</string>
     <string name="login_error_password_desc">Solo se admiten mayúsculas, minúsculas y números.</string>
+    <string name="login_error_title">No se pudo iniciar sesión</string>
+    <string name="login_error_password_length">La contraseña debe tener al menos 6 caracteres.</string>
+    <string name="login_error_invalid_credentials">Correo o contraseña incorrectos.</string>
+    <string name="login_error_network">Sin conexión. Comprueba tu red e inténtalo de nuevo.</string>
+    <string name="login_error_too_many_requests">Demasiados intentos. Espera un momento e inténtalo de nuevo.</string>
+    <string name="login_error_desktop_unsupported">El inicio de sesión con cuenta aún no está disponible en escritorio.</string>
+    <string name="login_error_generic">No se ha podido iniciar sesión. Inténtalo de nuevo.</string>
     <string name="common_close">Cerrar</string>
 
     <!-- Main Navigation -->

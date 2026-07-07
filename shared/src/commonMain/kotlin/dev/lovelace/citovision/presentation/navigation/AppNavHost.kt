@@ -2,6 +2,8 @@ package dev.lovelace.citovision.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,6 +43,7 @@ fun AppNavHost() {
 
         composable<LoginRoute> {
             val viewModel = koinViewModel<LoginViewModel>()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             LaunchedEffect(Unit) {
                 viewModel.navigationEvents.collect { event ->
                     if (event == NavigationEvent.ToMain) {
@@ -51,9 +54,8 @@ fun AppNavHost() {
                 }
             }
             LoginScreen(
-                onLoginClick = viewModel::onLoginClick,
-                onGoogleLoginClick = viewModel::onGoogleLoginClick,
-                onGuestClick = viewModel::onGuestClick,
+                uiState = uiState,
+                onEvent = viewModel::onEvent,
             )
         }
 
