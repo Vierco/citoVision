@@ -66,6 +66,9 @@ fun PatientsScreen() {
     var showResults by remember { mutableStateOf(false) }
     var noResultsFound by remember { mutableStateOf(false) }
     var showEmptyQueryError by remember { mutableStateOf(false) }
+    var showAlphanumericError by remember { mutableStateOf(false) }
+
+    val alphanumericRegex = "^[A-Za-z0-9]*$".toRegex()
 
     val mockResults = listOf(
         PatientAnalysisItem(
@@ -252,7 +255,13 @@ fun PatientsScreen() {
 
                     OutlinedTextField(
                         value = searchQuery,
-                        onValueChange = { searchQuery = it },
+                        onValueChange = {
+                            if (alphanumericRegex.matches(it)) {
+                                searchQuery = it
+                            } else {
+                                showAlphanumericError = true
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text(stringResource(Res.string.patients_search_placeholder)) },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
@@ -311,6 +320,32 @@ fun PatientsScreen() {
             text = {
                 Text(
                     stringResource(Res.string.patients_error_empty_desc),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(28.dp)
+        )
+    }
+
+    if (showAlphanumericError) {
+        AlertDialog(
+            onDismissRequest = { showAlphanumericError = false },
+            confirmButton = {
+                OutlinedButton(onClick = { showAlphanumericError = false }) {
+                    Text(stringResource(Res.string.common_close), color = Color(0xFF2FA7F0))
+                }
+            },
+            title = {
+                Text(
+                    stringResource(Res.string.login_error_password_chars),
+                    color = Color(0xFF282828),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            },
+            text = {
+                Text(
+                    stringResource(Res.string.login_error_password_desc),
                     style = MaterialTheme.typography.bodyMedium
                 )
             },
