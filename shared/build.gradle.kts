@@ -62,6 +62,11 @@ kotlin {
             implementation(libs.androidx.core.ktx)
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
+            // Firebase (GitLive) solo tiene variante Android/iOS/JS, no Desktop-JVM.
+            // El BOM fija las versiones de los artefactos com.google.firebase:* que
+            // GitLive declara sin versión (p.ej. firebase-common-ktx).
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.kmp.app)
         }
 
         val desktopMain by getting {

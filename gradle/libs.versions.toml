@@ -19,6 +19,9 @@ datastore = "1.1.1"
 jetbrains-lifecycle = "2.9.6"
 jetbrains-navigation = "2.9.2"
 coroutines = "1.9.0"
+firebase-kmp = "2.1.0"
+firebase-bom = "33.15.0"
+google-services = "4.4.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +38,9 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+firebase-kmp-app = { module = "dev.gitlive:firebase-app", version.ref = "firebase-kmp" }
+firebase-kmp-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase-kmp" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 
 # KMP Libraries
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
@@ -61,3 +67,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
