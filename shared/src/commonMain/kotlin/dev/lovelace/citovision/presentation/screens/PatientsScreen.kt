@@ -47,7 +47,21 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import citovision.shared.generated.resources.*
+import citovision.shared.generated.resources.Res
+import citovision.shared.generated.resources.common_back
+import citovision.shared.generated.resources.common_close
+import citovision.shared.generated.resources.login_error_password_chars
+import citovision.shared.generated.resources.login_error_password_desc
+import citovision.shared.generated.resources.patients_button_search
+import citovision.shared.generated.resources.patients_close_file
+import citovision.shared.generated.resources.patients_error_empty_desc
+import citovision.shared.generated.resources.patients_error_empty_title
+import citovision.shared.generated.resources.patients_id_name_label
+import citovision.shared.generated.resources.patients_no_results_desc
+import citovision.shared.generated.resources.patients_no_results_title
+import citovision.shared.generated.resources.patients_search_desc_default
+import citovision.shared.generated.resources.patients_search_placeholder
+import citovision.shared.generated.resources.patients_search_title
 import dev.lovelace.citovision.presentation.components.AnalysisCard
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
@@ -163,10 +177,10 @@ fun PatientsScreen() {
                         drawRoundRect(
                             color = Color.LightGray,
                             style = stroke,
-                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(28.dp.toPx())
+                            cornerRadius = androidx.compose.ui.geometry
+                                .CornerRadius(28.dp.toPx())
                         )
-                    }
-                    .padding(24.dp),
+                    }.padding(24.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -220,7 +234,8 @@ fun PatientsScreen() {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 16.dp),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement
+                    .spacedBy(16.dp)
             ) {
                 items(mockResults) { item ->
                     AnalysisCard(

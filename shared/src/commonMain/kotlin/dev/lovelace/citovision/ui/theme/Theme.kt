@@ -21,9 +21,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun CitoVisionTheme(
-    content: @Composable () -> Unit
-) {
+fun citoVisionTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = LightColorScheme,
         typography = getTypography(),

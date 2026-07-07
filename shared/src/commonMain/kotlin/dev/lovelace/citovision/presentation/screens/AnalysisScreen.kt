@@ -35,7 +35,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import citovision.shared.generated.resources.*
+import citovision.shared.generated.resources.Res
+import citovision.shared.generated.resources.analysis_button_scan
+import citovision.shared.generated.resources.analysis_scan_hint
+import citovision.shared.generated.resources.analysis_select_image
+import citovision.shared.generated.resources.analysis_supported_formats
+import citovision.shared.generated.resources.analysis_upload_desc
+import citovision.shared.generated.resources.analysis_upload_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -81,7 +87,8 @@ fun AnalysisScreen() {
                     drawRoundRect(
                         color = Color.LightGray,
                         style = stroke,
-                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(28.dp.toPx())
+                        cornerRadius = androidx.compose.ui.geometry
+                            .CornerRadius(28.dp.toPx())
                     )
                 },
             contentAlignment = Alignment.Center
@@ -112,9 +119,15 @@ fun AnalysisScreen() {
                     modifier = Modifier.height(56.dp).padding(horizontal = 24.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.AddPhotoAlternate, contentDescription = null)
+                        Icon(
+                            Icons.Default.AddPhotoAlternate,
+                            contentDescription = null
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(Res.string.analysis_select_image), style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            stringResource(Res.string.analysis_select_image),
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 }
 
@@ -144,7 +157,11 @@ fun AnalysisScreen() {
             enabled = false // Deshabilitado según la lógica de la maqueta
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.QrCodeScanner, contentDescription = null, tint = Color(0xFF6F6F6F).copy(alpha = 0.7f))
+                Icon(
+                    Icons.Default.QrCodeScanner,
+                    contentDescription = null,
+                    tint = Color(0xFF6F6F6F).copy(alpha = 0.7f)
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     stringResource(Res.string.analysis_button_scan),

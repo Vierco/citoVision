@@ -117,7 +117,6 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-
             // Nombre de la app en color terciario
             Text(
                 text = stringResource(Res.string.app_name),
@@ -189,17 +188,29 @@ fun LoginScreen(
                         placeholder = { Text(stringResource(Res.string.login_password_placeholder)) },
                         leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                         trailingIcon = {
-                            val image = if (passwordVisible)
-                                Icons.Default.Visibility
-                            else Icons.Default.VisibilityOff
+                            val image =
+                                if (passwordVisible) {
+                                    Icons.Default.Visibility
+                                } else {
+                                    Icons.Default.VisibilityOff
+                                }
 
-                            val description = if (passwordVisible) stringResource(Res.string.login_hide_password) else stringResource(Res.string.login_show_password)
+                            val description =
+                                if (passwordVisible) {
+                                    stringResource(Res.string.login_hide_password)
+                                } else {
+                                    stringResource(Res.string.login_show_password)
+                                }
 
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(imageVector = image, contentDescription = description)
                             }
                         },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (passwordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true
                     )

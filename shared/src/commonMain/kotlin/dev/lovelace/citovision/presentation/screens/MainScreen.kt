@@ -29,7 +29,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
-import citovision.shared.generated.resources.*
+import citovision.shared.generated.resources.Res
+import citovision.shared.generated.resources.nav_analysis
+import citovision.shared.generated.resources.nav_history
+import citovision.shared.generated.resources.nav_patients
+import citovision.shared.generated.resources.nav_settings
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 

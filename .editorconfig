@@ -10,3 +10,14 @@ trim_trailing_whitespace = true
 
 [*.{kt,kts}]
 max_line_length = 120
+ktlint_standard_function-naming = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_standard_spacing-around-parens = disabled
+ktlint_standard_no-whitespace-between-parentheses-and-parameter-name = disabled
+ktlint_standard_no-whitespace-between-last-parameter-and-closing-parenthesis = disabled
+ktlint_standard_no-unseparated-parens-on-same-line = disabled
+ktlint_standard_parameter-list-wrapping = disabled
+ktlint_standard_chain-wrapping = disabled
+ktlint_standard_filename = disabled

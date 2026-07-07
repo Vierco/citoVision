@@ -31,7 +31,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import citovision.shared.generated.resources.*
+import citovision.shared.generated.resources.Res
+import citovision.shared.generated.resources.history_empty_desc
+import citovision.shared.generated.resources.history_empty_title
 import dev.lovelace.citovision.presentation.components.AnalysisCard
 import dev.lovelace.citovision.presentation.components.AnalysisDetailDialog
 import org.jetbrains.compose.resources.stringResource
