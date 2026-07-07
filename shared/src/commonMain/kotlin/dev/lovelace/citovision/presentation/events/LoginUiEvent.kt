@@ -9,4 +9,11 @@ sealed interface LoginUiEvent {
     data object GoogleSignIn : LoginUiEvent
     data object GuestAccess : LoginUiEvent
     data object DismissError : LoginUiEvent
+
+    // Recuperación de contraseña (SPEC-0002)
+    data object OpenForgotPassword : LoginUiEvent
+    data object DismissForgotPassword : LoginUiEvent
+    data class ForgotEmailChanged(val value: String) : LoginUiEvent
+    data object SendPasswordReset : LoginUiEvent
+    data object DismissResetConfirmation : LoginUiEvent
 }

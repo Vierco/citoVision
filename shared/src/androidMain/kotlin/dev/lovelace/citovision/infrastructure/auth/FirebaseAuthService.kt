@@ -52,6 +52,12 @@ class FirebaseAuthService : AuthService {
             Result.Success(Unit)
         }
 
+    override suspend fun sendPasswordReset(email: String): Result<Unit, AuthError> =
+        runCatchingAuth {
+            auth.sendPasswordResetEmail(email)
+            Result.Success(Unit)
+        }
+
     private inline fun <T> runCatchingAuth(block: () -> Result<T, AuthError>): Result<T, AuthError> =
         try {
             block()

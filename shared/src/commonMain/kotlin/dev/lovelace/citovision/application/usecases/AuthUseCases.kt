@@ -28,3 +28,8 @@ class SignOutUseCase(private val authService: AuthService) {
     suspend operator fun invoke(): Result<Unit, AuthError> =
         authService.signOut()
 }
+
+class SendPasswordResetUseCase(private val authService: AuthService) {
+    suspend operator fun invoke(email: String): Result<Unit, AuthError> =
+        authService.sendPasswordReset(email)
+}

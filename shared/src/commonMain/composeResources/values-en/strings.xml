@@ -26,6 +26,12 @@
     <string name="login_error_too_many_requests">Too many attempts. Please wait and try again.</string>
     <string name="login_error_desktop_unsupported">Account sign-in is not available on desktop yet.</string>
     <string name="login_error_generic">Could not sign in. Please try again.</string>
+    <string name="forgot_dialog_title">Reset password</string>
+    <string name="forgot_dialog_desc">Enter your email and we'll send you a link to reset your password.</string>
+    <string name="forgot_send_button">Send link</string>
+    <string name="reset_sent_title">Check your email</string>
+    <string name="reset_sent_desc">If the email is registered, we've sent you a link to reset your password.</string>
+    <string name="common_cancel">Cancel</string>
     <string name="common_close">Close</string>
 
     <!-- Main Navigation -->

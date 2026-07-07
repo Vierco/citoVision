@@ -10,6 +10,7 @@ import citovision.shared.generated.resources.login_error_invalid_credentials
 import citovision.shared.generated.resources.login_error_network
 import citovision.shared.generated.resources.login_error_password_length
 import citovision.shared.generated.resources.login_error_too_many_requests
+import dev.lovelace.citovision.application.usecases.SendPasswordResetUseCase
 import dev.lovelace.citovision.application.usecases.SignInAsGuestUseCase
 import dev.lovelace.citovision.application.usecases.SignInWithEmailUseCase
 import dev.lovelace.citovision.application.usecases.SignInWithGoogleUseCase
@@ -30,6 +31,7 @@ class LoginViewModel(
     private val signInWithEmail: SignInWithEmailUseCase,
     private val signInWithGoogle: SignInWithGoogleUseCase,
     private val signInAsGuest: SignInAsGuestUseCase,
+    private val sendPasswordReset: SendPasswordResetUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -48,6 +50,17 @@ class LoginViewModel(
             LoginUiEvent.GoogleSignIn -> submitGoogleLogin()
             LoginUiEvent.GuestAccess -> submitGuest()
             LoginUiEvent.DismissError -> _uiState.update { it.copy(errorMessage = null) }
+
+            LoginUiEvent.OpenForgotPassword -> _uiState.update {
+                it.copy(forgotDialogVisible = true, forgotEmail = it.email, forgotError = null)
+            }
+            LoginUiEvent.DismissForgotPassword -> _uiState.update {
+                it.copy(forgotDialogVisible = false, forgotError = null)
+            }
+            is LoginUiEvent.ForgotEmailChanged -> _uiState.update { it.copy(forgotEmail = event.value) }
+            LoginUiEvent.SendPasswordReset -> submitPasswordReset()
+            LoginUiEvent.DismissResetConfirmation ->
+                _uiState.update { it.copy(resetConfirmationVisible = false) }
         }
     }
 
@@ -100,9 +113,44 @@ class LoginViewModel(
         }
     }
 
+    private fun submitPasswordReset() {
+        val state = _uiState.value
+        if (state.forgotSending) return
+        if (!EMAIL_REGEX.matches(state.forgotEmail)) {
+            _uiState.update { it.copy(forgotError = Res.string.login_error_email_format) }
+            return
+        }
+        viewModelScope.launch {
+            _uiState.update { it.copy(forgotSending = true, forgotError = null) }
+            sendPasswordReset(state.forgotEmail).fold(
+                onSuccess = { onResetSent() },
+                onFailure = { error ->
+                    // Anti-enumeración (SPEC-0002 RN-2): un email inexistente se trata como éxito.
+                    if (error == AuthError.UserNotFound) {
+                        onResetSent()
+                    } else {
+                        _uiState.update { it.copy(forgotSending = false, forgotError = error.toMessage()) }
+                    }
+                },
+            )
+        }
+    }
+
     private suspend fun onAuthSuccess() {
         _uiState.update { it.copy(isLoading = false) }
         _navigationEvents.send(NavigationEvent.ToMain)
+    }
+
+    private fun onResetSent() {
+        _uiState.update {
+            it.copy(
+                forgotSending = false,
+                forgotDialogVisible = false,
+                forgotEmail = "",
+                forgotError = null,
+                resetConfirmationVisible = true,
+            )
+        }
     }
 
     private fun showError(error: AuthError) {

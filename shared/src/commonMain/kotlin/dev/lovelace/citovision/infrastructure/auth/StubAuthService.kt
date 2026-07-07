@@ -36,6 +36,9 @@ class StubAuthService : AuthService {
         return Result.Success(Unit)
     }
 
+    override suspend fun sendPasswordReset(email: String): Result<Unit, AuthError> =
+        Result.Failure(AuthError.NotSupportedOnPlatform)
+
     private companion object {
         const val GUEST_UID = "guest"
     }

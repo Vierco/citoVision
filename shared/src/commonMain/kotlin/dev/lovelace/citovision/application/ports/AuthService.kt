@@ -16,4 +16,7 @@ interface AuthService {
     suspend fun signInWithGoogle(idToken: String): Result<AuthUser, AuthError>
     suspend fun signInAsGuest(): Result<AuthUser, AuthError>
     suspend fun signOut(): Result<Unit, AuthError>
+
+    /** Envía un correo de restablecimiento de contraseña (SPEC-0002). */
+    suspend fun sendPasswordReset(email: String): Result<Unit, AuthError>
 }

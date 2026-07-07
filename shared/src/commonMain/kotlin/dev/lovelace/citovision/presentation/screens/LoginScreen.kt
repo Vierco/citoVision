@@ -45,7 +45,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.app_name
+import citovision.shared.generated.resources.common_cancel
 import citovision.shared.generated.resources.common_close
+import citovision.shared.generated.resources.forgot_dialog_desc
+import citovision.shared.generated.resources.forgot_dialog_title
+import citovision.shared.generated.resources.forgot_send_button
 import citovision.shared.generated.resources.icons_g_144
 import citovision.shared.generated.resources.login_button_sign_in
 import citovision.shared.generated.resources.login_email_label
@@ -60,6 +64,8 @@ import citovision.shared.generated.resources.login_password_label
 import citovision.shared.generated.resources.login_password_placeholder
 import citovision.shared.generated.resources.login_secure_access
 import citovision.shared.generated.resources.login_show_password
+import citovision.shared.generated.resources.reset_sent_desc
+import citovision.shared.generated.resources.reset_sent_title
 import dev.lovelace.citovision.presentation.events.LoginUiEvent
 import dev.lovelace.citovision.presentation.state.LoginUiState
 import org.jetbrains.compose.resources.painterResource
@@ -194,7 +200,7 @@ fun LoginScreen(
                     )
 
                     TextButton(
-                        onClick = { /* TODO: recuperación de contraseña (spec futura) */ },
+                        onClick = { onEvent(LoginUiEvent.OpenForgotPassword) },
                         modifier = Modifier.align(Alignment.End),
                         enabled = !uiState.isLoading,
                     ) {
@@ -327,6 +333,104 @@ fun LoginScreen(
             text = {
                 Text(
                     stringResource(message),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+
+    // Diálogo: recuperación de contraseña (SPEC-0002)
+    if (uiState.forgotDialogVisible) {
+        AlertDialog(
+            onDismissRequest = { onEvent(LoginUiEvent.DismissForgotPassword) },
+            confirmButton = {
+                Button(
+                    onClick = { onEvent(LoginUiEvent.SendPasswordReset) },
+                    enabled = !uiState.forgotSending,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2FA7F0)),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    if (uiState.forgotSending) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp,
+                        )
+                    } else {
+                        Text(stringResource(Res.string.forgot_send_button), color = Color.White)
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { onEvent(LoginUiEvent.DismissForgotPassword) },
+                    enabled = !uiState.forgotSending,
+                ) {
+                    Text(stringResource(Res.string.common_cancel), color = Color(0xFF6F6F6F))
+                }
+            },
+            title = {
+                Text(
+                    stringResource(Res.string.forgot_dialog_title),
+                    color = Color(0xFF282828),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            },
+            text = {
+                Column {
+                    Text(
+                        stringResource(Res.string.forgot_dialog_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF6F6F6F),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = uiState.forgotEmail,
+                        onValueChange = { onEvent(LoginUiEvent.ForgotEmailChanged(it)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text(stringResource(Res.string.login_email_placeholder)) },
+                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true,
+                        isError = uiState.forgotError != null,
+                        enabled = !uiState.forgotSending,
+                    )
+                    uiState.forgotError?.let { err ->
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            stringResource(err),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFFF53A63), // error
+                        )
+                    }
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+
+    // Diálogo: confirmación genérica tras enviar (anti-enumeración, SPEC-0002 RN-2)
+    if (uiState.resetConfirmationVisible) {
+        AlertDialog(
+            onDismissRequest = { onEvent(LoginUiEvent.DismissResetConfirmation) },
+            confirmButton = {
+                OutlinedButton(onClick = { onEvent(LoginUiEvent.DismissResetConfirmation) }) {
+                    Text(stringResource(Res.string.common_close), color = Color(0xFF2FA7F0))
+                }
+            },
+            title = {
+                Text(
+                    stringResource(Res.string.reset_sent_title),
+                    color = Color(0xFF282828),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            },
+            text = {
+                Text(
+                    stringResource(Res.string.reset_sent_desc),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             },

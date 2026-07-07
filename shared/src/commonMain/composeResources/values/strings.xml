@@ -26,6 +26,12 @@
     <string name="login_error_too_many_requests">Demasiados intentos. Espera un momento e inténtalo de nuevo.</string>
     <string name="login_error_desktop_unsupported">El inicio de sesión con cuenta aún no está disponible en escritorio.</string>
     <string name="login_error_generic">No se ha podido iniciar sesión. Inténtalo de nuevo.</string>
+    <string name="forgot_dialog_title">Recuperar contraseña</string>
+    <string name="forgot_dialog_desc">Introduce tu correo y te enviaremos un enlace para restablecer la contraseña.</string>
+    <string name="forgot_send_button">Enviar enlace</string>
+    <string name="reset_sent_title">Revisa tu correo</string>
+    <string name="reset_sent_desc">Si el correo está registrado, te enviaremos un enlace para restablecer la contraseña.</string>
+    <string name="common_cancel">Cancelar</string>
     <string name="common_close">Cerrar</string>
 
     <!-- Main Navigation -->
