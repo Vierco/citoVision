@@ -1,7 +1,9 @@
 package dev.lovelace.citovision.application.usecases
 
 import dev.lovelace.citovision.application.ports.AuthService
+import dev.lovelace.citovision.application.ports.GoogleSignInLauncher
 import dev.lovelace.citovision.core.result.Result
+import dev.lovelace.citovision.core.result.fold
 import dev.lovelace.citovision.domain.entities.AuthUser
 import dev.lovelace.citovision.domain.errors.AuthError
 
@@ -14,9 +16,20 @@ class SignInWithEmailUseCase(private val authService: AuthService) {
         authService.signInWithEmail(email, password)
 }
 
-class SignInWithGoogleUseCase(private val authService: AuthService) {
-    suspend operator fun invoke(idToken: String): Result<AuthUser, AuthError> =
-        authService.signInWithGoogle(idToken)
+/**
+ * Orquesta el login con Google: resuelve el `idToken` con el flujo nativo ([GoogleSignInLauncher])
+ * y lo canjea en Firebase ([AuthService.signInWithGoogle]). Un fallo del flujo nativo (cancelado,
+ * no soportado) se propaga tal cual sin llamar al backend.
+ */
+class SignInWithGoogleUseCase(
+    private val authService: AuthService,
+    private val googleSignInLauncher: GoogleSignInLauncher,
+) {
+    suspend operator fun invoke(): Result<AuthUser, AuthError> =
+        googleSignInLauncher.requestIdToken().fold(
+            onSuccess = { idToken -> authService.signInWithGoogle(idToken) },
+            onFailure = { error -> Result.Failure(error) },
+        )
 }
 
 class SignInAsGuestUseCase(private val authService: AuthService) {

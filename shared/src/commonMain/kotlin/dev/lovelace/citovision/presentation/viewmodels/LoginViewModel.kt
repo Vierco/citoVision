@@ -88,8 +88,7 @@ class LoginViewModel(
         if (_uiState.value.isLoading) return
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            // TODO(fase 1): resolver el idToken con el flujo nativo de Google (Credential Manager en Android).
-            signInWithGoogle("").fold(
+            signInWithGoogle().fold(
                 onSuccess = { onAuthSuccess() },
                 onFailure = { error ->
                     if (error == AuthError.GoogleSignInCancelled) {

@@ -68,6 +68,10 @@ kotlin {
             implementation(project.dependencies.platform(libs.firebase.bom))
             implementation(libs.firebase.kmp.app)
             implementation(libs.firebase.kmp.auth)
+            // Google Sign-In nativo: Credential Manager (GoogleSignInClient está deprecada).
+            implementation(libs.androidx.credentials)
+            implementation(libs.androidx.credentials.play.services.auth)
+            implementation(libs.google.identity.googleid)
         }
 
         val desktopMain by getting {
