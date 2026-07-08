@@ -1,4 +1,4 @@
-### Autenticación y autorización
+,### Autenticación y autorización
 
 - Nunca implementar autenticación únicamente en cliente.
 - Todas las autorizaciones deberán validarse siempre en el backend.

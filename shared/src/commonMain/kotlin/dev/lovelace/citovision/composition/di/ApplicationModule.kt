@@ -1,5 +1,7 @@
 package dev.lovelace.citovision.composition.di
 
+import dev.lovelace.citovision.application.usecases.HasActiveSessionUseCase
+import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
 import dev.lovelace.citovision.application.usecases.SendPasswordResetUseCase
 import dev.lovelace.citovision.application.usecases.SignInAsGuestUseCase
 import dev.lovelace.citovision.application.usecases.SignInWithEmailUseCase
@@ -15,4 +17,6 @@ val applicationModule = module {
     factoryOf(::SignInAsGuestUseCase)
     factoryOf(::SignOutUseCase)
     factoryOf(::SendPasswordResetUseCase)
+    factoryOf(::HasActiveSessionUseCase)
+    factoryOf(::ObserveSessionStatusUseCase)
 }

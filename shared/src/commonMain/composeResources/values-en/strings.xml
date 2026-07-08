@@ -34,6 +34,10 @@
     <string name="common_cancel">Cancel</string>
     <string name="common_close">Close</string>
 
+    <!-- Settings -->
+    <string name="settings_login">Sign in with an account</string>
+    <string name="settings_logout">Sign out</string>
+
     <!-- Main Navigation -->
     <string name="nav_analysis">Analysis</string>
     <string name="nav_history">History</string>

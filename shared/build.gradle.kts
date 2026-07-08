@@ -50,6 +50,9 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.ktor.client.core)
             implementation(libs.napier)
+            // Persistencia local no sensible (flag de sesión de invitado) — DataStore multiplataforma.
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
         }
 
         val commonTest by getting {
