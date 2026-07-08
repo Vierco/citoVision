@@ -3,10 +3,10 @@ package dev.lovelace.citovision.presentation.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,17 +29,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.dp
 import citovision.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 private enum class MainTab(
     val labelRes: StringResource,
-    val icon: ImageVector,
 ) {
-    ANALYSIS(Res.string.nav_analysis, Icons.Default.Search),
-    HISTORY(Res.string.nav_history, Icons.Default.List),
-    PATIENTS(Res.string.nav_patients, Icons.Default.Person),
+    ANALYSIS(Res.string.nav_analysis),
+    HISTORY(Res.string.nav_history),
+    PATIENTS(Res.string.nav_patients),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +73,18 @@ fun MainScreen(onNavigateToSettings: () -> Unit) {
                     NavigationBarItem(
                         selected = selectedTabIndex == tab.ordinal,
                         onClick = { selectedTabIndex = tab.ordinal },
-                        icon = { Icon(tab.icon, contentDescription = stringResource(tab.labelRes)) },
+                        icon = {
+                            val painter = when (tab) {
+                                MainTab.ANALYSIS -> painterResource(Res.drawable.microsc)
+                                MainTab.HISTORY -> rememberVectorPainter(Icons.Default.List)
+                                MainTab.PATIENTS -> rememberVectorPainter(Icons.Default.Person)
+                            }
+                            Icon(
+                                painter = painter,
+                                contentDescription = stringResource(tab.labelRes),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
                         label = { Text(stringResource(tab.labelRes)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
