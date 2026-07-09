@@ -63,11 +63,17 @@
 
     <!-- Analysis -->
     <string name="analysis_upload_title">Upload Sample</string>
-    <string name="analysis_upload_desc">Select or take a photograph of the cytological sample for analysis</string>
+    <string name="analysis_upload_desc">Select an image of the cytological sample for analysis</string>
     <string name="analysis_select_image">Select Image</string>
-    <string name="analysis_supported_formats">Supported formats: JPG, PNG, DICOM</string>
+    <string name="analysis_change_image">Change Image</string>
+    <string name="analysis_remove_image">Remove image</string>
+    <string name="analysis_supported_formats">Supported formats: JPG, PNG</string>
     <string name="analysis_button_scan">Start Scanner</string>
     <string name="analysis_scan_hint">*Requires loading a valid image to start</string>
+    <string name="analysis_error_unsupported_format">Unsupported format. Use a JPG or PNG image.</string>
+    <string name="analysis_error_too_large">The image is too large (10 MB maximum).</string>
+    <string name="analysis_error_read_failed">The image could not be read. Please try again.</string>
+    <string name="analysis_error_generic">The image could not be selected.</string>
 
     <!-- Components -->
     <string name="card_metadata">Date: %1$s | Patient: %2$s</string>

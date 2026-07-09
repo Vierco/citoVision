@@ -7,6 +7,7 @@ import dev.lovelace.citovision.application.ports.GoogleSignInLauncher
 import dev.lovelace.citovision.application.ports.SessionRepository
 import dev.lovelace.citovision.application.usecases.HasActiveSessionUseCase
 import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
+import dev.lovelace.citovision.application.usecases.PickImageUseCase
 import dev.lovelace.citovision.application.usecases.SendPasswordResetUseCase
 import dev.lovelace.citovision.application.usecases.SignInAsGuestUseCase
 import dev.lovelace.citovision.application.usecases.SignInWithEmailUseCase
@@ -47,6 +48,7 @@ class AppModulesGraphTest {
         assertNotNull(koin.get<SendPasswordResetUseCase>())
         assertNotNull(koin.get<HasActiveSessionUseCase>())
         assertNotNull(koin.get<ObserveSessionStatusUseCase>())
+        assertNotNull(koin.get<PickImageUseCase>())
         assertNotNull(koin.get<SessionRepository>())
 
         app.close()

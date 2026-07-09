@@ -73,6 +73,8 @@ tasks.withType<Detekt>().configureEach {
 dependencies {
     implementation(project(":shared"))
     implementation(libs.koin.android)
+    // FileKit.init(activity) para el selector de imagen en Android (SPEC-0003).
+    implementation(libs.filekit.dialogs)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

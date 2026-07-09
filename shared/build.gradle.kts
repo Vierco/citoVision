@@ -54,6 +54,10 @@ kotlin {
             // Persistencia local no sensible (flag de sesión de invitado) — DataStore multiplataforma.
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
+            // Selección de imagen (SPEC-0003): FileKit (selector nativo KMP) + Coil 3 (previsualización).
+            implementation(libs.filekit.core)
+            implementation(libs.filekit.dialogs)
+            implementation(libs.coil.compose)
         }
 
         val commonTest by getting {

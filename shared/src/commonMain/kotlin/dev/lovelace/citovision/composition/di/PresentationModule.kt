@@ -1,5 +1,6 @@
 package dev.lovelace.citovision.composition.di
 
+import dev.lovelace.citovision.presentation.viewmodels.AnalysisViewModel
 import dev.lovelace.citovision.presentation.viewmodels.LoginViewModel
 import dev.lovelace.citovision.presentation.viewmodels.SettingsViewModel
 import dev.lovelace.citovision.presentation.viewmodels.SplashViewModel
@@ -11,4 +12,5 @@ val presentationModule = module {
     viewModelOf(::SplashViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::AnalysisViewModel)
 }

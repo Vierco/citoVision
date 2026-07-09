@@ -63,11 +63,17 @@
 
     <!-- Analysis -->
     <string name="analysis_upload_title">Subir Muestra</string>
-    <string name="analysis_upload_desc">Selecciona o toma una fotografía de la muestra citológica para su análisis</string>
+    <string name="analysis_upload_desc">Selecciona una imagen de la muestra citológica para su análisis</string>
     <string name="analysis_select_image">Seleccionar Imagen</string>
-    <string name="analysis_supported_formats">Formatos soportados: JPG, PNG, DICOM</string>
+    <string name="analysis_change_image">Cambiar Imagen</string>
+    <string name="analysis_remove_image">Quitar imagen</string>
+    <string name="analysis_supported_formats">Formatos soportados: JPG, PNG</string>
     <string name="analysis_button_scan">Iniciar Escáner</string>
     <string name="analysis_scan_hint">*Requiere cargar una imagen válida para iniciar</string>
+    <string name="analysis_error_unsupported_format">Formato no soportado. Usa una imagen JPG o PNG.</string>
+    <string name="analysis_error_too_large">La imagen es demasiado grande (máximo 10 MB).</string>
+    <string name="analysis_error_read_failed">No se pudo leer la imagen. Inténtalo de nuevo.</string>
+    <string name="analysis_error_generic">No se pudo seleccionar la imagen.</string>
 
     <!-- Components -->
     <string name="card_metadata">Fecha: %1$s | Paciente: %2$s</string>
