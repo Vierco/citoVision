@@ -11,5 +11,6 @@ import kotlinx.coroutines.flow.Flow
  */
 interface SessionRepository {
     fun isGuestSession(): Flow<Boolean>
+
     suspend fun setGuestSession(active: Boolean)
 }

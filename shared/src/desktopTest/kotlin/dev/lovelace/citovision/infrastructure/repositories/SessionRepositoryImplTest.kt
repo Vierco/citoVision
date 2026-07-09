@@ -16,7 +16,6 @@ import kotlin.test.assertTrue
  * fichero propio para garantizar aislamiento (DataStore exige una única instancia activa por ruta).
  */
 class SessionRepositoryImplTest {
-
     private lateinit var tempFile: File
     private lateinit var repository: SessionRepositoryImpl
 
@@ -32,27 +31,30 @@ class SessionRepositoryImplTest {
     }
 
     @Test
-    fun `given nothing stored when reading then returns false by default`() = runTest {
-        // When / Then
-        assertFalse(repository.isGuestSession().first())
-    }
+    fun `given nothing stored when reading then returns false by default`() =
+        runTest {
+            // When / Then
+            assertFalse(repository.isGuestSession().first())
+        }
 
     @Test
-    fun `given the guest flag set to true when reading then returns true`() = runTest {
-        // Given
-        repository.setGuestSession(true)
+    fun `given the guest flag set to true when reading then returns true`() =
+        runTest {
+            // Given
+            repository.setGuestSession(true)
 
-        // When / Then
-        assertTrue(repository.isGuestSession().first())
-    }
+            // When / Then
+            assertTrue(repository.isGuestSession().first())
+        }
 
     @Test
-    fun `given the guest flag cleared when reading then returns false`() = runTest {
-        // Given
-        repository.setGuestSession(true)
-        repository.setGuestSession(false)
+    fun `given the guest flag cleared when reading then returns false`() =
+        runTest {
+            // Given
+            repository.setGuestSession(true)
+            repository.setGuestSession(false)
 
-        // When / Then
-        assertFalse(repository.isGuestSession().first())
-    }
+            // When / Then
+            assertFalse(repository.isGuestSession().first())
+        }
 }

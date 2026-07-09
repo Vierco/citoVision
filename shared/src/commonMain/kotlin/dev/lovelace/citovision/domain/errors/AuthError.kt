@@ -6,11 +6,20 @@ package dev.lovelace.citovision.domain.errors
  */
 sealed interface AuthError {
     data object InvalidCredentials : AuthError
+
     data object UserNotFound : AuthError
+
     data object Network : AuthError
+
     data object TooManyRequests : AuthError
+
     data object GoogleSignInCancelled : AuthError
+
     data object GoogleSignInFailed : AuthError
+
     data object NotSupportedOnPlatform : AuthError
-    data class Unknown(val cause: String?) : AuthError
+
+    data class Unknown(
+        val cause: String?,
+    ) : AuthError
 }

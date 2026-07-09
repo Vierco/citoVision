@@ -25,28 +25,30 @@ class SettingsViewModel(
     private val signOut: SignOutUseCase,
     observeSessionStatus: ObserveSessionStatusUseCase,
 ) : ViewModel() {
-
-    val uiState: StateFlow<SettingsUiState> = observeSessionStatus()
-        .map { SettingsUiState(sessionStatus = it) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
-            initialValue = SettingsUiState(),
-        )
+    val uiState: StateFlow<SettingsUiState> =
+        observeSessionStatus()
+            .map { SettingsUiState(sessionStatus = it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
+                initialValue = SettingsUiState(),
+            )
 
     private val _navigationEvents = Channel<NavigationEvent>(Channel.BUFFERED)
     val navigationEvents = _navigationEvents.receiveAsFlow()
 
     fun onEvent(event: SettingsUiEvent) {
         when (event) {
-            SettingsUiEvent.Login -> viewModelScope.launch {
-                _navigationEvents.send(NavigationEvent.ToLogin)
-            }
+            SettingsUiEvent.Login ->
+                viewModelScope.launch {
+                    _navigationEvents.send(NavigationEvent.ToLogin)
+                }
 
-            SettingsUiEvent.SignOut -> viewModelScope.launch {
-                signOut()
-                _navigationEvents.send(NavigationEvent.ToLogin)
-            }
+            SettingsUiEvent.SignOut ->
+                viewModelScope.launch {
+                    signOut()
+                    _navigationEvents.send(NavigationEvent.ToLogin)
+                }
         }
     }
 

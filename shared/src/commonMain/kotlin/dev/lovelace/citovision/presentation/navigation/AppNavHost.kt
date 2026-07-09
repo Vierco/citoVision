@@ -32,10 +32,11 @@ fun AppNavHost() {
             val viewModel = koinViewModel<SplashViewModel>()
             LaunchedEffect(Unit) {
                 viewModel.navigationEvents.collect { event ->
-                    val destination = when (event) {
-                        NavigationEvent.ToMain -> MainRoute
-                        else -> LoginRoute
-                    }
+                    val destination =
+                        when (event) {
+                            NavigationEvent.ToMain -> MainRoute
+                            else -> LoginRoute
+                        }
                     navController.navigate(destination) {
                         popUpTo<SplashRoute> { inclusive = true }
                     }

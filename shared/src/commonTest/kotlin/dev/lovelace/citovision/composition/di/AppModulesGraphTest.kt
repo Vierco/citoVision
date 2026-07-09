@@ -25,19 +25,20 @@ import kotlin.test.assertNotNull
  * aporta los puertos mockeados; se verifica que todos los use cases se resuelven sin dependencias sueltas.
  */
 class AppModulesGraphTest {
-
-    private val testPlatformModule = module {
-        single<AuthService> { mock() }
-        single<GoogleSignInLauncher> { mock() }
-        single<DataStore<Preferences>> { mock() }
-    }
+    private val testPlatformModule =
+        module {
+            single<AuthService> { mock() }
+            single<GoogleSignInLauncher> { mock() }
+            single<DataStore<Preferences>> { mock() }
+        }
 
     @Test
     fun `given the common modules when resolving the use cases then all dependencies are satisfied`() {
         // Given
-        val app = koinApplication {
-            modules(applicationModule, infrastructureModule, testPlatformModule)
-        }
+        val app =
+            koinApplication {
+                modules(applicationModule, infrastructureModule, testPlatformModule)
+            }
         val koin = app.koin
 
         // When / Then: si falta algún binding, get() lanzaría y el test fallaría

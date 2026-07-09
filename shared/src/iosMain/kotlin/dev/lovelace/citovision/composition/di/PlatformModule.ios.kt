@@ -14,8 +14,9 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 // Fase 1: iOS usa el stub (Firebase iOS requiere GoogleService-Info.plist, pendiente).
-actual val platformModule: Module = module {
-    singleOf(::StubAuthService) bind AuthService::class
-    singleOf(::StubGoogleSignInLauncher) bind GoogleSignInLauncher::class
-    single<DataStore<Preferences>> { createDataStore { dataStorePath() } }
-}
+actual val platformModule: Module =
+    module {
+        singleOf(::StubAuthService) bind AuthService::class
+        singleOf(::StubGoogleSignInLauncher) bind GoogleSignInLauncher::class
+        single<DataStore<Preferences>> { createDataStore { dataStorePath() } }
+    }

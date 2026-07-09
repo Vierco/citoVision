@@ -28,7 +28,6 @@ import kotlin.test.assertTrue
  * con el puerto [ImagePicker] mockeado.
  */
 class AnalysisViewModelTest {
-
     private val imagePicker = mock<ImagePicker>()
     private val pickImage = PickImageUseCase(imagePicker)
     private val dispatcher = StandardTestDispatcher()
@@ -49,40 +48,42 @@ class AnalysisViewModelTest {
     }
 
     @Test
-    fun `given a valid image when selecting then stores it and enables scan`() = runTest(dispatcher) {
-        // Given
-        everySuspend { imagePicker.pickImage() } returns Result.Success(validImage)
-        val viewModel = buildViewModel()
+    fun `given a valid image when selecting then stores it and enables scan`() =
+        runTest(dispatcher) {
+            // Given
+            everySuspend { imagePicker.pickImage() } returns Result.Success(validImage)
+            val viewModel = buildViewModel()
 
-        // When
-        viewModel.onEvent(AnalysisUiEvent.SelectImage)
-        advanceUntilIdle()
+            // When
+            viewModel.onEvent(AnalysisUiEvent.SelectImage)
+            advanceUntilIdle()
 
-        // Then
-        val state = viewModel.uiState.value
-        assertEquals(validImage, state.selectedImage)
-        assertTrue(state.canScan)
-        assertFalse(state.isPicking)
-        assertNull(state.error)
-    }
+            // Then
+            val state = viewModel.uiState.value
+            assertEquals(validImage, state.selectedImage)
+            assertTrue(state.canScan)
+            assertFalse(state.isPicking)
+            assertNull(state.error)
+        }
 
     @Test
-    fun `given the user cancels when selecting then keeps the previous state`() = runTest(dispatcher) {
-        // Given
-        everySuspend { imagePicker.pickImage() } returns Result.Success(null)
-        val viewModel = buildViewModel()
+    fun `given the user cancels when selecting then keeps the previous state`() =
+        runTest(dispatcher) {
+            // Given
+            everySuspend { imagePicker.pickImage() } returns Result.Success(null)
+            val viewModel = buildViewModel()
 
-        // When
-        viewModel.onEvent(AnalysisUiEvent.SelectImage)
-        advanceUntilIdle()
+            // When
+            viewModel.onEvent(AnalysisUiEvent.SelectImage)
+            advanceUntilIdle()
 
-        // Then
-        val state = viewModel.uiState.value
-        assertNull(state.selectedImage)
-        assertFalse(state.canScan)
-        assertFalse(state.isPicking)
-        assertNull(state.error)
-    }
+            // Then
+            val state = viewModel.uiState.value
+            assertNull(state.selectedImage)
+            assertFalse(state.canScan)
+            assertFalse(state.isPicking)
+            assertNull(state.error)
+        }
 
     @Test
     fun `given an unsupported format when selecting then shows an error and does not enable scan`() =
@@ -104,34 +105,36 @@ class AnalysisViewModelTest {
         }
 
     @Test
-    fun `given a selected image when removing then returns to the empty state`() = runTest(dispatcher) {
-        // Given
-        everySuspend { imagePicker.pickImage() } returns Result.Success(validImage)
-        val viewModel = buildViewModel()
-        viewModel.onEvent(AnalysisUiEvent.SelectImage)
-        advanceUntilIdle()
+    fun `given a selected image when removing then returns to the empty state`() =
+        runTest(dispatcher) {
+            // Given
+            everySuspend { imagePicker.pickImage() } returns Result.Success(validImage)
+            val viewModel = buildViewModel()
+            viewModel.onEvent(AnalysisUiEvent.SelectImage)
+            advanceUntilIdle()
 
-        // When
-        viewModel.onEvent(AnalysisUiEvent.RemoveImage)
+            // When
+            viewModel.onEvent(AnalysisUiEvent.RemoveImage)
 
-        // Then
-        val state = viewModel.uiState.value
-        assertNull(state.selectedImage)
-        assertFalse(state.canScan)
-    }
+            // Then
+            val state = viewModel.uiState.value
+            assertNull(state.selectedImage)
+            assertFalse(state.canScan)
+        }
 
     @Test
-    fun `given an error is shown when dismissing then clears the error`() = runTest(dispatcher) {
-        // Given
-        everySuspend { imagePicker.pickImage() } returns Result.Failure(ImageError.ReadFailed)
-        val viewModel = buildViewModel()
-        viewModel.onEvent(AnalysisUiEvent.SelectImage)
-        advanceUntilIdle()
+    fun `given an error is shown when dismissing then clears the error`() =
+        runTest(dispatcher) {
+            // Given
+            everySuspend { imagePicker.pickImage() } returns Result.Failure(ImageError.ReadFailed)
+            val viewModel = buildViewModel()
+            viewModel.onEvent(AnalysisUiEvent.SelectImage)
+            advanceUntilIdle()
 
-        // When
-        viewModel.onEvent(AnalysisUiEvent.DismissError)
+            // When
+            viewModel.onEvent(AnalysisUiEvent.DismissError)
 
-        // Then
-        assertNull(viewModel.uiState.value.error)
-    }
+            // Then
+            assertNull(viewModel.uiState.value.error)
+        }
 }

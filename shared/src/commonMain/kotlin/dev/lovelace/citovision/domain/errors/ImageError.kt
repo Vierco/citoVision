@@ -6,7 +6,12 @@ package dev.lovelace.citovision.domain.errors
  */
 sealed interface ImageError {
     data object UnsupportedFormat : ImageError
+
     data object TooLarge : ImageError
+
     data object ReadFailed : ImageError
-    data class Unknown(val cause: String?) : ImageError
+
+    data class Unknown(
+        val cause: String?,
+    ) : ImageError
 }

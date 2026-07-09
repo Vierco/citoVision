@@ -18,36 +18,37 @@ import kotlin.test.assertEquals
  * (puerto [GoogleSignInLauncher]) y lo canjea en [AuthService]. Ambos puertos son interfaces mockeables.
  */
 class SignInWithGoogleUseCaseTest {
-
     private val authService = mock<AuthService>()
     private val googleSignInLauncher = mock<GoogleSignInLauncher>()
     private val useCase = SignInWithGoogleUseCase(authService, googleSignInLauncher)
 
     @Test
-    fun `given a valid idToken when invoking then exchanges it in the auth service`() = runTest {
-        // Given
-        val user = AuthUser(uid = "1", email = "a@a.com", displayName = "Ada", isGuest = false)
-        everySuspend { googleSignInLauncher.requestIdToken() } returns Result.Success("id-token")
-        everySuspend { authService.signInWithGoogle("id-token") } returns Result.Success(user)
+    fun `given a valid idToken when invoking then exchanges it in the auth service`() =
+        runTest {
+            // Given
+            val user = AuthUser(uid = "1", email = "a@a.com", displayName = "Ada", isGuest = false)
+            everySuspend { googleSignInLauncher.requestIdToken() } returns Result.Success("id-token")
+            everySuspend { authService.signInWithGoogle("id-token") } returns Result.Success(user)
 
-        // When
-        val result = useCase()
+            // When
+            val result = useCase()
 
-        // Then
-        assertEquals(Result.Success(user), result)
-        verifySuspend { authService.signInWithGoogle("id-token") }
-    }
+            // Then
+            assertEquals(Result.Success(user), result)
+            verifySuspend { authService.signInWithGoogle("id-token") }
+        }
 
     @Test
-    fun `given the native flow is cancelled when invoking then propagates the failure`() = runTest {
-        // Given
-        everySuspend { googleSignInLauncher.requestIdToken() } returns
-            Result.Failure(AuthError.GoogleSignInCancelled)
+    fun `given the native flow is cancelled when invoking then propagates the failure`() =
+        runTest {
+            // Given
+            everySuspend { googleSignInLauncher.requestIdToken() } returns
+                Result.Failure(AuthError.GoogleSignInCancelled)
 
-        // When
-        val result = useCase()
+            // When
+            val result = useCase()
 
-        // Then
-        assertEquals(Result.Failure(AuthError.GoogleSignInCancelled), result)
-    }
+            // Then
+            assertEquals(Result.Failure(AuthError.GoogleSignInCancelled), result)
+        }
 }

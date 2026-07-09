@@ -12,23 +12,23 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SignOutUseCaseTest {
-
     private val authService = mock<AuthService>()
     private val sessionRepository = mock<SessionRepository>()
     private val useCase = SignOutUseCase(authService, sessionRepository)
 
     @Test
-    fun `given a session when signing out then clears guest flag and signs out from firebase`() = runTest {
-        // Given
-        everySuspend { sessionRepository.setGuestSession(false) } returns Unit
-        everySuspend { authService.signOut() } returns Result.Success(Unit)
+    fun `given a session when signing out then clears guest flag and signs out from firebase`() =
+        runTest {
+            // Given
+            everySuspend { sessionRepository.setGuestSession(false) } returns Unit
+            everySuspend { authService.signOut() } returns Result.Success(Unit)
 
-        // When
-        val result = useCase()
+            // When
+            val result = useCase()
 
-        // Then
-        assertEquals(Result.Success(Unit), result)
-        verifySuspend { sessionRepository.setGuestSession(false) }
-        verifySuspend { authService.signOut() }
-    }
+            // Then
+            assertEquals(Result.Success(Unit), result)
+            verifySuspend { sessionRepository.setGuestSession(false) }
+            verifySuspend { authService.signOut() }
+        }
 }

@@ -16,12 +16,10 @@ import dev.lovelace.citovision.domain.errors.AuthError
 import dev.lovelace.citovision.presentation.events.LoginUiEvent
 import dev.lovelace.citovision.presentation.navigation.NavigationEvent
 import dev.mokkery.answering.returns
-import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -40,18 +38,18 @@ import kotlin.test.assertTrue
  * con los puertos (interfaces) mockeados. La validación de formato de campos vive en el ViewModel.
  */
 class LoginViewModelTest {
-
     private val authService = mock<AuthService>()
     private val googleSignInLauncher = mock<GoogleSignInLauncher>()
     private val sessionRepository = mock<SessionRepository>()
     private val dispatcher = StandardTestDispatcher()
 
-    private fun buildViewModel() = LoginViewModel(
-        signInWithEmail = SignInWithEmailUseCase(authService),
-        signInWithGoogle = SignInWithGoogleUseCase(authService, googleSignInLauncher),
-        signInAsGuest = SignInAsGuestUseCase(authService, sessionRepository),
-        sendPasswordReset = SendPasswordResetUseCase(authService),
-    )
+    private fun buildViewModel() =
+        LoginViewModel(
+            signInWithEmail = SignInWithEmailUseCase(authService),
+            signInWithGoogle = SignInWithGoogleUseCase(authService, googleSignInLauncher),
+            signInAsGuest = SignInAsGuestUseCase(authService, sessionRepository),
+            sendPasswordReset = SendPasswordResetUseCase(authService),
+        )
 
     @BeforeTest
     fun setUp() {
@@ -66,56 +64,59 @@ class LoginViewModelTest {
     // region Validación de campos (síncrona, antes de llamar al backend)
 
     @Test
-    fun `given a malformed email when submitting then shows the email format error`() = runTest(dispatcher) {
-        // Given
-        val viewModel = buildViewModel()
-        viewModel.onEvent(LoginUiEvent.EmailChanged("not-an-email"))
-        viewModel.onEvent(LoginUiEvent.PasswordChanged("secret123"))
+    fun `given a malformed email when submitting then shows the email format error`() =
+        runTest(dispatcher) {
+            // Given
+            val viewModel = buildViewModel()
+            viewModel.onEvent(LoginUiEvent.EmailChanged("not-an-email"))
+            viewModel.onEvent(LoginUiEvent.PasswordChanged("secret123"))
 
-        // When
-        viewModel.onEvent(LoginUiEvent.Submit)
+            // When
+            viewModel.onEvent(LoginUiEvent.Submit)
 
-        // Then
-        assertEquals(Res.string.login_error_email_format, viewModel.uiState.value.errorMessage)
-        assertFalse(viewModel.uiState.value.isLoading)
-    }
+            // Then
+            assertEquals(Res.string.login_error_email_format, viewModel.uiState.value.errorMessage)
+            assertFalse(viewModel.uiState.value.isLoading)
+        }
 
     @Test
-    fun `given a too-short password when submitting then shows the password length error`() = runTest(dispatcher) {
-        // Given
-        val viewModel = buildViewModel()
-        viewModel.onEvent(LoginUiEvent.EmailChanged("ada@lovelace.dev"))
-        viewModel.onEvent(LoginUiEvent.PasswordChanged("123"))
+    fun `given a too-short password when submitting then shows the password length error`() =
+        runTest(dispatcher) {
+            // Given
+            val viewModel = buildViewModel()
+            viewModel.onEvent(LoginUiEvent.EmailChanged("ada@lovelace.dev"))
+            viewModel.onEvent(LoginUiEvent.PasswordChanged("123"))
 
-        // When
-        viewModel.onEvent(LoginUiEvent.Submit)
+            // When
+            viewModel.onEvent(LoginUiEvent.Submit)
 
-        // Then
-        assertEquals(Res.string.login_error_password_length, viewModel.uiState.value.errorMessage)
-        assertFalse(viewModel.uiState.value.isLoading)
-    }
+            // Then
+            assertEquals(Res.string.login_error_password_length, viewModel.uiState.value.errorMessage)
+            assertFalse(viewModel.uiState.value.isLoading)
+        }
 
     // endregion
 
     // region Login con email
 
     @Test
-    fun `given valid credentials when submitting succeeds then navigates to Main`() = runTest(dispatcher) {
-        // Given
-        val user = AuthUser(uid = "1", email = "ada@lovelace.dev", displayName = "Ada", isGuest = false)
-        everySuspend { authService.signInWithEmail("ada@lovelace.dev", "secret123") } returns
-            Result.Success(user)
-        val viewModel = buildViewModel()
-        viewModel.onEvent(LoginUiEvent.EmailChanged("ada@lovelace.dev"))
-        viewModel.onEvent(LoginUiEvent.PasswordChanged("secret123"))
+    fun `given valid credentials when submitting succeeds then navigates to Main`() =
+        runTest(dispatcher) {
+            // Given
+            val user = AuthUser(uid = "1", email = "ada@lovelace.dev", displayName = "Ada", isGuest = false)
+            everySuspend { authService.signInWithEmail("ada@lovelace.dev", "secret123") } returns
+                Result.Success(user)
+            val viewModel = buildViewModel()
+            viewModel.onEvent(LoginUiEvent.EmailChanged("ada@lovelace.dev"))
+            viewModel.onEvent(LoginUiEvent.PasswordChanged("secret123"))
 
-        // When
-        viewModel.onEvent(LoginUiEvent.Submit)
+            // When
+            viewModel.onEvent(LoginUiEvent.Submit)
 
-        // Then
-        assertEquals(NavigationEvent.ToMain, viewModel.navigationEvents.first())
-        assertFalse(viewModel.uiState.value.isLoading)
-    }
+            // Then
+            assertEquals(NavigationEvent.ToMain, viewModel.navigationEvents.first())
+            assertFalse(viewModel.uiState.value.isLoading)
+        }
 
     @Test
     fun `given invalid credentials when submitting fails then shows an error and stops loading`() =
@@ -158,19 +159,20 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun `given a successful Google flow when signing in then navigates to Main`() = runTest(dispatcher) {
-        // Given
-        val user = AuthUser(uid = "1", email = "ada@lovelace.dev", displayName = "Ada", isGuest = false)
-        everySuspend { googleSignInLauncher.requestIdToken() } returns Result.Success("id-token")
-        everySuspend { authService.signInWithGoogle("id-token") } returns Result.Success(user)
-        val viewModel = buildViewModel()
+    fun `given a successful Google flow when signing in then navigates to Main`() =
+        runTest(dispatcher) {
+            // Given
+            val user = AuthUser(uid = "1", email = "ada@lovelace.dev", displayName = "Ada", isGuest = false)
+            everySuspend { googleSignInLauncher.requestIdToken() } returns Result.Success("id-token")
+            everySuspend { authService.signInWithGoogle("id-token") } returns Result.Success(user)
+            val viewModel = buildViewModel()
 
-        // When
-        viewModel.onEvent(LoginUiEvent.GoogleSignIn)
+            // When
+            viewModel.onEvent(LoginUiEvent.GoogleSignIn)
 
-        // Then
-        assertEquals(NavigationEvent.ToMain, viewModel.navigationEvents.first())
-    }
+            // Then
+            assertEquals(NavigationEvent.ToMain, viewModel.navigationEvents.first())
+        }
 
     // endregion
 

@@ -9,6 +9,5 @@ import dev.lovelace.citovision.domain.errors.AuthError
  * Devuelve [AuthError.NotSupportedOnPlatform], coherente con SPEC-0001 (CA-6).
  */
 class StubGoogleSignInLauncher : GoogleSignInLauncher {
-    override suspend fun requestIdToken(): Result<String, AuthError> =
-        Result.Failure(AuthError.NotSupportedOnPlatform)
+    override suspend fun requestIdToken(): Result<String, AuthError> = Result.Failure(AuthError.NotSupportedOnPlatform)
 }

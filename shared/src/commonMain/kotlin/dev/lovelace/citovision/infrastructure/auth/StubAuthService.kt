@@ -15,12 +15,13 @@ import kotlinx.coroutines.flow.update
  * el acceso como invitado funciona de forma local (SPEC-0001, RN-3). Fase 2: Desktop real.
  */
 class StubAuthService : AuthService {
-
     private val _currentUser = MutableStateFlow<AuthUser?>(null)
     override val currentUser: Flow<AuthUser?> = _currentUser.asStateFlow()
 
-    override suspend fun signInWithEmail(email: String, password: String): Result<AuthUser, AuthError> =
-        Result.Failure(AuthError.NotSupportedOnPlatform)
+    override suspend fun signInWithEmail(
+        email: String,
+        password: String,
+    ): Result<AuthUser, AuthError> = Result.Failure(AuthError.NotSupportedOnPlatform)
 
     override suspend fun signInWithGoogle(idToken: String): Result<AuthUser, AuthError> =
         Result.Failure(AuthError.NotSupportedOnPlatform)

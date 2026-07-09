@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.map
 class SessionRepositoryImpl(
     private val dataStore: DataStore<Preferences>,
 ) : SessionRepository {
-
-    override fun isGuestSession(): Flow<Boolean> = dataStore.data
-        .catch { emit(emptyPreferences()) }
-        .map { preferences -> preferences[AppPreferenceKeys.GUEST_SESSION] ?: false }
+    override fun isGuestSession(): Flow<Boolean> =
+        dataStore.data
+            .catch { emit(emptyPreferences()) }
+            .map { preferences -> preferences[AppPreferenceKeys.GUEST_SESSION] ?: false }
 
     override suspend fun setGuestSession(active: Boolean) {
         dataStore.edit { preferences -> preferences[AppPreferenceKeys.GUEST_SESSION] = active }

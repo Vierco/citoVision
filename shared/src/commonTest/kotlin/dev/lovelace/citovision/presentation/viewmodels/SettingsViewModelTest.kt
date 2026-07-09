@@ -29,7 +29,6 @@ import kotlin.test.assertEquals
  * con los puertos (interfaces) mockeados.
  */
 class SettingsViewModelTest {
-
     private val authService = mock<AuthService>()
     private val sessionRepository = mock<SessionRepository>()
     private val signOut = SignOutUseCase(authService, sessionRepository)
@@ -54,30 +53,32 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `given sign-out event when handled then signs out and navigates to Login`() = runTest(dispatcher) {
-        // Given
-        everySuspend { sessionRepository.setGuestSession(false) } returns Unit
-        everySuspend { authService.signOut() } returns Result.Success(Unit)
-        val viewModel = buildViewModel()
+    fun `given sign-out event when handled then signs out and navigates to Login`() =
+        runTest(dispatcher) {
+            // Given
+            everySuspend { sessionRepository.setGuestSession(false) } returns Unit
+            everySuspend { authService.signOut() } returns Result.Success(Unit)
+            val viewModel = buildViewModel()
 
-        // When
-        viewModel.onEvent(SettingsUiEvent.SignOut)
+            // When
+            viewModel.onEvent(SettingsUiEvent.SignOut)
 
-        // Then
-        assertEquals(NavigationEvent.ToLogin, viewModel.navigationEvents.first())
-        verifySuspend { sessionRepository.setGuestSession(false) }
-        verifySuspend { authService.signOut() }
-    }
+            // Then
+            assertEquals(NavigationEvent.ToLogin, viewModel.navigationEvents.first())
+            verifySuspend { sessionRepository.setGuestSession(false) }
+            verifySuspend { authService.signOut() }
+        }
 
     @Test
-    fun `given login event when handled then navigates to Login`() = runTest(dispatcher) {
-        // Given
-        val viewModel = buildViewModel()
+    fun `given login event when handled then navigates to Login`() =
+        runTest(dispatcher) {
+            // Given
+            val viewModel = buildViewModel()
 
-        // When
-        viewModel.onEvent(SettingsUiEvent.Login)
+            // When
+            viewModel.onEvent(SettingsUiEvent.Login)
 
-        // Then
-        assertEquals(NavigationEvent.ToLogin, viewModel.navigationEvents.first())
-    }
+            // Then
+            assertEquals(NavigationEvent.ToLogin, viewModel.navigationEvents.first())
+        }
 }

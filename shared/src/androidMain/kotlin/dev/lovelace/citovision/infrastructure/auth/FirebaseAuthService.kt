@@ -20,24 +20,28 @@ import kotlinx.coroutines.flow.map
  * (no crea cuenta Firebase), coherente con SPEC-0001 RN-3.
  */
 class FirebaseAuthService : AuthService {
-
     private val auth = Firebase.auth
 
     override val currentUser: Flow<AuthUser?> =
         auth.authStateChanged.map { it?.toAuthUser() }
 
-    override suspend fun signInWithEmail(email: String, password: String): Result<AuthUser, AuthError> =
+    override suspend fun signInWithEmail(
+        email: String,
+        password: String,
+    ): Result<AuthUser, AuthError> =
         runCatchingAuth {
-            val user = auth.signInWithEmailAndPassword(email, password).user
-                ?: return Result.Failure(AuthError.Unknown("null user"))
+            val user =
+                auth.signInWithEmailAndPassword(email, password).user
+                    ?: return Result.Failure(AuthError.Unknown("null user"))
             Result.Success(user.toAuthUser())
         }
 
     override suspend fun signInWithGoogle(idToken: String): Result<AuthUser, AuthError> =
         runCatchingAuth {
             val credential = GoogleAuthProvider.credential(idToken = idToken, accessToken = null)
-            val user = auth.signInWithCredential(credential).user
-                ?: return Result.Failure(AuthError.Unknown("null user"))
+            val user =
+                auth.signInWithCredential(credential).user
+                    ?: return Result.Failure(AuthError.Unknown("null user"))
             Result.Success(user.toAuthUser())
         }
 

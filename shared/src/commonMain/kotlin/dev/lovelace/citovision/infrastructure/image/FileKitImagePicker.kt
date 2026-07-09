@@ -18,18 +18,19 @@ import kotlinx.coroutines.CancellationException
  * deriva de la extensión del nombre; la validación de formato/tamaño la hace [PickImageUseCase].
  */
 class FileKitImagePicker : ImagePicker {
-
     override suspend fun pickImage(): Result<SelectedImage?, ImageError> {
         return try {
-            val file = FileKit.openFilePicker(type = FileKitType.Image)
-                ?: return Result.Success(null) // cancelado por el usuario
+            val file =
+                FileKit.openFilePicker(type = FileKitType.Image)
+                    ?: return Result.Success(null) // cancelado por el usuario
             val bytes = file.readBytes()
-            val image = SelectedImage(
-                bytes = bytes,
-                fileName = file.name,
-                mimeType = mimeTypeFor(file.name),
-                sizeBytes = bytes.size.toLong(),
-            )
+            val image =
+                SelectedImage(
+                    bytes = bytes,
+                    fileName = file.name,
+                    mimeType = mimeTypeFor(file.name),
+                    sizeBytes = bytes.size.toLong(),
+                )
             Result.Success(image)
         } catch (cancellation: CancellationException) {
             throw cancellation

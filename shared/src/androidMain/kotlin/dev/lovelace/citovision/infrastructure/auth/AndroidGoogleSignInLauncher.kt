@@ -25,19 +25,23 @@ class AndroidGoogleSignInLauncher(
     private val activityProvider: ActivityProvider,
     private val webClientId: String,
 ) : GoogleSignInLauncher {
-
     override suspend fun requestIdToken(): Result<String, AuthError> {
-        val activity = activityProvider.current
-            ?: return Result.Failure(AuthError.GoogleSignInFailed)
+        val activity =
+            activityProvider.current
+                ?: return Result.Failure(AuthError.GoogleSignInFailed)
 
-        val googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(webClientId)
-            .setAutoSelectEnabled(false)
-            .build()
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(googleIdOption)
-            .build()
+        val googleIdOption =
+            GetGoogleIdOption
+                .Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(webClientId)
+                .setAutoSelectEnabled(false)
+                .build()
+        val request =
+            GetCredentialRequest
+                .Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
 
         return try {
             val response = CredentialManager.create(activity).getCredential(activity, request)

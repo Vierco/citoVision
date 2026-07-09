@@ -16,18 +16,19 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-actual val platformModule: Module = module {
-    singleOf(::FirebaseAuthService) bind AuthService::class
-    single { ActivityProvider() }
-    single<GoogleSignInLauncher> {
-        AndroidGoogleSignInLauncher(
-            activityProvider = get(),
-            webClientId = getProperty(GOOGLE_WEB_CLIENT_ID_PROPERTY),
-        )
-    }
-    single<DataStore<Preferences>> {
-        createDataStore {
-            androidContext().filesDir.resolve(PREFERENCES_FILE_NAME).absolutePath
+actual val platformModule: Module =
+    module {
+        singleOf(::FirebaseAuthService) bind AuthService::class
+        single { ActivityProvider() }
+        single<GoogleSignInLauncher> {
+            AndroidGoogleSignInLauncher(
+                activityProvider = get(),
+                webClientId = getProperty(GOOGLE_WEB_CLIENT_ID_PROPERTY),
+            )
+        }
+        single<DataStore<Preferences>> {
+            createDataStore {
+                androidContext().filesDir.resolve(PREFERENCES_FILE_NAME).absolutePath
+            }
         }
     }
-}

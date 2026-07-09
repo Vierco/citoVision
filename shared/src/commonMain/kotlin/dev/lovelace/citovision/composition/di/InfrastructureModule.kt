@@ -13,7 +13,8 @@ import org.koin.dsl.module
  * consume [SessionRepositoryImpl] lo aporta cada [platformModule] (la ruta es específica de plataforma).
  * [FileKitImagePicker] es común porque FileKit expone API multiplataforma (SPEC-0003).
  */
-val infrastructureModule = module {
-    singleOf(::SessionRepositoryImpl) bind SessionRepository::class
-    singleOf(::FileKitImagePicker) bind ImagePicker::class
-}
+val infrastructureModule =
+    module {
+        singleOf(::SessionRepositoryImpl) bind SessionRepository::class
+        singleOf(::FileKitImagePicker) bind ImagePicker::class
+    }

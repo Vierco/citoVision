@@ -74,10 +74,11 @@ private fun AnalysisContent(
     onEvent: (AnalysisUiEvent) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
@@ -105,10 +106,11 @@ private fun AnalysisContent(
         val outlineColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
         if (uiState.selectedImage == null) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(MAX_PREVIEW_HEIGHT)
-                    .dashedBorder(outlineColor),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(MAX_PREVIEW_HEIGHT)
+                        .dashedBorder(outlineColor),
                 contentAlignment = Alignment.Center,
             ) {
                 EmptyUploadContent(isPicking = uiState.isPicking, onEvent = onEvent)
@@ -118,22 +120,24 @@ private fun AnalysisContent(
             // Los bytes en memoria van enteros; el escalado es solo de previsualización.
             val painter = rememberAsyncImagePainter(model = uiState.selectedImage.bytes)
             val intrinsic = painter.intrinsicSize
-            val ratio = if (intrinsic.isSpecified && intrinsic.height > 0f) {
-                intrinsic.width / intrinsic.height
-            } else {
-                null
-            }
+            val ratio =
+                if (intrinsic.isSpecified && intrinsic.height > 0f) {
+                    intrinsic.width / intrinsic.height
+                } else {
+                    null
+                }
             Image(
                 painter = painter,
                 contentDescription = uiState.selectedImage.fileName,
                 contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(if (ratio != null) Modifier.aspectRatio(ratio) else Modifier.height(MAX_PREVIEW_HEIGHT))
-                    .heightIn(max = MAX_PREVIEW_HEIGHT)
-                    .dashedBorder(outlineColor)
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(20.dp)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .then(if (ratio != null) Modifier.aspectRatio(ratio) else Modifier.height(MAX_PREVIEW_HEIGHT))
+                        .heightIn(max = MAX_PREVIEW_HEIGHT)
+                        .dashedBorder(outlineColor)
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(20.dp)),
             )
         }
 
@@ -177,16 +181,18 @@ private fun AnalysisContent(
         // La acción real de escanear se implementa en una spec posterior.
         Button(
             onClick = { /* TODO: acción de escáner (spec futura) */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
             shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary,
-                disabledContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                disabledContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f),
-            ),
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f),
+                ),
             enabled = uiState.canScan,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -216,9 +222,10 @@ private fun EmptyUploadContent(
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f), CircleShape),
+            modifier =
+                Modifier
+                    .size(100.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f), CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -235,10 +242,11 @@ private fun EmptyUploadContent(
             onClick = { onEvent(AnalysisUiEvent.SelectImage) },
             enabled = !isPicking,
             shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
             modifier = Modifier.heightIn(min = 56.dp).padding(horizontal = 24.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -263,13 +271,15 @@ private fun EmptyUploadContent(
 private val MAX_PREVIEW_HEIGHT = 280.dp
 
 /** Borde punteado redondeado reutilizable para la zona de carga/preview (SPEC-0003). */
-private fun Modifier.dashedBorder(color: Color): Modifier = drawBehind {
-    drawRoundRect(
-        color = color,
-        style = Stroke(
-            width = 2.dp.toPx(),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f),
-        ),
-        cornerRadius = CornerRadius(28.dp.toPx()),
-    )
-}
+private fun Modifier.dashedBorder(color: Color): Modifier =
+    drawBehind {
+        drawRoundRect(
+            color = color,
+            style =
+                Stroke(
+                    width = 2.dp.toPx(),
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f),
+                ),
+            cornerRadius = CornerRadius(28.dp.toPx()),
+        )
+    }

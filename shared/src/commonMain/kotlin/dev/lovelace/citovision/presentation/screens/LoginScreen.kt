@@ -77,35 +77,39 @@ fun LoginScreen(
     onEvent: (LoginUiEvent) -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .drawBehind {
-                // Fondo blanco base
-                drawRect(Color.White)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    // Fondo blanco base
+                    drawRect(Color.White)
 
-                // Efecto de resplandor azul horizontal (rectángulo desenfocado)
-                val primaryColor = Color(0xFF2FA7F0)
-                scale(scaleX = 2.2f, scaleY = 1.6f, pivot = center) {
-                    drawCircle(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                primaryColor.copy(alpha = 0.25f),
-                                Color.Transparent,
-                            ),
-                            center = center,
+                    // Efecto de resplandor azul horizontal (rectángulo desenfocado)
+                    val primaryColor = Color(0xFF2FA7F0)
+                    scale(scaleX = 2.2f, scaleY = 1.6f, pivot = center) {
+                        drawCircle(
+                            brush =
+                                Brush.radialGradient(
+                                    colors =
+                                        listOf(
+                                            primaryColor.copy(alpha = 0.25f),
+                                            Color.Transparent,
+                                        ),
+                                    center = center,
+                                    radius = size.width * 0.4f,
+                                ),
                             radius = size.width * 0.4f,
-                        ),
-                        radius = size.width * 0.4f,
-                        center = center,
-                    )
-                }
-            },
+                            center = center,
+                        )
+                    }
+                },
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -130,14 +134,16 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp), // radius large
                 elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White.copy(alpha = 0.85f),
-                ),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.85f),
+                    ),
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .padding(24.dp)
+                            .fillMaxWidth(),
                 ) {
                     // Campo Usuario
                     Text(
@@ -175,25 +181,28 @@ fun LoginScreen(
                         placeholder = { Text(stringResource(Res.string.login_password_placeholder)) },
                         leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                         trailingIcon = {
-                            val image = if (uiState.passwordVisible) {
-                                Icons.Default.Visibility
-                            } else {
-                                Icons.Default.VisibilityOff
-                            }
-                            val description = if (uiState.passwordVisible) {
-                                stringResource(Res.string.login_hide_password)
-                            } else {
-                                stringResource(Res.string.login_show_password)
-                            }
+                            val image =
+                                if (uiState.passwordVisible) {
+                                    Icons.Default.Visibility
+                                } else {
+                                    Icons.Default.VisibilityOff
+                                }
+                            val description =
+                                if (uiState.passwordVisible) {
+                                    stringResource(Res.string.login_hide_password)
+                                } else {
+                                    stringResource(Res.string.login_show_password)
+                                }
                             IconButton(onClick = { onEvent(LoginUiEvent.TogglePasswordVisibility) }) {
                                 Icon(imageVector = image, contentDescription = description)
                             }
                         },
-                        visualTransformation = if (uiState.passwordVisible) {
-                            VisualTransformation.None
-                        } else {
-                            PasswordVisualTransformation()
-                        },
+                        visualTransformation =
+                            if (uiState.passwordVisible) {
+                                VisualTransformation.None
+                            } else {
+                                PasswordVisualTransformation()
+                            },
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         enabled = !uiState.isLoading,
@@ -216,12 +225,14 @@ fun LoginScreen(
                     // Botón Iniciar Sesión (Primary)
                     Button(
                         onClick = { onEvent(LoginUiEvent.Submit) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF2FA7F0), // Primary
-                        ),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF2FA7F0), // Primary
+                            ),
                         shape = RoundedCornerShape(16.dp), // medium
                         enabled = !uiState.isLoading,
                     ) {
@@ -268,9 +279,10 @@ fun LoginScreen(
                     // Login con Google
                     OutlinedButton(
                         onClick = { onEvent(LoginUiEvent.GoogleSignIn) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
                         shape = RoundedCornerShape(16.dp),
                         enabled = !uiState.isLoading,
                     ) {

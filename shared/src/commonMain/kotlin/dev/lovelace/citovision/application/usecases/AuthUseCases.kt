@@ -15,9 +15,13 @@ import kotlinx.coroutines.flow.first
  * Casos de uso de autenticación. El ViewModel invoca estos use cases, nunca el puerto directamente
  * (ver Skill mvvm-compose-kmp). La validación de formato de campos vive en Presentation.
  */
-class SignInWithEmailUseCase(private val authService: AuthService) {
-    suspend operator fun invoke(email: String, password: String): Result<AuthUser, AuthError> =
-        authService.signInWithEmail(email, password)
+class SignInWithEmailUseCase(
+    private val authService: AuthService,
+) {
+    suspend operator fun invoke(
+        email: String,
+        password: String,
+    ): Result<AuthUser, AuthError> = authService.signInWithEmail(email, password)
 }
 
 /**
@@ -100,7 +104,8 @@ class ObserveSessionStatusUseCase(
         }
 }
 
-class SendPasswordResetUseCase(private val authService: AuthService) {
-    suspend operator fun invoke(email: String): Result<Unit, AuthError> =
-        authService.sendPasswordReset(email)
+class SendPasswordResetUseCase(
+    private val authService: AuthService,
+) {
+    suspend operator fun invoke(email: String): Result<Unit, AuthError> = authService.sendPasswordReset(email)
 }

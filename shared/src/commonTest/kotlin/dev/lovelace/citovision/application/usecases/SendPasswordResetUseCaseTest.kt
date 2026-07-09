@@ -16,33 +16,34 @@ import kotlin.test.assertEquals
  * `UserNotFound` como éxito) vive en el LoginViewModel, no aquí: aquí el fallo se propaga tal cual.
  */
 class SendPasswordResetUseCaseTest {
-
     private val authService = mock<AuthService>()
     private val useCase = SendPasswordResetUseCase(authService)
 
     @Test
-    fun `given the reset email is sent when invoking then returns success`() = runTest {
-        // Given
-        everySuspend { authService.sendPasswordReset("a@a.com") } returns Result.Success(Unit)
+    fun `given the reset email is sent when invoking then returns success`() =
+        runTest {
+            // Given
+            everySuspend { authService.sendPasswordReset("a@a.com") } returns Result.Success(Unit)
 
-        // When
-        val result = useCase("a@a.com")
+            // When
+            val result = useCase("a@a.com")
 
-        // Then
-        assertEquals(Result.Success(Unit), result)
-        verifySuspend { authService.sendPasswordReset("a@a.com") }
-    }
+            // Then
+            assertEquals(Result.Success(Unit), result)
+            verifySuspend { authService.sendPasswordReset("a@a.com") }
+        }
 
     @Test
-    fun `given the auth service fails when invoking then propagates the failure`() = runTest {
-        // Given
-        everySuspend { authService.sendPasswordReset("a@a.com") } returns
-            Result.Failure(AuthError.UserNotFound)
+    fun `given the auth service fails when invoking then propagates the failure`() =
+        runTest {
+            // Given
+            everySuspend { authService.sendPasswordReset("a@a.com") } returns
+                Result.Failure(AuthError.UserNotFound)
 
-        // When
-        val result = useCase("a@a.com")
+            // When
+            val result = useCase("a@a.com")
 
-        // Then
-        assertEquals(Result.Failure(AuthError.UserNotFound), result)
-    }
+            // Then
+            assertEquals(Result.Failure(AuthError.UserNotFound), result)
+        }
 }

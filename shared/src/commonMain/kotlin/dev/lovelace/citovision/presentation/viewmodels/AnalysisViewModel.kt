@@ -25,7 +25,6 @@ import org.jetbrains.compose.resources.StringResource
 class AnalysisViewModel(
     private val pickImage: PickImageUseCase,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(AnalysisUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -59,10 +58,11 @@ class AnalysisViewModel(
         }
     }
 
-    private fun ImageError.toMessage(): StringResource = when (this) {
-        ImageError.UnsupportedFormat -> Res.string.analysis_error_unsupported_format
-        ImageError.TooLarge -> Res.string.analysis_error_too_large
-        ImageError.ReadFailed -> Res.string.analysis_error_read_failed
-        is ImageError.Unknown -> Res.string.analysis_error_generic
-    }
+    private fun ImageError.toMessage(): StringResource =
+        when (this) {
+            ImageError.UnsupportedFormat -> Res.string.analysis_error_unsupported_format
+            ImageError.TooLarge -> Res.string.analysis_error_too_large
+            ImageError.ReadFailed -> Res.string.analysis_error_read_failed
+            is ImageError.Unknown -> Res.string.analysis_error_generic
+        }
 }

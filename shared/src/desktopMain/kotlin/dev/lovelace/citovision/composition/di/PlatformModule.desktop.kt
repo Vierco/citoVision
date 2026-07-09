@@ -13,8 +13,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-actual val platformModule: Module = module {
-    singleOf(::StubAuthService) bind AuthService::class
-    singleOf(::StubGoogleSignInLauncher) bind GoogleSignInLauncher::class
-    single<DataStore<Preferences>> { createDataStore { dataStorePath() } }
-}
+actual val platformModule: Module =
+    module {
+        singleOf(::StubAuthService) bind AuthService::class
+        singleOf(::StubGoogleSignInLauncher) bind GoogleSignInLauncher::class
+        single<DataStore<Preferences>> { createDataStore { dataStorePath() } }
+    }

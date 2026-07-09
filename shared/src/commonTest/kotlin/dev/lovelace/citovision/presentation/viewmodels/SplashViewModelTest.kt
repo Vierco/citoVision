@@ -25,7 +25,6 @@ import kotlin.test.assertEquals
  * con los puertos (interfaces) mockeados.
  */
 class SplashViewModelTest {
-
     private val authService = mock<AuthService>()
     private val sessionRepository = mock<SessionRepository>()
     private val hasActiveSession = HasActiveSessionUseCase(authService, sessionRepository)
@@ -42,28 +41,30 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun `given an active account session when starting then navigates to Main`() = runTest(dispatcher) {
-        // Given
-        every { authService.currentUser } returns
-            flowOf(AuthUser(uid = "1", email = "a@a.com", displayName = null, isGuest = false))
+    fun `given an active account session when starting then navigates to Main`() =
+        runTest(dispatcher) {
+            // Given
+            every { authService.currentUser } returns
+                flowOf(AuthUser(uid = "1", email = "a@a.com", displayName = null, isGuest = false))
 
-        // When
-        val viewModel = SplashViewModel(hasActiveSession)
+            // When
+            val viewModel = SplashViewModel(hasActiveSession)
 
-        // Then
-        assertEquals(NavigationEvent.ToMain, viewModel.navigationEvents.first())
-    }
+            // Then
+            assertEquals(NavigationEvent.ToMain, viewModel.navigationEvents.first())
+        }
 
     @Test
-    fun `given no active session when starting then navigates to Login`() = runTest(dispatcher) {
-        // Given
-        every { authService.currentUser } returns flowOf(null)
-        every { sessionRepository.isGuestSession() } returns flowOf(false)
+    fun `given no active session when starting then navigates to Login`() =
+        runTest(dispatcher) {
+            // Given
+            every { authService.currentUser } returns flowOf(null)
+            every { sessionRepository.isGuestSession() } returns flowOf(false)
 
-        // When
-        val viewModel = SplashViewModel(hasActiveSession)
+            // When
+            val viewModel = SplashViewModel(hasActiveSession)
 
-        // Then
-        assertEquals(NavigationEvent.ToLogin, viewModel.navigationEvents.first())
-    }
+            // Then
+            assertEquals(NavigationEvent.ToLogin, viewModel.navigationEvents.first())
+        }
 }

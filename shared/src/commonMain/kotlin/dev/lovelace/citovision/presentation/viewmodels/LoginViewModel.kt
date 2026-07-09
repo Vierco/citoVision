@@ -33,7 +33,6 @@ class LoginViewModel(
     private val signInAsGuest: SignInAsGuestUseCase,
     private val sendPasswordReset: SendPasswordResetUseCase,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -51,12 +50,14 @@ class LoginViewModel(
             LoginUiEvent.GuestAccess -> submitGuest()
             LoginUiEvent.DismissError -> _uiState.update { it.copy(errorMessage = null) }
 
-            LoginUiEvent.OpenForgotPassword -> _uiState.update {
-                it.copy(forgotDialogVisible = true, forgotEmail = it.email, forgotError = null)
-            }
-            LoginUiEvent.DismissForgotPassword -> _uiState.update {
-                it.copy(forgotDialogVisible = false, forgotError = null)
-            }
+            LoginUiEvent.OpenForgotPassword ->
+                _uiState.update {
+                    it.copy(forgotDialogVisible = true, forgotEmail = it.email, forgotError = null)
+                }
+            LoginUiEvent.DismissForgotPassword ->
+                _uiState.update {
+                    it.copy(forgotDialogVisible = false, forgotError = null)
+                }
             is LoginUiEvent.ForgotEmailChanged -> _uiState.update { it.copy(forgotEmail = event.value) }
             LoginUiEvent.SendPasswordReset -> submitPasswordReset()
             LoginUiEvent.DismissResetConfirmation ->
@@ -156,16 +157,17 @@ class LoginViewModel(
         _uiState.update { it.copy(isLoading = false, errorMessage = error.toMessage()) }
     }
 
-    private fun AuthError.toMessage(): StringResource = when (this) {
-        AuthError.InvalidCredentials, AuthError.UserNotFound -> Res.string.login_error_invalid_credentials
-        AuthError.Network -> Res.string.login_error_network
-        AuthError.TooManyRequests -> Res.string.login_error_too_many_requests
-        AuthError.NotSupportedOnPlatform -> Res.string.login_error_desktop_unsupported
-        AuthError.GoogleSignInCancelled,
-        AuthError.GoogleSignInFailed,
-        is AuthError.Unknown,
-        -> Res.string.login_error_generic
-    }
+    private fun AuthError.toMessage(): StringResource =
+        when (this) {
+            AuthError.InvalidCredentials, AuthError.UserNotFound -> Res.string.login_error_invalid_credentials
+            AuthError.Network -> Res.string.login_error_network
+            AuthError.TooManyRequests -> Res.string.login_error_too_many_requests
+            AuthError.NotSupportedOnPlatform -> Res.string.login_error_desktop_unsupported
+            AuthError.GoogleSignInCancelled,
+            AuthError.GoogleSignInFailed,
+            is AuthError.Unknown,
+            -> Res.string.login_error_generic
+        }
 
     private companion object {
         const val MIN_PASSWORD_LENGTH = 6

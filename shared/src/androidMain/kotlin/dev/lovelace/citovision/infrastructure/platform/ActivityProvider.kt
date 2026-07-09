@@ -11,7 +11,6 @@ import java.lang.ref.WeakReference
  * proveedor mediante `ActivityLifecycleCallbacks`. La referencia débil evita fugas de memoria.
  */
 class ActivityProvider {
-
     private var reference: WeakReference<Activity> = WeakReference(null)
 
     val current: Activity?

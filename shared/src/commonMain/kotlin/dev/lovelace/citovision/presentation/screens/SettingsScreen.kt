@@ -38,35 +38,39 @@ fun SettingsScreen(
     onEvent: (SettingsUiEvent) -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .drawBehind {
-                // Fondo blanco base
-                drawRect(Color.White)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    // Fondo blanco base
+                    drawRect(Color.White)
 
-                // Efecto de resplandor azul horizontal (rectángulo desenfocado)
-                val primaryColor = Color(0xFF2FA7F0)
-                scale(scaleX = 2.2f, scaleY = 1.6f, pivot = center) {
-                    drawCircle(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                primaryColor.copy(alpha = 0.25f),
-                                Color.Transparent,
-                            ),
-                            center = center,
+                    // Efecto de resplandor azul horizontal (rectángulo desenfocado)
+                    val primaryColor = Color(0xFF2FA7F0)
+                    scale(scaleX = 2.2f, scaleY = 1.6f, pivot = center) {
+                        drawCircle(
+                            brush =
+                                Brush.radialGradient(
+                                    colors =
+                                        listOf(
+                                            primaryColor.copy(alpha = 0.25f),
+                                            Color.Transparent,
+                                        ),
+                                    center = center,
+                                    radius = size.width * 0.4f,
+                                ),
                             radius = size.width * 0.4f,
-                        ),
-                        radius = size.width * 0.4f,
-                        center = center,
-                    )
-                }
-            },
+                            center = center,
+                        )
+                    }
+                },
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -78,17 +82,19 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(28.dp))
 
             when (uiState.sessionStatus) {
-                SessionStatus.ACCOUNT -> SettingsOption(
-                    text = stringResource(Res.string.settings_logout),
-                    color = MaterialTheme.colorScheme.error,
-                    onClick = { onEvent(SettingsUiEvent.SignOut) },
-                )
+                SessionStatus.ACCOUNT ->
+                    SettingsOption(
+                        text = stringResource(Res.string.settings_logout),
+                        color = MaterialTheme.colorScheme.error,
+                        onClick = { onEvent(SettingsUiEvent.SignOut) },
+                    )
 
-                SessionStatus.GUEST -> SettingsOption(
-                    text = stringResource(Res.string.settings_login),
-                    color = MaterialTheme.colorScheme.primary,
-                    onClick = { onEvent(SettingsUiEvent.Login) },
-                )
+                SessionStatus.GUEST ->
+                    SettingsOption(
+                        text = stringResource(Res.string.settings_login),
+                        color = MaterialTheme.colorScheme.primary,
+                        onClick = { onEvent(SettingsUiEvent.Login) },
+                    )
 
                 SessionStatus.NONE -> Unit
             }
@@ -107,11 +113,12 @@ private fun SettingsOption(
         style = MaterialTheme.typography.bodyLarge,
         color = color,
         textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 48.dp)
-            .clickable(role = Role.Button, onClick = onClick)
-            .wrapContentHeight(Alignment.CenterVertically)
-            .padding(vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp)
+                .clickable(role = Role.Button, onClick = onClick)
+                .wrapContentHeight(Alignment.CenterVertically)
+                .padding(vertical = 12.dp),
     )
 }

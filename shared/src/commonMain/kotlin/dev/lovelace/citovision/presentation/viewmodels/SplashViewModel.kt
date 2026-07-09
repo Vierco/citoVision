@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 class SplashViewModel(
     private val hasActiveSession: HasActiveSessionUseCase,
 ) : ViewModel() {
-
     private val _navigationEvents = Channel<NavigationEvent>(Channel.BUFFERED)
     val navigationEvents = _navigationEvents.receiveAsFlow()
 

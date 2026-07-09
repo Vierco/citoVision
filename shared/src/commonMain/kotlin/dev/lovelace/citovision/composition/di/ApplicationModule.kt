@@ -12,13 +12,14 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 /** Casos de uso de la capa Application (ver Skill dependency-injection-koin). */
-val applicationModule = module {
-    factoryOf(::SignInWithEmailUseCase)
-    factoryOf(::SignInWithGoogleUseCase)
-    factoryOf(::SignInAsGuestUseCase)
-    factoryOf(::SignOutUseCase)
-    factoryOf(::SendPasswordResetUseCase)
-    factoryOf(::HasActiveSessionUseCase)
-    factoryOf(::ObserveSessionStatusUseCase)
-    factoryOf(::PickImageUseCase)
-}
+val applicationModule =
+    module {
+        factoryOf(::SignInWithEmailUseCase)
+        factoryOf(::SignInWithGoogleUseCase)
+        factoryOf(::SignInAsGuestUseCase)
+        factoryOf(::SignOutUseCase)
+        factoryOf(::SendPasswordResetUseCase)
+        factoryOf(::HasActiveSessionUseCase)
+        factoryOf(::ObserveSessionStatusUseCase)
+        factoryOf(::PickImageUseCase)
+    }

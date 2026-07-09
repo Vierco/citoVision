@@ -8,9 +8,10 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 /** ViewModels de la capa Presentation (ver Skill dependency-injection-koin). */
-val presentationModule = module {
-    viewModelOf(::SplashViewModel)
-    viewModelOf(::LoginViewModel)
-    viewModelOf(::SettingsViewModel)
-    viewModelOf(::AnalysisViewModel)
-}
+val presentationModule =
+    module {
+        viewModelOf(::SplashViewModel)
+        viewModelOf(::LoginViewModel)
+        viewModelOf(::SettingsViewModel)
+        viewModelOf(::AnalysisViewModel)
+    }

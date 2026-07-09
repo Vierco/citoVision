@@ -10,8 +10,9 @@ import dev.lovelace.citovision.domain.errors.ImageError
  * Abre el selector de imagen y valida el resultado contra las reglas de negocio (SPEC-0003):
  * formato permitido (RN-1) y tamaño máximo (RN-2). Una cancelación se propaga como `Success(null)`.
  */
-class PickImageUseCase(private val imagePicker: ImagePicker) {
-
+class PickImageUseCase(
+    private val imagePicker: ImagePicker,
+) {
     suspend operator fun invoke(): Result<SelectedImage?, ImageError> =
         imagePicker.pickImage().fold(
             onSuccess = { image ->
