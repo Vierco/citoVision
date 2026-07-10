@@ -5,8 +5,10 @@ import androidx.datastore.preferences.core.Preferences
 import dev.lovelace.citovision.application.ports.AnalysisImageStore
 import dev.lovelace.citovision.application.ports.AuthService
 import dev.lovelace.citovision.application.ports.GoogleSignInLauncher
-import dev.lovelace.citovision.infrastructure.auth.StubAuthService
+import dev.lovelace.citovision.infrastructure.auth.DesktopFirebaseAuthService
+import dev.lovelace.citovision.infrastructure.auth.FIREBASE_WEB_API_KEY_PROPERTY
 import dev.lovelace.citovision.infrastructure.auth.StubGoogleSignInLauncher
+import dev.lovelace.citovision.infrastructure.auth.remote.IdentityToolkitAuthDataSource
 import dev.lovelace.citovision.infrastructure.image.OkioAnalysisImageStore
 import dev.lovelace.citovision.infrastructure.image.analysisImagesPath
 import dev.lovelace.citovision.infrastructure.persistence.database.AppDatabase
@@ -23,7 +25,10 @@ import org.koin.dsl.module
 
 actual val platformModule: Module =
     module {
-        singleOf(::StubAuthService) bind AuthService::class
+        single {
+            IdentityToolkitAuthDataSource(client = get(), apiKey = getProperty(FIREBASE_WEB_API_KEY_PROPERTY, ""))
+        }
+        single<AuthService> { DesktopFirebaseAuthService(remote = get()) }
         singleOf(::StubGoogleSignInLauncher) bind GoogleSignInLauncher::class
         single<HttpClientEngine> { OkHttp.create() }
         single<DataStore<Preferences>> { createDataStore { dataStorePath() } }
