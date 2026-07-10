@@ -39,6 +39,18 @@
     <string name="settings_logout">Sign out</string>
     <string name="logout_dialog_title">Sign out?</string>
     <string name="logout_dialog_desc">Are you sure you want to sign out of your current session?</string>
+    <string name="settings_section_actions">Actions</string>
+    <string name="settings_section_support">Support</string>
+    <string name="settings_section_others">Others</string>
+    <string name="settings_clear_analysis">Clear all local analysis</string>
+    <string name="settings_feedback">Feedback</string>
+    <string name="settings_license">License</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_version_value">1.0.0 (Build 1)</string>
+    <string name="license_dialog_pending">License pending. This text will be very long to test scrolling. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="settings_rn3">RN-3</string>
+    <string name="rn3_dialog_pending">RN-3 pending</string>
+    <string name="common_accept">Accept</string>
 
     <!-- Main Navigation -->
     <string name="nav_analysis">Analysis</string>

@@ -39,6 +39,18 @@
     <string name="settings_logout">Cerrar sesión</string>
     <string name="logout_dialog_title">¿Cerrar sesión?</string>
     <string name="logout_dialog_desc">¿Estás seguro de que quieres cerrar tu sesión actual?</string>
+    <string name="settings_section_actions">Acciones</string>
+    <string name="settings_section_support">Soporte</string>
+    <string name="settings_section_others">Otros</string>
+    <string name="settings_clear_analysis">Borrar todos los análisis locales</string>
+    <string name="settings_feedback">Feedback</string>
+    <string name="settings_license">Licencia</string>
+    <string name="settings_version">Versión</string>
+    <string name="settings_version_value">1.0.0 (Build 1)</string>
+    <string name="license_dialog_pending">Pendiente de licencia. Este texto será muy largo para probar el scroll. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="settings_rn3">RN-3</string>
+    <string name="rn3_dialog_pending">Pendiente de RN-3</string>
+    <string name="common_accept">Aceptar</string>
 
     <!-- Main Navigation -->
     <string name="nav_analysis">Análisis</string>
