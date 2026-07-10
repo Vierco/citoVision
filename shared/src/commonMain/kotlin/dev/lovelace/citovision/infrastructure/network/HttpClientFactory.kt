@@ -38,6 +38,10 @@ fun createHttpClient(engine: HttpClientEngine): HttpClient =
                     // de Identity Toolkit); sin esto kotlinx.serialization los omite y Firebase no
                     // devolvería refreshToken/expiresIn.
                     encodeDefaults = true
+                    // Omite campos nulos al serializar: Firestore rechaza un `Value` con varias claves de
+                    // tipo a la vez, y sus documentos no deben llevar campos con null suelto (SPEC-0005).
+                    // Convive con encodeDefaults: los defaults NO nulos (returnSecureToken) sí se codifican.
+                    explicitNulls = false
                 },
             )
         }
