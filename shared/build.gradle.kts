@@ -62,6 +62,9 @@ kotlin {
             implementation(libs.lifecycle.runtime.compose)
             implementation(libs.navigation.compose)
             implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
             implementation(libs.napier)
             // Persistencia local no sensible (flag de sesión de invitado) — DataStore multiplataforma.
             implementation(libs.androidx.datastore)
@@ -103,6 +106,8 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.swing)
+                // Engine de Ktor para Desktop (auth Firebase REST, Fase 2 / ADR-0002).
+                implementation(libs.ktor.client.okhttp)
             }
         }
 

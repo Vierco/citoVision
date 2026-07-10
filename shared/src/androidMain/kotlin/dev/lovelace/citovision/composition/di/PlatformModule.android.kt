@@ -17,6 +17,8 @@ import dev.lovelace.citovision.infrastructure.persistence.database.createAppData
 import dev.lovelace.citovision.infrastructure.persistence.preferences.PREFERENCES_FILE_NAME
 import dev.lovelace.citovision.infrastructure.persistence.preferences.createDataStore
 import dev.lovelace.citovision.infrastructure.platform.ActivityProvider
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.okhttp.OkHttp
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -26,6 +28,7 @@ import org.koin.dsl.module
 actual val platformModule: Module =
     module {
         singleOf(::FirebaseAuthService) bind AuthService::class
+        single<HttpClientEngine> { OkHttp.create() }
         single { ActivityProvider() }
         single<GoogleSignInLauncher> {
             AndroidGoogleSignInLauncher(
