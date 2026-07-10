@@ -37,6 +37,8 @@
     <!-- Settings -->
     <string name="settings_login">Sign in with an account</string>
     <string name="settings_logout">Sign out</string>
+    <string name="logout_dialog_title">Sign out?</string>
+    <string name="logout_dialog_desc">Are you sure you want to sign out of your current session?</string>
 
     <!-- Main Navigation -->
     <string name="nav_analysis">Analysis</string>
