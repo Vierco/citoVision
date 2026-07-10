@@ -34,6 +34,10 @@ fun createHttpClient(engine: HttpClientEngine): HttpClient =
                 Json {
                     ignoreUnknownKeys = true
                     isLenient = true
+                    // Codifica valores por defecto en el body (p. ej. returnSecureToken=true en el login
+                    // de Identity Toolkit); sin esto kotlinx.serialization los omite y Firebase no
+                    // devolvería refreshToken/expiresIn.
+                    encodeDefaults = true
                 },
             )
         }

@@ -8,6 +8,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.TextContent
 import io.ktor.http.headersOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -107,6 +108,26 @@ class IdentityToolkitAuthDataSourceTest {
             assertTrue(result is Result.Success)
             assertEquals("newId", result.value.idToken)
             assertEquals("uid-1", result.value.userId)
+        }
+
+    @Test
+    fun `given sign in when building the request then sends returnSecureToken`() =
+        runTest {
+            var capturedBody: String? = null
+            val engine =
+                MockEngine { request ->
+                    capturedBody = (request.body as? TextContent)?.text
+                    respond(
+                        content = """{"idToken":"id","refreshToken":"rt","expiresIn":"3600","localId":"uid-1"}""",
+                        status = HttpStatusCode.OK,
+                        headers = jsonHeaders,
+                    )
+                }
+            val ds = IdentityToolkitAuthDataSource(createHttpClient(engine), apiKey = "test-key")
+
+            ds.signInWithPassword("a@b.com", "secret")
+
+            assertTrue(capturedBody?.contains("\"returnSecureToken\":true") == true)
         }
 
     @Test
