@@ -18,6 +18,7 @@ import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -35,6 +36,7 @@ import kotlin.test.assertTrue
  * Mokkery no puede mockear clases final (los use cases), así que se construyen los use cases reales
  * con los puertos (interfaces) mockeados.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
     private val authService = mock<AuthService>()
     private val sessionRepository = mock<SessionRepository>()

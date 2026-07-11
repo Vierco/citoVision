@@ -13,6 +13,7 @@ import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -31,7 +32,7 @@ import kotlin.time.Instant
 /**
  * Mokkery no puede mockear el use case (clase final): se construye el real con los puertos mockeados.
  */
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
 class PatientsViewModelTest {
     private val authService = mock<AuthService>()
     private val remote = mock<RemotePatientAnalyses>()
