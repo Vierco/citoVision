@@ -49,6 +49,15 @@
     <string name="settings_cleared_title">Análisis borrados</string>
     <string name="settings_cleared_message">Se han eliminado todos los análisis locales.</string>
     <string name="settings_feedback">Feedback</string>
+    <string name="feedback_dialog_title">Enviar feedback</string>
+    <string name="feedback_dialog_desc">Cuéntanos tu experiencia o reporta un problema. Revisaremos tu mensaje.</string>
+    <string name="feedback_message_label">Mensaje</string>
+    <string name="feedback_message_placeholder">Escribe aquí tu feedback…</string>
+    <string name="feedback_send">Enviar</string>
+    <string name="feedback_sent_title">¡Gracias!</string>
+    <string name="feedback_sent_message">Hemos recibido tu feedback.</string>
+    <string name="feedback_error_title">No se pudo enviar</string>
+    <string name="feedback_error_message">Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="settings_license">Licencia</string>
     <string name="settings_version">Versión</string>
     <string name="settings_version_value">1.0.0 (Build 1)</string>

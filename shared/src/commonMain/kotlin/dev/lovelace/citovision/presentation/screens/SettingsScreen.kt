@@ -36,11 +36,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,8 +66,19 @@ import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.common_accept
 import citovision.shared.generated.resources.common_cancel
 import citovision.shared.generated.resources.common_close
+import citovision.shared.generated.resources.feedback_dialog_desc
+import citovision.shared.generated.resources.feedback_dialog_title
+import citovision.shared.generated.resources.feedback_error_message
+import citovision.shared.generated.resources.feedback_error_title
+import citovision.shared.generated.resources.feedback_message_label
+import citovision.shared.generated.resources.feedback_message_placeholder
+import citovision.shared.generated.resources.feedback_send
+import citovision.shared.generated.resources.feedback_sent_message
+import citovision.shared.generated.resources.feedback_sent_title
 import citovision.shared.generated.resources.history_delete_confirm
 import citovision.shared.generated.resources.license_dialog_pending
+import citovision.shared.generated.resources.login_email_label
+import citovision.shared.generated.resources.login_email_placeholder
 import citovision.shared.generated.resources.logout_dialog_desc
 import citovision.shared.generated.resources.logout_dialog_title
 import citovision.shared.generated.resources.rn3_dialog_pending
@@ -290,6 +303,70 @@ fun SettingsScreen(
         )
     }
 
+    if (uiState.feedbackDialogVisible) {
+        FeedbackDialog(uiState = uiState, onEvent = onEvent)
+    }
+
+    if (uiState.feedbackSentVisible) {
+        AlertDialog(
+            onDismissRequest = { onEvent(SettingsUiEvent.DismissFeedbackSent) },
+            title = {
+                Text(
+                    text = stringResource(Res.string.feedback_sent_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(Res.string.feedback_sent_message),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { onEvent(SettingsUiEvent.DismissFeedbackSent) },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Text(stringResource(Res.string.common_accept))
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+
+    if (uiState.feedbackErrorVisible) {
+        AlertDialog(
+            onDismissRequest = { onEvent(SettingsUiEvent.DismissFeedbackError) },
+            title = {
+                Text(
+                    text = stringResource(Res.string.feedback_error_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(Res.string.feedback_error_message),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { onEvent(SettingsUiEvent.DismissFeedbackError) },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Text(stringResource(Res.string.common_accept))
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+
     Box(
         modifier =
             Modifier
@@ -432,7 +509,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(Res.string.settings_feedback),
                     icon = Icons.Default.Feedback,
-                    onClick = { /* No logic added as per request */ },
+                    onClick = { onEvent(SettingsUiEvent.OpenFeedback) },
                 )
             }
 
@@ -512,6 +589,101 @@ private fun ProfileAvatar(
                 )
             }
     }
+}
+
+/**
+ * Diálogo de envío de feedback: correo de contacto + mensaje, botón primario "Enviar" y "Cancelar"
+ * (outlined) a la izquierda. Guarda el feedback en la base de datos remota (MVP, sin correo).
+ */
+@Composable
+private fun FeedbackDialog(
+    uiState: SettingsUiState,
+    onEvent: (SettingsUiEvent) -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = { onEvent(SettingsUiEvent.CancelFeedback) },
+        title = {
+            Text(
+                text = stringResource(Res.string.feedback_dialog_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+            )
+        },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                Text(
+                    text = stringResource(Res.string.feedback_dialog_desc),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(Res.string.login_email_label),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = uiState.feedbackEmail,
+                    onValueChange = { onEvent(SettingsUiEvent.FeedbackEmailChanged(it)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text(stringResource(Res.string.login_email_placeholder)) },
+                    singleLine = true,
+                    enabled = !uiState.feedbackSending,
+                    shape = RoundedCornerShape(12.dp),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(Res.string.feedback_message_label),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = uiState.feedbackMessage,
+                    onValueChange = { onEvent(SettingsUiEvent.FeedbackMessageChanged(it)) },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 140.dp),
+                    placeholder = { Text(stringResource(Res.string.feedback_message_placeholder)) },
+                    enabled = !uiState.feedbackSending,
+                    shape = RoundedCornerShape(12.dp),
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onEvent(SettingsUiEvent.SubmitFeedback) },
+                enabled = uiState.isFeedbackValid && !uiState.feedbackSending,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                if (uiState.feedbackSending) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp,
+                    )
+                } else {
+                    Text(stringResource(Res.string.feedback_send))
+                }
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = { onEvent(SettingsUiEvent.CancelFeedback) },
+                enabled = !uiState.feedbackSending,
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Text(stringResource(Res.string.common_cancel))
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(28.dp),
+    )
 }
 
 @Composable

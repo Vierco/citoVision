@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * Mokkery no puede mockear clases final (los use cases), así que se construyen los use cases reales con el
+ * Mokkery no puede mockear clases "final" (los use cases), así que se construyen los use cases reales con el
  * puerto [AnalysisRepository] mockeado.
  */
 @OptIn(ExperimentalCoroutinesApi::class)

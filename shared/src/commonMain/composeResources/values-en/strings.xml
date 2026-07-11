@@ -49,6 +49,15 @@
     <string name="settings_cleared_title">Analyses deleted</string>
     <string name="settings_cleared_message">All local analyses have been deleted.</string>
     <string name="settings_feedback">Feedback</string>
+    <string name="feedback_dialog_title">Send feedback</string>
+    <string name="feedback_dialog_desc">Tell us about your experience or report a problem. We'll review your message.</string>
+    <string name="feedback_message_label">Message</string>
+    <string name="feedback_message_placeholder">Write your feedback here…</string>
+    <string name="feedback_send">Send</string>
+    <string name="feedback_sent_title">Thank you!</string>
+    <string name="feedback_sent_message">We've received your feedback.</string>
+    <string name="feedback_error_title">Couldn't send</string>
+    <string name="feedback_error_message">Check your connection and try again.</string>
     <string name="settings_license">License</string>
     <string name="settings_version">Version</string>
     <string name="settings_version_value">1.0.0 (Build 1)</string>

@@ -13,4 +13,11 @@ data class SettingsUiState(
     val email: String? = null,
     val avatarUrl: String? = null,
     val clearedConfirmationVisible: Boolean = false,
+    val feedbackDialogVisible: Boolean = false,
+    val feedbackEmail: String = "",
+    val feedbackMessage: String = "",
+    val isFeedbackValid: Boolean = false,
+    val feedbackSending: Boolean = false,
+    val feedbackSentVisible: Boolean = false,
+    val feedbackErrorVisible: Boolean = false,
 )
