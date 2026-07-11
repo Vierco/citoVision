@@ -89,8 +89,22 @@ class FirestoreAnalysisMappersTest {
         assertEquals("https://img/a1", fields["imageUrl"]?.stringValue)
         val cellCounts = fields["cellCounts"]?.arrayValue?.values.orEmpty()
         assertEquals(2, cellCounts.size)
-        assertEquals("0", cellCounts[0].mapValue?.fields?.get("position")?.integerValue)
-        assertEquals("Leuco", cellCounts[0].mapValue?.fields?.get("name")?.stringValue)
+        assertEquals(
+            "0",
+            cellCounts[0]
+                .mapValue
+                ?.fields
+                ?.get("position")
+                ?.integerValue,
+        )
+        assertEquals(
+            "Leuco",
+            cellCounts[0]
+                .mapValue
+                ?.fields
+                ?.get("name")
+                ?.stringValue,
+        )
     }
 
     @Test

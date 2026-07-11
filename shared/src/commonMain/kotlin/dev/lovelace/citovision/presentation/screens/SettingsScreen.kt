@@ -65,7 +65,6 @@ import citovision.shared.generated.resources.common_close
 import citovision.shared.generated.resources.license_dialog_pending
 import citovision.shared.generated.resources.logout_dialog_desc
 import citovision.shared.generated.resources.logout_dialog_title
-import citovision.shared.generated.resources.nav_settings
 import citovision.shared.generated.resources.rn3_dialog_pending
 import citovision.shared.generated.resources.settings_clear_analysis
 import citovision.shared.generated.resources.settings_feedback
