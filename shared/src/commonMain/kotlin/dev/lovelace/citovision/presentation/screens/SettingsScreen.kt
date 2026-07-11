@@ -64,11 +64,16 @@ import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.common_accept
 import citovision.shared.generated.resources.common_cancel
 import citovision.shared.generated.resources.common_close
+import citovision.shared.generated.resources.history_delete_confirm
 import citovision.shared.generated.resources.license_dialog_pending
 import citovision.shared.generated.resources.logout_dialog_desc
 import citovision.shared.generated.resources.logout_dialog_title
 import citovision.shared.generated.resources.rn3_dialog_pending
 import citovision.shared.generated.resources.settings_clear_analysis
+import citovision.shared.generated.resources.settings_clear_confirm_message
+import citovision.shared.generated.resources.settings_clear_confirm_title
+import citovision.shared.generated.resources.settings_cleared_message
+import citovision.shared.generated.resources.settings_cleared_title
 import citovision.shared.generated.resources.settings_feedback
 import citovision.shared.generated.resources.settings_guest
 import citovision.shared.generated.resources.settings_license
@@ -94,6 +99,7 @@ fun SettingsScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showLicenseDialog by remember { mutableStateOf(false) }
     var showRN3Dialog by remember { mutableStateOf(false) }
+    var showClearAnalysesDialog by remember { mutableStateOf(false) }
 
     if (showLogoutDialog) {
         AlertDialog(
@@ -213,6 +219,77 @@ fun SettingsScreen(
         )
     }
 
+    if (showClearAnalysesDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearAnalysesDialog = false },
+            title = {
+                Text(
+                    text = stringResource(Res.string.settings_clear_confirm_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(Res.string.settings_clear_confirm_message),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showClearAnalysesDialog = false
+                        onEvent(SettingsUiEvent.ClearLocalAnalyses)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Text(stringResource(Res.string.history_delete_confirm))
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { showClearAnalysesDialog = false },
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Text(stringResource(Res.string.common_cancel))
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+
+    if (uiState.clearedConfirmationVisible) {
+        AlertDialog(
+            onDismissRequest = { onEvent(SettingsUiEvent.DismissClearedConfirmation) },
+            title = {
+                Text(
+                    text = stringResource(Res.string.settings_cleared_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(Res.string.settings_cleared_message),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { onEvent(SettingsUiEvent.DismissClearedConfirmation) },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Text(stringResource(Res.string.common_accept))
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+
     Box(
         modifier =
             Modifier
@@ -321,7 +398,7 @@ fun SettingsScreen(
                 SettingsItem(
                     text = stringResource(Res.string.settings_clear_analysis),
                     icon = Icons.Default.Delete,
-                    onClick = { /* No logic added as per request */ },
+                    onClick = { showClearAnalysesDialog = true },
                     color = MaterialTheme.colorScheme.error,
                 )
 

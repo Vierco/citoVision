@@ -8,6 +8,12 @@ sealed interface SettingsUiEvent {
     /** Cerrar la sesión actual (cuenta o invitado) y volver al login (SPEC-0001 RF-6). */
     data object SignOut : SettingsUiEvent
 
+    /** Borrar todos los análisis locales de la base de datos. */
+    data object ClearLocalAnalyses : SettingsUiEvent
+
+    /** Cerrar el aviso de confirmación tras borrar los análisis locales. */
+    data object DismissClearedConfirmation : SettingsUiEvent
+
     /** Volver a la pantalla anterior. */
     data object NavigateBack : SettingsUiEvent
 }

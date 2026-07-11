@@ -2,6 +2,7 @@ package dev.lovelace.citovision.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.lovelace.citovision.application.usecases.DeleteAllAnalysesUseCase
 import dev.lovelace.citovision.application.usecases.ObserveCurrentUserUseCase
 import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
 import dev.lovelace.citovision.application.usecases.SignOutUseCase
@@ -9,6 +10,7 @@ import dev.lovelace.citovision.presentation.events.SettingsUiEvent
 import dev.lovelace.citovision.presentation.navigation.NavigationEvent
 import dev.lovelace.citovision.presentation.state.SettingsUiState
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -24,15 +26,23 @@ import kotlinx.coroutines.launch
  */
 class SettingsViewModel(
     private val signOut: SignOutUseCase,
+    private val deleteAllAnalyses: DeleteAllAnalysesUseCase,
     observeSessionStatus: ObserveSessionStatusUseCase,
     observeCurrentUser: ObserveCurrentUserUseCase,
 ) : ViewModel() {
+    private val clearedConfirmation = MutableStateFlow(false)
+
     val uiState: StateFlow<SettingsUiState> =
-        combine(observeSessionStatus(), observeCurrentUser()) { status, user ->
+        combine(
+            observeSessionStatus(),
+            observeCurrentUser(),
+            clearedConfirmation,
+        ) { status, user, cleared ->
             SettingsUiState(
                 sessionStatus = status,
                 email = user?.email,
                 avatarUrl = user?.photoUrl,
+                clearedConfirmationVisible = cleared,
             )
         }.stateIn(
             scope = viewModelScope,
@@ -55,6 +65,15 @@ class SettingsViewModel(
                     signOut()
                     _navigationEvents.send(NavigationEvent.ToLogin)
                 }
+
+            SettingsUiEvent.ClearLocalAnalyses ->
+                viewModelScope.launch {
+                    deleteAllAnalyses()
+                    clearedConfirmation.value = true
+                }
+
+            SettingsUiEvent.DismissClearedConfirmation ->
+                clearedConfirmation.value = false
 
             SettingsUiEvent.NavigateBack ->
                 viewModelScope.launch {

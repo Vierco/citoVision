@@ -44,6 +44,10 @@
     <string name="settings_section_support">Soporte</string>
     <string name="settings_section_others">Otros</string>
     <string name="settings_clear_analysis">Borrar todos los análisis locales</string>
+    <string name="settings_clear_confirm_title">¿Borrar todos los análisis locales?</string>
+    <string name="settings_clear_confirm_message">Se eliminarán todos los análisis guardados en este dispositivo. Esta acción no se puede deshacer.</string>
+    <string name="settings_cleared_title">Análisis borrados</string>
+    <string name="settings_cleared_message">Se han eliminado todos los análisis locales.</string>
     <string name="settings_feedback">Feedback</string>
     <string name="settings_license">Licencia</string>
     <string name="settings_version">Versión</string>

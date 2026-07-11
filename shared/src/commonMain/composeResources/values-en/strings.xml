@@ -44,6 +44,10 @@
     <string name="settings_section_support">Support</string>
     <string name="settings_section_others">Others</string>
     <string name="settings_clear_analysis">Clear all local analysis</string>
+    <string name="settings_clear_confirm_title">Delete all local analyses?</string>
+    <string name="settings_clear_confirm_message">All analyses stored on this device will be removed. This action cannot be undone.</string>
+    <string name="settings_cleared_title">Analyses deleted</string>
+    <string name="settings_cleared_message">All local analyses have been deleted.</string>
     <string name="settings_feedback">Feedback</string>
     <string name="settings_license">License</string>
     <string name="settings_version">Version</string>

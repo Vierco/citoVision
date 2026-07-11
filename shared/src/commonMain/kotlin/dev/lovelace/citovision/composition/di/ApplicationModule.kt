@@ -1,5 +1,6 @@
 package dev.lovelace.citovision.composition.di
 
+import dev.lovelace.citovision.application.usecases.DeleteAllAnalysesUseCase
 import dev.lovelace.citovision.application.usecases.DeleteAnalysisUseCase
 import dev.lovelace.citovision.application.usecases.DeleteRemoteAnalysisUseCase
 import dev.lovelace.citovision.application.usecases.HasActiveSessionUseCase
@@ -33,6 +34,7 @@ val applicationModule =
         factoryOf(::PickImageUseCase)
         factoryOf(::ObserveAnalysesUseCase)
         factoryOf(::DeleteAnalysisUseCase)
+        factoryOf(::DeleteAllAnalysesUseCase)
         // ⚠️ Temporal (SPEC-0004 RF-7): inserción de análisis mock desde "Iniciar Escáner".
         factoryOf(::SaveMockAnalysisUseCase)
         factoryOf(::SyncAnalysisUseCase)

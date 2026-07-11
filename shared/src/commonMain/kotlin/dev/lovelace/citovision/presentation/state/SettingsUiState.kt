@@ -12,4 +12,5 @@ data class SettingsUiState(
     val sessionStatus: SessionStatus = SessionStatus.NONE,
     val email: String? = null,
     val avatarUrl: String? = null,
+    val clearedConfirmationVisible: Boolean = false,
 )
