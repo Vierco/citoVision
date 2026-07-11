@@ -117,6 +117,7 @@
     <string name="analysis_sync_retry">Reintentar</string>
     <string name="patients_result_header">Paciente: %1$s</string>
     <string name="patients_new_search">Nueva búsqueda</string>
+    <string name="patients_refresh">Actualizar</string>
     <string name="patients_requires_account_title">Requiere cuenta</string>
     <string name="patients_requires_account_desc">Esta función requiere una cuenta de usuario. Inicia sesión para consultar pacientes.</string>
     <string name="patients_error_title">Error de consulta</string>

@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -23,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -49,6 +51,7 @@ import citovision.shared.generated.resources.patients_id_name_label
 import citovision.shared.generated.resources.patients_new_search
 import citovision.shared.generated.resources.patients_no_results_desc
 import citovision.shared.generated.resources.patients_no_results_title
+import citovision.shared.generated.resources.patients_refresh
 import citovision.shared.generated.resources.patients_requires_account_desc
 import citovision.shared.generated.resources.patients_requires_account_title
 import citovision.shared.generated.resources.patients_result_header
@@ -223,8 +226,19 @@ private fun ResultsView(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
             )
-            OutlinedButton(onClick = { onEvent(PatientsUiEvent.NewSearch) }) {
-                Text(stringResource(Res.string.patients_new_search))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedIconButton(onClick = { onEvent(PatientsUiEvent.NewSearch) }) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(Res.string.patients_new_search),
+                    )
+                }
+                OutlinedIconButton(onClick = { onEvent(PatientsUiEvent.Refresh) }) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(Res.string.patients_refresh),
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
