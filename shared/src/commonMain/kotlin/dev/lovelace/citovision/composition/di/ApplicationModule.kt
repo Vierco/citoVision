@@ -4,6 +4,7 @@ import dev.lovelace.citovision.application.usecases.DeleteAnalysisUseCase
 import dev.lovelace.citovision.application.usecases.DeleteRemoteAnalysisUseCase
 import dev.lovelace.citovision.application.usecases.HasActiveSessionUseCase
 import dev.lovelace.citovision.application.usecases.ObserveAnalysesUseCase
+import dev.lovelace.citovision.application.usecases.ObserveCurrentUserUseCase
 import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
 import dev.lovelace.citovision.application.usecases.PickImageUseCase
 import dev.lovelace.citovision.application.usecases.ProcessPendingSyncUseCase
@@ -28,6 +29,7 @@ val applicationModule =
         factoryOf(::SendPasswordResetUseCase)
         factoryOf(::HasActiveSessionUseCase)
         factoryOf(::ObserveSessionStatusUseCase)
+        factoryOf(::ObserveCurrentUserUseCase)
         factoryOf(::PickImageUseCase)
         factoryOf(::ObserveAnalysesUseCase)
         factoryOf(::DeleteAnalysisUseCase)

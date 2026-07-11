@@ -2,6 +2,7 @@ package dev.lovelace.citovision.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.lovelace.citovision.application.usecases.ObserveCurrentUserUseCase
 import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
 import dev.lovelace.citovision.application.usecases.SignOutUseCase
 import dev.lovelace.citovision.presentation.events.SettingsUiEvent
@@ -10,7 +11,7 @@ import dev.lovelace.citovision.presentation.state.SettingsUiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,15 +25,20 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     private val signOut: SignOutUseCase,
     observeSessionStatus: ObserveSessionStatusUseCase,
+    observeCurrentUser: ObserveCurrentUserUseCase,
 ) : ViewModel() {
     val uiState: StateFlow<SettingsUiState> =
-        observeSessionStatus()
-            .map { SettingsUiState(sessionStatus = it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
-                initialValue = SettingsUiState(),
+        combine(observeSessionStatus(), observeCurrentUser()) { status, user ->
+            SettingsUiState(
+                sessionStatus = status,
+                email = user?.email,
+                avatarUrl = user?.photoUrl,
             )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
+            initialValue = SettingsUiState(),
+        )
 
     private val _navigationEvents = Channel<NavigationEvent>(Channel.BUFFERED)
     val navigationEvents = _navigationEvents.receiveAsFlow()

@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -66,10 +67,10 @@ import citovision.shared.generated.resources.common_close
 import citovision.shared.generated.resources.license_dialog_pending
 import citovision.shared.generated.resources.logout_dialog_desc
 import citovision.shared.generated.resources.logout_dialog_title
-import citovision.shared.generated.resources.nav_settings
 import citovision.shared.generated.resources.rn3_dialog_pending
 import citovision.shared.generated.resources.settings_clear_analysis
 import citovision.shared.generated.resources.settings_feedback
+import citovision.shared.generated.resources.settings_guest
 import citovision.shared.generated.resources.settings_license
 import citovision.shared.generated.resources.settings_login
 import citovision.shared.generated.resources.settings_logout
@@ -79,6 +80,7 @@ import citovision.shared.generated.resources.settings_section_others
 import citovision.shared.generated.resources.settings_section_support
 import citovision.shared.generated.resources.settings_version
 import citovision.shared.generated.resources.settings_version_value
+import coil3.compose.AsyncImage
 import dev.lovelace.citovision.application.usecases.SessionStatus
 import dev.lovelace.citovision.presentation.events.SettingsUiEvent
 import dev.lovelace.citovision.presentation.state.SettingsUiState
@@ -290,27 +292,21 @@ fun SettingsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    // Avatar Placeholder
-                    Box(
-                        modifier =
-                            Modifier
-                                .size(100.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier.size(60.dp),
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                        )
-                    }
+                    ProfileAvatar(
+                        sessionStatus = uiState.sessionStatus,
+                        email = uiState.email,
+                        avatarUrl = uiState.avatarUrl,
+                    )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "Arafat Ovi", // Placeholder del nombre
+                        text =
+                            if (uiState.sessionStatus == SessionStatus.ACCOUNT) {
+                                uiState.email.orEmpty()
+                            } else {
+                                stringResource(Res.string.settings_guest)
+                            },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -384,6 +380,60 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
         }
+    }
+}
+
+/**
+ * Avatar de la cabecera de Ajustes según el tipo de sesión:
+ * - Cuenta con foto (login Google) → muestra su avatar remoto.
+ * - Cuenta sin foto (login correo/contraseña) → círculo terciario con la inicial del correo en blanco.
+ * - Invitado (o sin sesión) → icono genérico.
+ */
+@Composable
+private fun ProfileAvatar(
+    sessionStatus: SessionStatus,
+    email: String?,
+    avatarUrl: String?,
+) {
+    val avatarModifier =
+        Modifier
+            .size(100.dp)
+            .clip(CircleShape)
+    val initial = email?.trim()?.firstOrNull()?.uppercaseChar()
+    when {
+        avatarUrl != null ->
+            AsyncImage(
+                model = avatarUrl,
+                contentDescription = null,
+                modifier = avatarModifier,
+                contentScale = ContentScale.Crop,
+            )
+
+        sessionStatus == SessionStatus.ACCOUNT && initial != null ->
+            Box(
+                modifier = avatarModifier.background(MaterialTheme.colorScheme.tertiary),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = initial.toString(),
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onTertiary,
+                )
+            }
+
+        else ->
+            Box(
+                modifier = avatarModifier.background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    modifier = Modifier.size(60.dp),
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                )
+            }
     }
 }
 
