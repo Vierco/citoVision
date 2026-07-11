@@ -13,4 +13,7 @@ interface RemotePatientAnalyses {
         ownerUid: String,
         patientCode: String,
     ): Result<List<Analysis>, RemoteAnalysisError>
+
+    /** Borra el documento remoto del análisis. No afecta a la BD local (RF-9). */
+    suspend fun deleteAnalysis(analysisId: String): Result<Unit, RemoteAnalysisError>
 }

@@ -13,6 +13,7 @@ data class PatientsUiState(
     val results: List<Analysis> = emptyList(),
     val resultsPatientCode: String? = null,
     val detail: Analysis? = null,
+    val pendingDeletion: Analysis? = null,
     val noResultsVisible: Boolean = false,
     val requiresAccountVisible: Boolean = false,
     val errorVisible: Boolean = false,

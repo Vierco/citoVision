@@ -35,8 +35,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.analysis_card_title
 import citovision.shared.generated.resources.analysis_code_dialog_hint
+import citovision.shared.generated.resources.common_cancel
 import citovision.shared.generated.resources.common_close
+import citovision.shared.generated.resources.history_delete_confirm
+import citovision.shared.generated.resources.history_delete_title
 import citovision.shared.generated.resources.patients_button_search
+import citovision.shared.generated.resources.patients_delete_message
 import citovision.shared.generated.resources.patients_error_desc
 import citovision.shared.generated.resources.patients_error_title
 import citovision.shared.generated.resources.patients_id_name_label
@@ -75,10 +79,9 @@ private fun PatientsContent(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(start = 24.dp, end = 24.dp, top = 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = stringResource(Res.string.patients_search_title),
             style = MaterialTheme.typography.headlineLarge,
@@ -109,6 +112,13 @@ private fun PatientsContent(
             date = analysis.performedAt.formatAnalysisDateTime(),
             cellCounts = analysis.cellCounts,
             onDismissRequest = { onEvent(PatientsUiEvent.DismissDetail) },
+        )
+    }
+
+    uiState.pendingDeletion?.let {
+        DeleteConfirmationDialog(
+            onConfirm = { onEvent(PatientsUiEvent.ConfirmDelete) },
+            onCancel = { onEvent(PatientsUiEvent.CancelDelete) },
         )
     }
 
@@ -223,6 +233,7 @@ private fun ResultsView(
                     description = analysis.summary,
                     imagePath = analysis.imagePath,
                     onClick = { onEvent(PatientsUiEvent.ShowDetail(analysis)) },
+                    onLongClick = { onEvent(PatientsUiEvent.RequestDelete(analysis)) },
                 )
             }
         }
@@ -242,6 +253,28 @@ private fun InfoDialog(
         confirmButton = {
             Button(onClick = onDismiss) {
                 Text(stringResource(Res.string.common_close))
+            }
+        },
+    )
+}
+
+@Composable
+private fun DeleteConfirmationDialog(
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onCancel,
+        title = { Text(stringResource(Res.string.history_delete_title)) },
+        text = { Text(stringResource(Res.string.patients_delete_message)) },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(stringResource(Res.string.history_delete_confirm))
+            }
+        },
+        dismissButton = {
+            OutlinedButton(onClick = onCancel) {
+                Text(stringResource(Res.string.common_cancel))
             }
         },
     )

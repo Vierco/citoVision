@@ -72,10 +72,10 @@
     <string name="patients_search_desc_default">Quickly find clinical records and analysis results.</string>
     <string name="patients_close_file">Close record</string>
     <string name="patients_no_results_title">No active results</string>
-    <string name="patients_no_results_desc">Enter the patient ID or full name in the search bar above to access clinical history.</string>
+    <string name="patients_no_results_desc">Enter the patient code in the search bar to access their analyses.</string>
     <string name="common_back">Back</string>
-    <string name="patients_id_name_label">Patient ID / Name</string>
-    <string name="patients_search_placeholder">E.g.: PAC-2023-8942 or John Doe</string>
+    <string name="patients_id_name_label">Patient code</string>
+    <string name="patients_search_placeholder">E.g.: 2026-001</string>
     <string name="patients_button_search">Search</string>
     <string name="patients_error_empty_title">Empty search</string>
     <string name="patients_error_empty_desc">Please enter a patient ID or name to search.</string>
@@ -107,6 +107,7 @@
     <string name="patients_requires_account_desc">This feature requires a user account. Sign in to look up patients.</string>
     <string name="patients_error_title">Search error</string>
     <string name="patients_error_desc">The search could not be completed. Try again.</string>
+    <string name="patients_delete_message">It will be deleted from the remote database. This does not affect your local history. Continue?</string>
 
     <!-- Components -->
     <string name="card_metadata">Date: %1$s | Patient: %2$s</string>

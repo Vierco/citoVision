@@ -18,6 +18,15 @@ sealed interface PatientsUiEvent {
 
     data object DismissDetail : PatientsUiEvent
 
+    /** Pulsación larga sobre una card: pide confirmación para borrar en remoto (RF-9). */
+    data class RequestDelete(
+        val analysis: Analysis,
+    ) : PatientsUiEvent
+
+    data object ConfirmDelete : PatientsUiEvent
+
+    data object CancelDelete : PatientsUiEvent
+
     data object DismissNoResults : PatientsUiEvent
 
     data object DismissRequiresAccount : PatientsUiEvent

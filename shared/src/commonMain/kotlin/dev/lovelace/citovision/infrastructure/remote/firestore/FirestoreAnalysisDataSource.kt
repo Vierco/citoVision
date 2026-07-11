@@ -10,6 +10,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.request.delete
 import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
@@ -67,6 +68,14 @@ class FirestoreAnalysisDataSource(
                     .map { it.toAnalysis() }
                     .sortedByDescending { it.performedAt }
             Result.Success(analyses)
+        }
+
+    override suspend fun deleteAnalysis(analysisId: String): Result<Unit, RemoteAnalysisError> =
+        runCatchingFirestore {
+            client.delete(documentUrl(analysisId)) {
+                parameter("key", apiKey)
+            }
+            Result.Success(Unit)
         }
 
     private fun documentUrl(id: String): String =

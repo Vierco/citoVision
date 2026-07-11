@@ -73,6 +73,8 @@ kotlin {
             implementation(libs.filekit.core)
             implementation(libs.filekit.dialogs)
             implementation(libs.coil.compose)
+            // Fetcher de red para Coil 3 (imágenes remotas de Storage, SPEC-0005): usa el engine Ktor.
+            implementation(libs.coil.network.ktor3)
             // Persistencia de análisis (SPEC-0004): Room Multiplatform + driver SQLite empaquetado.
             implementation(libs.room.runtime)
             implementation(libs.androidx.sqlite.bundled)

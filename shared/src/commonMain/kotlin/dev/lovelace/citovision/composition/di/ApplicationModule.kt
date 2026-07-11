@@ -1,6 +1,7 @@
 package dev.lovelace.citovision.composition.di
 
 import dev.lovelace.citovision.application.usecases.DeleteAnalysisUseCase
+import dev.lovelace.citovision.application.usecases.DeleteRemoteAnalysisUseCase
 import dev.lovelace.citovision.application.usecases.HasActiveSessionUseCase
 import dev.lovelace.citovision.application.usecases.ObserveAnalysesUseCase
 import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
@@ -35,4 +36,5 @@ val applicationModule =
         factoryOf(::SyncAnalysisUseCase)
         factoryOf(::ProcessPendingSyncUseCase)
         factoryOf(::SearchPatientAnalysesUseCase)
+        factoryOf(::DeleteRemoteAnalysisUseCase)
     }

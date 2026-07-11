@@ -72,10 +72,10 @@
     <string name="patients_search_desc_default">Encuentre rápidamente historiales clínicos y resultados de análisis.</string>
     <string name="patients_close_file">Cerrar ficha</string>
     <string name="patients_no_results_title">Sin resultados activos</string>
-    <string name="patients_no_results_desc">Ingrese el ID de paciente o su nombre completo en el buscador superior para acceder al historial clínico.</string>
+    <string name="patients_no_results_desc">Introduce el código de paciente en el buscador para acceder a sus análisis.</string>
     <string name="common_back">Volver</string>
-    <string name="patients_id_name_label">ID de Paciente / Nombre</string>
-    <string name="patients_search_placeholder">Ej: PAC-2023-8942 o Juan Pérez</string>
+    <string name="patients_id_name_label">Código de paciente</string>
+    <string name="patients_search_placeholder">Ej: 2026-001</string>
     <string name="patients_button_search">Buscar</string>
     <string name="patients_error_empty_title">Búsqueda vacía</string>
     <string name="patients_error_empty_desc">Por favor, introduzca un ID de paciente o nombre para realizar la búsqueda.</string>
@@ -107,6 +107,7 @@
     <string name="patients_requires_account_desc">Esta función requiere una cuenta de usuario. Inicia sesión para consultar pacientes.</string>
     <string name="patients_error_title">Error de consulta</string>
     <string name="patients_error_desc">No se pudo completar la búsqueda. Inténtalo de nuevo.</string>
+    <string name="patients_delete_message">Se eliminará de la base de datos remota. No afecta a tu historial local. ¿Continuar?</string>
 
     <!-- Components -->
     <string name="card_metadata">Fecha: %1$s | Paciente: %2$s</string>

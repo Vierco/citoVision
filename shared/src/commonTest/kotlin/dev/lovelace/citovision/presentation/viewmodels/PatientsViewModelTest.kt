@@ -2,6 +2,7 @@ package dev.lovelace.citovision.presentation.viewmodels
 
 import dev.lovelace.citovision.application.ports.AuthService
 import dev.lovelace.citovision.application.ports.RemotePatientAnalyses
+import dev.lovelace.citovision.application.usecases.DeleteRemoteAnalysisUseCase
 import dev.lovelace.citovision.application.usecases.SearchPatientAnalysesUseCase
 import dev.lovelace.citovision.core.result.Result
 import dev.lovelace.citovision.domain.entities.Analysis
@@ -35,9 +36,10 @@ class PatientsViewModelTest {
     private val authService = mock<AuthService>()
     private val remote = mock<RemotePatientAnalyses>()
     private val search = SearchPatientAnalysesUseCase(authService, remote)
+    private val deleteRemote = DeleteRemoteAnalysisUseCase(remote)
     private val dispatcher = StandardTestDispatcher()
 
-    private fun buildViewModel() = PatientsViewModel(search)
+    private fun buildViewModel() = PatientsViewModel(search, deleteRemote)
 
     private fun analysis() = Analysis("a1", "12-34", Instant.fromEpochMilliseconds(1), "s", null, emptyList())
 
@@ -107,5 +109,23 @@ class PatientsViewModelTest {
             advanceUntilIdle()
 
             assertTrue(viewModel.uiState.value.requiresAccountVisible)
+        }
+
+    @Test
+    fun `given results when confirming delete then removes the card`() =
+        runTest(dispatcher) {
+            every { authService.currentUser } returns flowOf(AuthUser("u1", "a@b.com", null, isGuest = false))
+            everySuspend { remote.queryByPatient("u1", "12-34") } returns Result.Success(listOf(analysis()))
+            everySuspend { remote.deleteAnalysis("a1") } returns Result.Success(Unit)
+            val viewModel = buildViewModel()
+            viewModel.onEvent(PatientsUiEvent.QueryChanged("12-34"))
+            viewModel.onEvent(PatientsUiEvent.Search)
+            advanceUntilIdle()
+
+            viewModel.onEvent(PatientsUiEvent.RequestDelete(analysis()))
+            viewModel.onEvent(PatientsUiEvent.ConfirmDelete)
+            advanceUntilIdle()
+
+            assertTrue(viewModel.uiState.value.results.isEmpty())
         }
 }

@@ -43,7 +43,8 @@ solo puede consultar sus propios pacientes; nunca los de otro usuario.
   **públicas** y solo se usarán **datos ficticios** (ver Seguridad y privacidad). Cerrarlas es tarea
   posterior, previa a la entrega.
 - Sincronización bidireccional o resolución de conflictos local↔remoto. Son bases **independientes**.
-- Borrado remoto desde la app (esta spec no borra en remoto; el borrado del Historial es solo local).
+- ~~Borrado remoto desde la app~~ → **movido a alcance (RF-10)** por decisión posterior del owner; el
+  borrado local del Historial sigue siendo independiente (RF-9).
 - Edición de un análisis ya guardado.
 - Generación real de resumen/conteo por IA (sigue siendo mock temporal, SPEC-0004).
 - Realtime, listeners o caché offline de la base remota.
@@ -84,7 +85,11 @@ solo puede consultar sus propios pacientes; nunca los de otro usuario.
 - **RF-8** Las cards remotas usan **el mismo componente y los mismos datos** que las locales, imagen
   incluida (cargada desde Storage con Coil).
 - **RF-9** **Independencia de bases**: borrar en la local (Historial) **no** borra en remoto; borrar en
-  remoto (fuera de la app en esta fase) **no** borra en local.
+  remoto **no** borra en local.
+- **RF-10** Una **pulsación larga** sobre una card en Pacientes ofrece **borrar el análisis del remoto**,
+  con popup de confirmación. Solo afecta al documento de Firestore (RF-9); el fichero de imagen en Storage
+  puede quedar huérfano (aceptable en esta fase). *(Añadido por decisión posterior del owner; inicialmente
+  era No objetivo.)*
 
 ## Requisitos no funcionales
 
