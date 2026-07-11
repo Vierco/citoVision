@@ -3,6 +3,7 @@ package dev.lovelace.citovision.composition.di
 import dev.lovelace.citovision.application.ports.AnalysisRepository
 import dev.lovelace.citovision.application.ports.ImagePicker
 import dev.lovelace.citovision.application.ports.RemoteAnalysisSync
+import dev.lovelace.citovision.application.ports.RemotePatientAnalyses
 import dev.lovelace.citovision.application.ports.SessionRepository
 import dev.lovelace.citovision.infrastructure.image.FileKitImagePicker
 import dev.lovelace.citovision.infrastructure.network.createHttpClient
@@ -38,6 +39,7 @@ val infrastructureModule =
                 apiKey = getProperty(FIREBASE_WEB_API_KEY_PROPERTY, ""),
             )
         }
+        single<RemotePatientAnalyses> { get<FirestoreAnalysisDataSource>() }
         single { FirebaseStorageDataSource(client = get(), bucket = FIREBASE_STORAGE_BUCKET) }
         single<RemoteAnalysisSync> {
             RemoteAnalysisSyncImpl(

@@ -1,5 +1,6 @@
 package dev.lovelace.citovision.infrastructure.remote.firestore
 
+import dev.lovelace.citovision.application.ports.RemotePatientAnalyses
 import dev.lovelace.citovision.core.result.Result
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.errors.RemoteAnalysisError
@@ -33,7 +34,7 @@ class FirestoreAnalysisDataSource(
     private val client: HttpClient,
     private val projectId: String,
     private val apiKey: String,
-) {
+) : RemotePatientAnalyses {
     suspend fun saveAnalysis(
         ownerUid: String,
         analysis: Analysis,
@@ -48,7 +49,7 @@ class FirestoreAnalysisDataSource(
             Result.Success(Unit)
         }
 
-    suspend fun queryByPatient(
+    override suspend fun queryByPatient(
         ownerUid: String,
         patientCode: String,
     ): Result<List<Analysis>, RemoteAnalysisError> =

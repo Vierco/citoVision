@@ -95,6 +95,18 @@
     <string name="analysis_error_generic">No se pudo seleccionar la imagen.</string>
     <string name="analysis_saved">Análisis guardado en el historial</string>
     <string name="analysis_error_save">No se pudo guardar el análisis.</string>
+    <string name="analysis_code_dialog_title">Código de paciente</string>
+    <string name="analysis_code_dialog_hint">Solo números y guion medio (p. ej. 12-34)</string>
+    <string name="analysis_code_confirm">Guardar</string>
+    <string name="analysis_sync_error_title">Error de sincronización</string>
+    <string name="analysis_sync_error_message">El análisis se guardó en tu historial local, pero no pudo subirse a la nube. ¿Reintentar?</string>
+    <string name="analysis_sync_retry">Reintentar</string>
+    <string name="patients_result_header">Paciente: %1$s</string>
+    <string name="patients_new_search">Nueva búsqueda</string>
+    <string name="patients_requires_account_title">Requiere cuenta</string>
+    <string name="patients_requires_account_desc">Esta función requiere una cuenta de usuario. Inicia sesión para consultar pacientes.</string>
+    <string name="patients_error_title">Error de consulta</string>
+    <string name="patients_error_desc">No se pudo completar la búsqueda. Inténtalo de nuevo.</string>
 
     <!-- Components -->
     <string name="card_metadata">Fecha: %1$s | Paciente: %2$s</string>

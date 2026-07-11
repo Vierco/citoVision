@@ -95,6 +95,18 @@
     <string name="analysis_error_generic">The image could not be selected.</string>
     <string name="analysis_saved">Analysis saved to history</string>
     <string name="analysis_error_save">The analysis could not be saved.</string>
+    <string name="analysis_code_dialog_title">Patient code</string>
+    <string name="analysis_code_dialog_hint">Digits and hyphen only (e.g. 12-34)</string>
+    <string name="analysis_code_confirm">Save</string>
+    <string name="analysis_sync_error_title">Sync error</string>
+    <string name="analysis_sync_error_message">The analysis was saved to your local history, but could not be uploaded to the cloud. Retry?</string>
+    <string name="analysis_sync_retry">Retry</string>
+    <string name="patients_result_header">Patient: %1$s</string>
+    <string name="patients_new_search">New search</string>
+    <string name="patients_requires_account_title">Account required</string>
+    <string name="patients_requires_account_desc">This feature requires a user account. Sign in to look up patients.</string>
+    <string name="patients_error_title">Search error</string>
+    <string name="patients_error_desc">The search could not be completed. Try again.</string>
 
     <!-- Components -->
     <string name="card_metadata">Date: %1$s | Patient: %2$s</string>
