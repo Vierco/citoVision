@@ -5,6 +5,11 @@ import dev.lovelace.citovision.application.ports.ImagePicker
 import dev.lovelace.citovision.application.ports.SessionRepository
 import dev.lovelace.citovision.infrastructure.image.FileKitImagePicker
 import dev.lovelace.citovision.infrastructure.network.createHttpClient
+import dev.lovelace.citovision.infrastructure.remote.FIREBASE_PROJECT_ID
+import dev.lovelace.citovision.infrastructure.remote.FIREBASE_STORAGE_BUCKET
+import dev.lovelace.citovision.infrastructure.remote.FIREBASE_WEB_API_KEY_PROPERTY
+import dev.lovelace.citovision.infrastructure.remote.firestore.FirestoreAnalysisDataSource
+import dev.lovelace.citovision.infrastructure.remote.storage.FirebaseStorageDataSource
 import dev.lovelace.citovision.infrastructure.repositories.AnalysisRepositoryImpl
 import dev.lovelace.citovision.infrastructure.repositories.SessionRepositoryImpl
 import io.ktor.client.HttpClient
@@ -24,4 +29,12 @@ val infrastructureModule =
         singleOf(::FileKitImagePicker) bind ImagePicker::class
         singleOf(::AnalysisRepositoryImpl) bind AnalysisRepository::class
         single<HttpClient> { createHttpClient(get()) }
+        single {
+            FirestoreAnalysisDataSource(
+                client = get(),
+                projectId = FIREBASE_PROJECT_ID,
+                apiKey = getProperty(FIREBASE_WEB_API_KEY_PROPERTY, ""),
+            )
+        }
+        single { FirebaseStorageDataSource(client = get(), bucket = FIREBASE_STORAGE_BUCKET) }
     }

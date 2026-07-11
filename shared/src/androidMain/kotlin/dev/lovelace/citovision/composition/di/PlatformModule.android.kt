@@ -50,6 +50,7 @@ actual val platformModule: Module =
             )
         }
         single { get<AppDatabase>().analysisDao() }
+        single { get<AppDatabase>().outboxDao() }
         single<AnalysisImageStore> {
             OkioAnalysisImageStore(
                 baseDirectory = androidContext().filesDir.resolve(ANALYSIS_IMAGES_DIRECTORY).absolutePath,

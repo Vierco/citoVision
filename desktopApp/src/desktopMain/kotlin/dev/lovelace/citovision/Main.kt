@@ -4,7 +4,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import dev.lovelace.citovision.composition.di.initKoin
 import dev.lovelace.citovision.config.DesktopBuildConfig
-import dev.lovelace.citovision.infrastructure.auth.FIREBASE_WEB_API_KEY_PROPERTY
+import dev.lovelace.citovision.infrastructure.remote.FIREBASE_WEB_API_KEY_PROPERTY
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 

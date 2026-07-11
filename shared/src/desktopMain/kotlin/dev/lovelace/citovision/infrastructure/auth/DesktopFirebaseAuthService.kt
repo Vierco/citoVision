@@ -11,9 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/** Clave de propiedad Koin con la Web API key de Firebase (la provee el entry point Desktop, Bloque D). */
-const val FIREBASE_WEB_API_KEY_PROPERTY = "firebase_web_api_key"
-
 /**
  * Implementación de [AuthService] para Desktop contra Firebase Auth REST (Identity Toolkit), ADR-0002.
  * La sesión de cuenta vive SOLO en memoria: al reiniciar la app se requiere re-login (desviación

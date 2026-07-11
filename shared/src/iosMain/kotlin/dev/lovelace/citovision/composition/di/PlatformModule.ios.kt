@@ -30,5 +30,6 @@ actual val platformModule: Module =
         single<DataStore<Preferences>> { createDataStore { dataStorePath() } }
         single<AppDatabase> { createAppDatabase(appDatabaseBuilder()) }
         single { get<AppDatabase>().analysisDao() }
+        single { get<AppDatabase>().outboxDao() }
         single<AnalysisImageStore> { OkioAnalysisImageStore(baseDirectory = analysisImagesPath()) }
     }
