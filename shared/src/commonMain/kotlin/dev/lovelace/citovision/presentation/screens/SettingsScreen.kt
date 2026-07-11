@@ -51,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
@@ -215,9 +216,16 @@ fun SettingsScreen(
             Modifier
                 .fillMaxSize()
                 .drawBehind {
+                    // Fondo blanco base
                     drawRect(Color.White)
+
+                    // Efecto de resplandor azul y morado vertical (mezclados en el centro)
                     val primaryColor = Color(0xFF2FA7F0)
-                    scale(scaleX = 2.2f, scaleY = 1.6f, pivot = center) {
+                    val tertiaryColor = Color(0xFFA56AE3)
+
+                    scale(scaleX = 2.2f, scaleY = 2.5f, pivot = center) {
+                        // Resplandor Azul (Posicionado más arriba)
+                        val blueCenter = Offset(center.x, center.y - size.height * 0.15f)
                         drawCircle(
                             brush =
                                 Brush.radialGradient(
@@ -226,11 +234,27 @@ fun SettingsScreen(
                                             primaryColor.copy(alpha = 0.25f),
                                             Color.Transparent,
                                         ),
-                                    center = center,
+                                    center = blueCenter,
+                                    radius = size.width * 0.45f,
+                                ),
+                            radius = size.width * 0.45f,
+                            center = blueCenter,
+                        )
+                        // Resplandor Morado (Tertiary) (Posicionado más abajo)
+                        val purpleCenter = Offset(center.x, center.y + size.height * 0.15f)
+                        drawCircle(
+                            brush =
+                                Brush.radialGradient(
+                                    colors =
+                                        listOf(
+                                            tertiaryColor.copy(alpha = 0.20f),
+                                            Color.Transparent,
+                                        ),
+                                    center = purpleCenter,
                                     radius = size.width * 0.4f,
                                 ),
                             radius = size.width * 0.4f,
-                            center = center,
+                            center = purpleCenter,
                         )
                     }
                 },
