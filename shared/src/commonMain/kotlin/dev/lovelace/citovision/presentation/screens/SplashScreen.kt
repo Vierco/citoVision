@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.unit.dp
 import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.celula
+import citovision.shared.generated.resources.opt2a
 import citovision.shared.generated.resources.splash_initializing
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -79,7 +80,7 @@ fun SplashScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                painter = painterResource(Res.drawable.celula),
+                painter = painterResource(Res.drawable.opt2a),
                 contentDescription = null,
                 modifier = Modifier.size(200.dp),
             )
