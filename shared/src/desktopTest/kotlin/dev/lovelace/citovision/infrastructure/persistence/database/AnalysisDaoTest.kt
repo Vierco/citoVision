@@ -124,6 +124,29 @@ class AnalysisDaoTest {
         }
 
     @Test
+    fun `given an analysis with a priority when stored then it is read back`() =
+        runTest {
+            // Given
+            dao.insertAnalysisWithCellCounts(
+                AnalysisEntity(
+                    id = "p",
+                    patient = "PAC-2026-001",
+                    performedAt = 1_000,
+                    summary = "Resumen",
+                    imagePath = null,
+                    priority = "ALTA",
+                ),
+                emptyList(),
+            )
+
+            // When
+            val row = dao.observeAll().first().first()
+
+            // Then
+            assertEquals("ALTA", row.analysis.priority)
+        }
+
+    @Test
     fun `given stored analyses when asking for all image paths then only non-null ones are returned`() =
         runTest {
             // Given

@@ -21,3 +21,17 @@ val MIGRATION_1_2 =
             )
         }
     }
+
+/**
+ * Migración v2 → v3 (SPEC-0006): añade la columna `priority` a `analyses` (prioridad de revisión). No
+ * destructiva (RULES.md §Persistencia): solo añade la columna; los análisis existentes toman `'BAJA'`. El
+ * `DEFAULT` coincide con `@ColumnInfo(defaultValue = "BAJA")` de [AnalysisEntity], que Room valida al abrir.
+ */
+val MIGRATION_2_3 =
+    object : Migration(2, 3) {
+        override fun migrate(connection: SQLiteConnection) {
+            connection.execSQL(
+                "ALTER TABLE `analyses` ADD COLUMN `priority` TEXT NOT NULL DEFAULT 'BAJA'",
+            )
+        }
+    }

@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.persistence.mappers
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisEntity
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisWithCellCounts
 import dev.lovelace.citovision.infrastructure.persistence.database.CellCountEntity
@@ -22,6 +23,7 @@ fun AnalysisWithCellCounts.toDomain(): Analysis =
             cellCounts
                 .sortedBy { it.position }
                 .map { CellCount(name = it.name, value = it.value) },
+        priority = analysis.priority.toPriority(),
     )
 
 fun Analysis.toEntity(): AnalysisEntity =
@@ -31,7 +33,11 @@ fun Analysis.toEntity(): AnalysisEntity =
         performedAt = performedAt.toEpochMilliseconds(),
         summary = summary,
         imagePath = imagePath,
+        priority = priority.name,
     )
+
+/** Convierte el valor almacenado a [Priority]; ante un valor desconocido cae a [Priority.BAJA]. */
+private fun String.toPriority(): Priority = Priority.entries.firstOrNull { it.name == this } ?: Priority.BAJA
 
 fun Analysis.toCellCountEntities(): List<CellCountEntity> =
     cellCounts.mapIndexed { index, cellCount ->

@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.persistence.mappers
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisEntity
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisWithCellCounts
 import dev.lovelace.citovision.infrastructure.persistence.database.CellCountEntity
@@ -93,5 +94,26 @@ class AnalysisMappersTest {
         assertEquals(listOf(0, 1), entities.map { it.position })
         assertEquals(listOf("Leucocitos", "Neutrófilos"), entities.map { it.name })
         assertEquals(listOf("1", "1"), entities.map { it.analysisId })
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun `given a priority when mapping in both directions then it round-trips`() {
+        // Entidad → dominio
+        val row = AnalysisWithCellCounts(analysis = entity.copy(priority = "ALTA"), cellCounts = emptyList())
+        assertEquals(Priority.ALTA, row.toDomain().priority)
+
+        // Dominio → entidad
+        val analysis =
+            Analysis(
+                id = "1",
+                patient = "PAC-2026-001",
+                performedAt = Instant.fromEpochMilliseconds(1_700_000_000_000),
+                summary = "Resumen",
+                imagePath = "/tmp/a.png",
+                cellCounts = emptyList(),
+                priority = Priority.ALTA,
+            )
+        assertEquals("ALTA", analysis.toEntity().priority)
     }
 }
