@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.remote.firestore
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.Priority
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -23,6 +24,7 @@ class FirestoreAnalysisMappersTest {
                         "patientCode" to FirestoreValue(stringValue = "12-34"),
                         "performedAt" to FirestoreValue(integerValue = "1700"),
                         "summary" to FirestoreValue(stringValue = "resumen"),
+                        "priority" to FirestoreValue(stringValue = "ALTA"),
                         "imageUrl" to FirestoreValue(stringValue = "https://img/xyz"),
                         "cellCounts" to
                             FirestoreValue(
@@ -52,6 +54,7 @@ class FirestoreAnalysisMappersTest {
         assertEquals("12-34", analysis.patient)
         assertEquals(Instant.fromEpochMilliseconds(1700), analysis.performedAt)
         assertEquals("https://img/xyz", analysis.imagePath)
+        assertEquals(Priority.ALTA, analysis.priority)
         assertEquals(
             listOf(CellCount("Leuco", "7500"), CellCount("Neutro", "60%")),
             analysis.cellCounts,
@@ -67,6 +70,7 @@ class FirestoreAnalysisMappersTest {
             )
 
         assertNull(document.toAnalysis().imagePath)
+        assertEquals(Priority.BAJA, document.toAnalysis().priority)
     }
 
     @Test
@@ -79,6 +83,7 @@ class FirestoreAnalysisMappersTest {
                 summary = "resumen",
                 imagePath = "/local/a1.png",
                 cellCounts = listOf(CellCount("Leuco", "7500"), CellCount("Neutro", "60%")),
+                priority = Priority.ALTA,
             )
 
         val fields = analysisToFirestoreFields(ownerUid = "u1", analysis = analysis, imageUrl = "https://img/a1")
@@ -86,6 +91,7 @@ class FirestoreAnalysisMappersTest {
         assertEquals("u1", fields["ownerUid"]?.stringValue)
         assertEquals("12-34", fields["patientCode"]?.stringValue)
         assertEquals("2000", fields["performedAt"]?.integerValue)
+        assertEquals("ALTA", fields["priority"]?.stringValue)
         assertEquals("https://img/a1", fields["imageUrl"]?.stringValue)
         val cellCounts = fields["cellCounts"]?.arrayValue?.values.orEmpty()
         assertEquals(2, cellCounts.size)

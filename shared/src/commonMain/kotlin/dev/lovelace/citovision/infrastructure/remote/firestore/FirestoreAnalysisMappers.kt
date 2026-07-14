@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.remote.firestore
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.Priority
 import kotlin.time.Instant
 
 /**
@@ -19,6 +20,7 @@ internal fun analysisToFirestoreFields(
         put("patientCode", FirestoreValue(stringValue = analysis.patient))
         put("performedAt", FirestoreValue(integerValue = analysis.performedAt.toEpochMilliseconds().toString()))
         put("summary", FirestoreValue(stringValue = analysis.summary))
+        put("priority", FirestoreValue(stringValue = analysis.priority.name))
         if (imageUrl != null) {
             put("imageUrl", FirestoreValue(stringValue = imageUrl))
         }
@@ -69,5 +71,6 @@ internal fun FirestoreDocument.toAnalysis(): Analysis {
         summary = fields["summary"]?.stringValue.orEmpty(),
         imagePath = fields["imageUrl"]?.stringValue,
         cellCounts = cellCounts,
+        priority = Priority.fromName(fields["priority"]?.stringValue),
     )
 }

@@ -11,4 +11,10 @@ enum class Priority(
     BAJA("BAJA"),
     MEDIA("MEDIA"),
     ALTA("ALTA"),
+    ;
+
+    companion object {
+        /** Resuelve una [Priority] por su nombre; ante un valor ausente o desconocido cae a [BAJA]. */
+        fun fromName(name: String?): Priority = Priority.entries.firstOrNull { it.name == name } ?: BAJA
+    }
 }

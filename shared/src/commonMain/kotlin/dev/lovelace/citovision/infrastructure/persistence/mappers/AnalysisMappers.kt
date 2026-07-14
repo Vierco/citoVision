@@ -23,7 +23,7 @@ fun AnalysisWithCellCounts.toDomain(): Analysis =
             cellCounts
                 .sortedBy { it.position }
                 .map { CellCount(name = it.name, value = it.value) },
-        priority = analysis.priority.toPriority(),
+        priority = Priority.fromName(analysis.priority),
     )
 
 fun Analysis.toEntity(): AnalysisEntity =
@@ -35,9 +35,6 @@ fun Analysis.toEntity(): AnalysisEntity =
         imagePath = imagePath,
         priority = priority.name,
     )
-
-/** Convierte el valor almacenado a [Priority]; ante un valor desconocido cae a [Priority.BAJA]. */
-private fun String.toPriority(): Priority = Priority.entries.firstOrNull { it.name == this } ?: Priority.BAJA
 
 fun Analysis.toCellCountEntities(): List<CellCountEntity> =
     cellCounts.mapIndexed { index, cellCount ->
