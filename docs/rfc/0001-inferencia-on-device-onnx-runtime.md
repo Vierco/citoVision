@@ -53,10 +53,11 @@ de píxeles son de plataforma:
 | `ImageDecoder` (puerto/expect) | plataforma | Bytes de imagen → buffer de píxeles RGB + dimensiones |
 | `OnnxCellDetector` (actual) | plataforma | Carga el modelo, crea `OrtSession`, envuelve `FloatArray`→tensor, ejecuta, devuelve salida cruda |
 
-> **Ventaja clave de ONNX aquí:** como Android y Desktop usan la **misma API Java**, tanto
-> `OnnxCellDetector` como `ImageDecoder` pueden compartirse entre ambos mediante un **source set
-> intermedio JVM** (p. ej. `jvmShared` para `androidMain` + `desktopMain`). La duplicación real para las
-> dos plataformas de esta fase tiende a **cero**; solo iOS añadirá un `actual` nuevo (cinterop) en el futuro.
+> **Ventaja clave de ONNX aquí:** como Android y Desktop usan la **misma API Java** (`ai.onnxruntime`), el
+> **runtime** (`OnnxRunner`/`OnnxCellDetector`) puede compartirse entre ambos, ya sea con un **source set
+> intermedio JVM** (`jvmShared`) o duplicando un fichero pequeño idéntico. El **`ImageDecoder`, en cambio,
+> NO es compartible**: Android carece de `javax.imageio`, así que usa `BitmapFactory` y Desktop `ImageIO` —
+> es `actual` por plataforma. Solo iOS añadirá sus `actual` (cinterop) en el futuro.
 
 ### Empaquetado del modelo
 
@@ -90,7 +91,8 @@ crea una vez y se reutiliza (single en Koin).
 **Positivas**
 
 - Un solo modelo y un solo pipeline compartido → menos superficie de mantenimiento y validación.
-- Android + Desktop reutilizan runtime e `ImageDecoder` vía source set JVM intermedio.
+- Android + Desktop reutilizan el **runtime ONNX** (misma API Java) vía source set JVM intermedio o
+  duplicación mínima. El `ImageDecoder` sí es por plataforma (Android sin `javax.imageio`).
 - iOS se incorpora sin re-exportar modelo ni re-validar el pipeline (solo cinterop).
 - Coherente con Clean Architecture: la lógica determinista (pre/post) es testeable en `commonTest` sin
   motor real.

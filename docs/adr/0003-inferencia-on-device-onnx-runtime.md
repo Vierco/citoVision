@@ -50,7 +50,8 @@ Usar **ONNX Runtime** como motor de inferencia on-device, con el modelo en forma
 **Positivas**
 
 - Un solo modelo y un solo pipeline compartido → menor superficie de mantenimiento y validación.
-- Android + Desktop reutilizan runtime e `ImageDecoder` vía source set JVM intermedio.
+- Android + Desktop reutilizan el **runtime ONNX** (misma API Java `ai.onnxruntime`) vía source set JVM
+  intermedio o duplicación mínima; el `ImageDecoder` es por plataforma (Android carece de `javax.imageio`).
 - iOS se incorpora sin re-exportar modelo ni re-validar el pipeline (solo cinterop).
 - Lógica determinista (pre/post + priorización) testeable en `commonTest` sin motor real.
 - Inferencia on-device → la imagen no sale del dispositivo (privacidad).
