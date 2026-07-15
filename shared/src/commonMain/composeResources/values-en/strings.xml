@@ -135,4 +135,12 @@
     <string name="dialog_patient_label">Patient</string>
     <string name="dialog_date_label">Analysis Date</string>
     <string name="dialog_cell_count_label">Cell Count (Summary)</string>
+    <string name="dialog_priority_label">Review priority</string>
+
+    <!-- Priority (SPEC-0006) -->
+    <string name="priority_low">Low</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_high">High</string>
+    <string name="priority_badge">Priority: %1$s</string>
+    <string name="analysis_non_diagnostic_notice">citoVision does not provide diagnoses. The priority is only a review suggestion for a professional.</string>
 </resources>

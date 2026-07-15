@@ -135,4 +135,12 @@
     <string name="dialog_patient_label">Paciente</string>
     <string name="dialog_date_label">Fecha de análisis</string>
     <string name="dialog_cell_count_label">Conteo Celular (Resumen)</string>
+    <string name="dialog_priority_label">Prioridad de revisión</string>
+
+    <!-- Priority (SPEC-0006) -->
+    <string name="priority_low">Baja</string>
+    <string name="priority_medium">Media</string>
+    <string name="priority_high">Alta</string>
+    <string name="priority_badge">Prioridad: %1$s</string>
+    <string name="analysis_non_diagnostic_notice">citoVision no realiza diagnósticos. La prioridad es solo una sugerencia de revisión para un profesional.</string>
 </resources>

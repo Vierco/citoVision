@@ -12,42 +12,64 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import citovision.shared.generated.resources.Res
+import citovision.shared.generated.resources.analysis_non_diagnostic_notice
 import citovision.shared.generated.resources.card_metadata
 import citovision.shared.generated.resources.card_view_detail
 import citovision.shared.generated.resources.common_close
 import citovision.shared.generated.resources.dialog_cell_count_label
 import citovision.shared.generated.resources.dialog_date_label
 import citovision.shared.generated.resources.dialog_patient_label
+import citovision.shared.generated.resources.dialog_priority_label
+import citovision.shared.generated.resources.priority_badge
+import citovision.shared.generated.resources.priority_high
+import citovision.shared.generated.resources.priority_low
+import citovision.shared.generated.resources.priority_medium
 import coil3.compose.SubcomposeAsyncImage
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.Priority
+import dev.lovelace.citovision.ui.theme.error
 import dev.lovelace.citovision.ui.theme.getTypography
+import dev.lovelace.citovision.ui.theme.success
+import dev.lovelace.citovision.ui.theme.warning
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -57,6 +79,7 @@ fun AnalysisDetailDialog(
     title: String,
     patient: String,
     date: String,
+    priority: Priority,
     cellCounts: List<CellCount>,
     onDismissRequest: () -> Unit,
 ) {
@@ -99,6 +122,12 @@ fun AnalysisDetailDialog(
                 LabelledValue(stringResource(Res.string.dialog_date_label), date)
 
                 Column {
+                    SectionLabel(stringResource(Res.string.dialog_priority_label))
+                    Spacer(modifier = Modifier.height(4.dp))
+                    PriorityBadge(priority = priority)
+                }
+
+                Column {
                     SectionLabel(stringResource(Res.string.dialog_cell_count_label))
                     cellCounts.forEach { cellCount ->
                         Text(
@@ -108,6 +137,8 @@ fun AnalysisDetailDialog(
                         )
                     }
                 }
+
+                NonDiagnosticNotice()
             }
         },
         shape = RoundedCornerShape(28.dp),
@@ -141,6 +172,69 @@ private fun LabelledValue(
 }
 
 /**
+ * Indicador de la prioridad de revisión (SPEC-0006 RF-3b). No depende solo del color (AGENTS.md): combina
+ * un icono direccional (severidad) con la etiqueta textual, usando los tokens semánticos de `DESIGN.md`.
+ */
+@Composable
+fun PriorityBadge(
+    priority: Priority,
+    modifier: Modifier = Modifier,
+) {
+    val color: Color
+    val icon: ImageVector
+    val levelLabel: String
+    when (priority) {
+        Priority.ALTA -> {
+            color = error
+            icon = Icons.Filled.KeyboardDoubleArrowUp
+            levelLabel = stringResource(Res.string.priority_high)
+        }
+        Priority.MEDIA -> {
+            color = warning
+            icon = Icons.Filled.Remove
+            levelLabel = stringResource(Res.string.priority_medium)
+        }
+        Priority.BAJA -> {
+            color = success
+            icon = Icons.Filled.KeyboardDoubleArrowDown
+            levelLabel = stringResource(Res.string.priority_low)
+        }
+    }
+    Row(
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color.copy(alpha = 0.15f))
+                .padding(horizontal = 10.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(16.dp),
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = stringResource(Res.string.priority_badge, levelLabel),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = color,
+        )
+    }
+}
+
+/** Aviso de no-diagnóstico obligatorio junto al resultado (SPEC-0006 RF-3c, RN-10). */
+@Composable
+private fun NonDiagnosticNotice() {
+    Text(
+        text = stringResource(Res.string.analysis_non_diagnostic_notice),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+}
+
+/**
  * Card de un análisis del historial. [onLongClick] ofrece el borrado (SPEC-0004 RF-5).
  * Si [imagePath] es nulo o el fichero no existe, se muestra un placeholder gris (RN-5).
  */
@@ -152,6 +246,7 @@ fun AnalysisCard(
     patient: String,
     description: String,
     imagePath: String?,
+    priority: Priority,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onLongClick: (() -> Unit)? = null,
@@ -169,12 +264,19 @@ fun AnalysisCard(
             AnalysisCardImage(imagePath = imagePath, contentDescription = title)
 
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    PriorityBadge(priority = priority)
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -295,6 +397,7 @@ fun AnalysisCardPreview() {
             patient = "PAC-2023-8942",
             description = sampleDescription,
             imagePath = null,
+            priority = Priority.ALTA,
             onClick = {},
         )
     }
