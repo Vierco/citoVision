@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -56,6 +57,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import citovision.shared.generated.resources.Res
 import citovision.shared.generated.resources.analysis_non_diagnostic_notice
 import citovision.shared.generated.resources.card_metadata
@@ -75,7 +77,7 @@ import dev.lovelace.citovision.domain.entities.CellCount
 import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.ui.theme.error
 import dev.lovelace.citovision.ui.theme.getTypography
-import dev.lovelace.citovision.ui.theme.success
+import dev.lovelace.citovision.ui.theme.secondaryDark
 import dev.lovelace.citovision.ui.theme.warning
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -93,6 +95,12 @@ fun AnalysisDetailDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
+        // Se libera el ancho por defecto para poder agrandar el diálogo (hay más datos que mostrar).
+        modifier =
+            Modifier
+                .fillMaxWidth(0.94f)
+                .widthIn(max = 640.dp),
+        properties = DialogProperties(usePlatformDefaultWidth = false),
         confirmButton = {
             OutlinedButton(
                 onClick = onDismissRequest,
@@ -122,7 +130,7 @@ fun AnalysisDetailDialog(
             Column(
                 modifier =
                     Modifier
-                        .heightIn(max = 400.dp)
+                        .heightIn(max = 560.dp)
                         .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -144,7 +152,8 @@ fun AnalysisDetailDialog(
             }
         },
         shape = RoundedCornerShape(28.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
+        // Algo de transparencia en el fondo del diálogo (se intuye el contenido atenuado detrás).
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.90f),
     )
 }
 
@@ -197,7 +206,7 @@ fun PriorityBadge(
             levelLabel = stringResource(Res.string.priority_medium)
         }
         Priority.BAJA -> {
-            color = success
+            color = secondaryDark
             icon = Icons.Filled.KeyboardDoubleArrowDown
             levelLabel = stringResource(Res.string.priority_low)
         }
@@ -260,7 +269,7 @@ private fun CellCountRow(cellCount: CellCount) {
         if (expandable && expanded) {
             cellCount.confidences.forEachIndexed { index, confidence ->
                 Text(
-                    text = "$cellLabel ${index + 1} (${(confidence * 100).roundToInt()}%)",
+                    text = "$cellLabel ${index + 1} (conf. ${(confidence * 100).roundToInt()}%)",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(start = 16.dp),
