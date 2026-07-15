@@ -24,29 +24,24 @@ internal fun analysisToFirestoreFields(
         if (imageUrl != null) {
             put("imageUrl", FirestoreValue(stringValue = imageUrl))
         }
-        put(
-            "cellCounts",
-            FirestoreValue(
-                arrayValue =
-                    FirestoreArrayValue(
-                        values =
-                            analysis.cellCounts.mapIndexed { index, cellCount ->
-                                FirestoreValue(
-                                    mapValue =
-                                        FirestoreMapValue(
-                                            fields =
-                                                mapOf(
-                                                    "name" to FirestoreValue(stringValue = cellCount.name),
-                                                    "value" to FirestoreValue(stringValue = cellCount.value),
-                                                    "position" to FirestoreValue(integerValue = index.toString()),
-                                                ),
-                                        ),
-                                )
-                            },
+        val cellCounts =
+            analysis.cellCounts.mapIndexed { index, cellCount -> cellCount.toFirestoreValue(index) }
+        put("cellCounts", FirestoreValue(arrayValue = FirestoreArrayValue(values = cellCounts)))
+    }
+
+private fun CellCount.toFirestoreValue(position: Int): FirestoreValue =
+    FirestoreValue(
+        mapValue =
+            FirestoreMapValue(
+                fields =
+                    mapOf(
+                        "name" to FirestoreValue(stringValue = name),
+                        "count" to FirestoreValue(integerValue = count.toString()),
+                        "confidences" to FirestoreValue(stringValue = confidences.toConfidenceCsv()),
+                        "position" to FirestoreValue(integerValue = position.toString()),
                     ),
             ),
-        )
-    }
+    )
 
 internal fun FirestoreDocument.toAnalysis(): Analysis {
     val id = name?.substringAfterLast('/').orEmpty()
@@ -61,7 +56,9 @@ internal fun FirestoreDocument.toAnalysis(): Analysis {
             .map { entry ->
                 CellCount(
                     name = entry["name"]?.stringValue.orEmpty(),
-                    value = entry["value"]?.stringValue.orEmpty(),
+                    // Fallback a documentos antiguos: recuento como prefijo entero del viejo "value" ("3 (75%)").
+                    count = entry["count"]?.integerValue?.toIntOrNull() ?: legacyCount(entry["value"]?.stringValue),
+                    confidences = entry["confidences"]?.stringValue.toConfidenceList(),
                 )
             }
     return Analysis(
@@ -74,3 +71,12 @@ internal fun FirestoreDocument.toAnalysis(): Analysis {
         priority = Priority.fromName(fields["priority"]?.stringValue),
     )
 }
+
+private const val CONFIDENCE_SEPARATOR = ","
+
+private fun List<Float>.toConfidenceCsv(): String = joinToString(CONFIDENCE_SEPARATOR)
+
+private fun String?.toConfidenceList(): List<Float> =
+    this?.takeIf { it.isNotEmpty() }?.split(CONFIDENCE_SEPARATOR)?.map { it.toFloat() } ?: emptyList()
+
+private fun legacyCount(value: String?): Int = value?.takeWhile { it.isDigit() }?.toIntOrNull() ?: 0

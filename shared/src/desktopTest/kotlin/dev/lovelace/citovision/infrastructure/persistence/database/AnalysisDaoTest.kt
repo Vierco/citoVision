@@ -33,9 +33,15 @@ class AnalysisDaoTest {
 
     private fun cellCounts(
         analysisId: String,
-        count: Int,
-    ) = (0 until count).map { index ->
-        CellCountEntity(analysisId = analysisId, position = index, name = "Célula $index", value = "$index%")
+        size: Int,
+    ) = (0 until size).map { index ->
+        CellCountEntity(
+            analysisId = analysisId,
+            position = index,
+            name = "Célula $index",
+            count = index,
+            confidences = "",
+        )
     }
 
     @BeforeTest

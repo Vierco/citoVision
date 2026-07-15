@@ -34,12 +34,14 @@ class FirestoreAnalysisMappersTest {
                                             listOf(
                                                 mapValueOf(
                                                     "name" to FirestoreValue(stringValue = "Neutro"),
-                                                    "value" to FirestoreValue(stringValue = "60%"),
+                                                    "count" to FirestoreValue(integerValue = "1"),
+                                                    "confidences" to FirestoreValue(stringValue = "0.85"),
                                                     "position" to FirestoreValue(integerValue = "1"),
                                                 ),
                                                 mapValueOf(
                                                     "name" to FirestoreValue(stringValue = "Leuco"),
-                                                    "value" to FirestoreValue(stringValue = "7500"),
+                                                    "count" to FirestoreValue(integerValue = "3"),
+                                                    "confidences" to FirestoreValue(stringValue = "0.9,0.8,0.7"),
                                                     "position" to FirestoreValue(integerValue = "0"),
                                                 ),
                                             ),
@@ -56,8 +58,41 @@ class FirestoreAnalysisMappersTest {
         assertEquals("https://img/xyz", analysis.imagePath)
         assertEquals(Priority.ALTA, analysis.priority)
         assertEquals(
-            listOf(CellCount("Leuco", "7500"), CellCount("Neutro", "60%")),
+            listOf(
+                CellCount("Leuco", count = 3, confidences = listOf(0.9f, 0.8f, 0.7f)),
+                CellCount("Neutro", count = 1, confidences = listOf(0.85f)),
+            ),
             analysis.cellCounts,
+        )
+    }
+
+    @Test
+    fun `given a legacy document with value strings when mapping then count falls back to the value prefix`() {
+        val document =
+            FirestoreDocument(
+                name = "projects/p/databases/(default)/documents/analyses/old",
+                fields =
+                    mapOf(
+                        "cellCounts" to
+                            FirestoreValue(
+                                arrayValue =
+                                    FirestoreArrayValue(
+                                        values =
+                                            listOf(
+                                                mapValueOf(
+                                                    "name" to FirestoreValue(stringValue = "Linfocito"),
+                                                    "value" to FirestoreValue(stringValue = "7 (58%)"),
+                                                    "position" to FirestoreValue(integerValue = "0"),
+                                                ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            )
+
+        assertEquals(
+            listOf(CellCount("Linfocito", count = 7, confidences = emptyList())),
+            document.toAnalysis().cellCounts,
         )
     }
 
@@ -82,7 +117,11 @@ class FirestoreAnalysisMappersTest {
                 performedAt = Instant.fromEpochMilliseconds(2000),
                 summary = "resumen",
                 imagePath = "/local/a1.png",
-                cellCounts = listOf(CellCount("Leuco", "7500"), CellCount("Neutro", "60%")),
+                cellCounts =
+                    listOf(
+                        CellCount("Leuco", count = 3, confidences = listOf(0.9f, 0.8f, 0.7f)),
+                        CellCount("Neutro", count = 1, confidences = emptyList()),
+                    ),
                 priority = Priority.ALTA,
             )
 
@@ -95,22 +134,11 @@ class FirestoreAnalysisMappersTest {
         assertEquals("https://img/a1", fields["imageUrl"]?.stringValue)
         val cellCounts = fields["cellCounts"]?.arrayValue?.values.orEmpty()
         assertEquals(2, cellCounts.size)
-        assertEquals(
-            "0",
-            cellCounts[0]
-                .mapValue
-                ?.fields
-                ?.get("position")
-                ?.integerValue,
-        )
-        assertEquals(
-            "Leuco",
-            cellCounts[0]
-                .mapValue
-                ?.fields
-                ?.get("name")
-                ?.stringValue,
-        )
+        val first = cellCounts[0].mapValue?.fields
+        assertEquals("0", first?.get("position")?.integerValue)
+        assertEquals("Leuco", first?.get("name")?.stringValue)
+        assertEquals("3", first?.get("count")?.integerValue)
+        assertEquals("0.9,0.8,0.7", first?.get("confidences")?.stringValue)
     }
 
     @Test

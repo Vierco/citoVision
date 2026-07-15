@@ -135,6 +135,7 @@
     <string name="dialog_patient_label">Paciente</string>
     <string name="dialog_date_label">Fecha de análisis</string>
     <string name="dialog_cell_count_label">Conteo Celular (Resumen)</string>
+    <string name="dialog_cell_label">Célula</string>
     <string name="dialog_priority_label">Prioridad de revisión</string>
 
     <!-- Priority (SPEC-0006) -->

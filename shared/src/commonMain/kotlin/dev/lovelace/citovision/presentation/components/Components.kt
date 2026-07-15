@@ -8,6 +8,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.Remove
@@ -39,6 +42,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +62,7 @@ import citovision.shared.generated.resources.card_metadata
 import citovision.shared.generated.resources.card_view_detail
 import citovision.shared.generated.resources.common_close
 import citovision.shared.generated.resources.dialog_cell_count_label
+import citovision.shared.generated.resources.dialog_cell_label
 import citovision.shared.generated.resources.dialog_date_label
 import citovision.shared.generated.resources.dialog_patient_label
 import citovision.shared.generated.resources.dialog_priority_label
@@ -72,6 +79,7 @@ import dev.lovelace.citovision.ui.theme.success
 import dev.lovelace.citovision.ui.theme.warning
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.math.roundToInt
 
 /** Diálogo de detalle de un análisis: paciente, fecha/hora y conteo celular completo (SPEC-0004 RF-4). */
 @Composable
@@ -127,15 +135,9 @@ fun AnalysisDetailDialog(
                     PriorityBadge(priority = priority)
                 }
 
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     SectionLabel(stringResource(Res.string.dialog_cell_count_label))
-                    cellCounts.forEach { cellCount ->
-                        Text(
-                            text = "${cellCount.name}: ${cellCount.value}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
+                    cellCounts.forEach { cellCount -> CellCountRow(cellCount = cellCount) }
                 }
 
                 NonDiagnosticNotice()
@@ -221,6 +223,50 @@ fun PriorityBadge(
             fontWeight = FontWeight.Bold,
             color = color,
         )
+    }
+}
+
+/**
+ * Fila del conteo celular (SPEC-0006 RF-2). Para tipos celulares reales muestra el recuento y un desplegable
+ * con la **confianza del modelo por célula**; las clases no celulares (sin confianzas) se muestran en plano.
+ */
+@Composable
+private fun CellCountRow(cellCount: CellCount) {
+    val expandable = cellCount.confidences.isNotEmpty()
+    var expanded by remember { mutableStateOf(false) }
+    val cellLabel = stringResource(Res.string.dialog_cell_label)
+    Column {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .then(if (expandable) Modifier.clickable { expanded = !expanded } else Modifier),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "${cellCount.name}: ${cellCount.count}",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f),
+            )
+            if (expandable) {
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+        if (expandable && expanded) {
+            cellCount.confidences.forEachIndexed { index, confidence ->
+                Text(
+                    text = "$cellLabel ${index + 1} (${(confidence * 100).roundToInt()}%)",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(start = 16.dp),
+                )
+            }
+        }
     }
 }
 

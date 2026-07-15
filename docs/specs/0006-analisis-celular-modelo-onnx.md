@@ -56,9 +56,11 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
 - **RF-1** Al pulsar **"Iniciar Escáner"** con una imagen cargada, se ejecuta el modelo ONNX sobre esa
   imagen y se obtiene una lista de **detecciones** (tipo de célula + confianza).
 - **RF-2** El **conteo celular** (`cellCounts`) se deriva de las detecciones: por cada tipo detectado se
-  genera un `CellCount` cuyo `value` incluye **recuento absoluto y porcentaje**, con el formato
-  **`N (P%)`** (p. ej. `12 (34%)`). El porcentaje se calcula sobre el **total de células** (denominador
-  según RN-6).
+  genera un `CellCount` con su **recuento absoluto** (`count`) y, para los **tipos celulares reales**, la
+  lista de **confianzas por célula** (`confidences`, la certeza que el modelo asigna a cada detección
+  individual). Las clases **no celulares** (Artefacto, Restos celulares) se muestran **solo con su
+  recuento**, sin confianzas. El conteo **no incluye el porcentaje de proporción por tipo** (dato
+  descartado por no aportar sobre el recuento; ver RN-6).
 - **RF-3** El **resumen** (`summary`) se genera a partir del conteo, de forma **descriptiva** (qué células y
   cuántas), **sin lenguaje diagnóstico**, con esta plantilla:
 
@@ -67,7 +69,7 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
 
   donde `{relevantes}` son los tipos con **peso morfológico > 0** presentes (RN-8, criterio por relevancia
   clínica) y `{otros}` el resto de tipos celulares presentes (habituales, +0) más las clases no celulares;
-  cada entrada como `Tipo N (P%)`. Las secciones vacías se omiten con naturalidad.
+  cada entrada como `Tipo N` (recuento, **sin porcentaje**). Las secciones vacías se omiten con naturalidad.
 - **RF-3b** Se calcula una **prioridad de revisión** (`Priority` ∈ {BAJA, MEDIA, ALTA}) según la puntuación
   de relevancia morfológica de RN-8/RN-9. La prioridad se **muestra** en la card y en el detalle con un
   indicador claro (etiqueta + color, tokens de `DESIGN.md`; no depender solo del color, AGENTS.md §15).
@@ -105,10 +107,11 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
   procesa ni infiere identidad.
 - **RN-5** El resultado es **reproducible** para la misma imagen y modelo (inferencia determinista).
 - **RN-6** Dos de las 14 clases **no son células** (`Artefacto` idx 0, `Restos celulares` idx 13). Se
-  **detectan y se muestran con su recuento**, pero quedan **fuera del denominador del porcentaje**: el `%`
-  de cada tipo celular se calcula **solo sobre el total de células reales** (las 12 clases marcadas ✅). Las
-  dos clases no celulares aparecen con su recuento absoluto pero **sin porcentaje** (o con `%` sobre células
-  a título informativo, a concretar en implementación); nunca inflan el denominador.
+  **detectan y se muestran con su recuento**, pero **no cuentan como célula**: el total de células reales
+  (para el "{total} células detectadas" del resumen) se calcula **solo sobre las 12 clases celulares** ✅.
+  El conteo **ya no incluye el porcentaje de proporción por tipo** (se consideró redundante frente al
+  recuento). En su lugar, el **detalle** muestra, para cada tipo celular real, la **confianza por célula**
+  (la certeza del modelo en cada detección); las clases no celulares aparecen **solo con su recuento**.
 - **RN-7** **Cero células detectadas** → se informa y **no se persiste** análisis (RF-6). Un análisis
   guardado tiene siempre al menos una célula.
 - **RN-8** **Puntuación de relevancia morfológica.** Se calcula por **presencia** de cada tipo relevante
@@ -147,13 +150,20 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
 
 **Dominio — cambio aditivo en `Analysis`:** hoy es
 `Analysis(id, patient, performedAt, summary, imagePath, cellCounts)`. Se **añade** `priority: Priority`.
-`CellCount(name, value, position)` no cambia de forma; sí cambia **cómo se rellena** su `value` (RF-2).
+`CellCount` **cambia de forma**: de `(name, value)` a `(name, count: Int, confidences: List<Float>)`
+(RF-2). El porcentaje de proporción por tipo se elimina; se añade la confianza por célula (solo tipos
+celulares reales).
 
 > **Impacto de esquema (aditivo).** El nuevo campo `priority` obliga a: (a) ampliar la entidad de dominio
 > `Analysis` (SPEC-0004); (b) **migración no destructiva** de Room subiendo la versión de la BD local
 > (RULES.md §Persistencia); (c) añadir el campo al documento de Firestore y a sus DTOs/mappers (SPEC-0005).
 > Análisis antiguos sin prioridad se tratan como `null`/BAJA por defecto (a concretar en la migración).
 > *Estas specs se tocan por dependencia; requiere confirmación del owner (AGENTS.md §0.4).*
+>
+> **Cambio de `CellCount` (confianza por célula).** El paso de `value: String` a
+> `count: Int` + `confidences: List<Float>` obliga a otra **migración aditiva no destructiva** de Room
+> (columna `confidences`; el recuento se conserva) y a ampliar el mapper de Firestore. Análisis antiguos sin
+> confianzas se muestran solo con su recuento. *Autorizado por el owner (cambio a SPEC-0006, RF-2/RN-6).*
 
 **Nuevo (dominio/application):**
 
@@ -297,11 +307,14 @@ Fuera de alcance. *(Posible métrica futura: tiempo de inferencia por plataforma
 
 **Resueltas por el owner:**
 
-- ✅ **Formato de `value`**: recuento **y** porcentaje → **`N (P%)`** (p. ej. `12 (34%)`) (RF-2).
+- ✅ **Formato del conteo**: **recuento** (`count`) + **confianza por célula** (`confidences`, solo tipos
+  celulares reales); **sin porcentaje de proporción** (descartado por redundante). El detalle despliega la
+  confianza de cada célula; las no celulares muestran solo el recuento (RF-2, RN-6). *(Revisión posterior a
+  la aprobación inicial, que definía `N (P%)`; cambiada por el owner.)*
 - ✅ **Cero detecciones**: se **informa** y **no se guarda** (RF-6, RN-7).
 - ✅ **Clases**: 14, listadas en Contratos con etiqueta ES (fuente `data.yaml`).
-- ✅ **Clases no celulares** (`Artefacto`, `Restos celulares`): se muestran con su recuento pero **fuera del
-  denominador del porcentaje** (RN-6).
+- ✅ **Clases no celulares** (`Artefacto`, `Restos celulares`): se muestran **solo con su recuento**, sin
+  confianza, y **no cuentan como célula** (RN-6).
 - ✅ **Priorización** (baja/media/alta) por puntuación de relevancia morfológica (RN-8/RN-9) y **encuadre
   no-diagnóstico** con humano en el bucle (Propósito y límite, RN-10, RF-3b/3c).
 - ✅ **Eritroblasto**: peso **+2** (relevancia moderada, RN-8).

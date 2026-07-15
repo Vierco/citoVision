@@ -22,8 +22,13 @@ data class Analysis(
     val priority: Priority = Priority.BAJA,
 )
 
-/** Entrada del conteo celular: el valor lleva la unidad embebida ("7.500/µL", "60%"). Ver RN-6. */
+/**
+ * Entrada del conteo celular (SPEC-0006 RN-6): [count] es el recuento del tipo detectado; [confidences] es
+ * la certeza del modelo por célula (0..1), presente **solo en tipos celulares reales** y vacía en las clases
+ * no celulares (`Artefacto`, `Restos celulares`).
+ */
 data class CellCount(
     val name: String,
-    val value: String,
+    val count: Int,
+    val confidences: List<Float>,
 )

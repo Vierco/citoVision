@@ -22,7 +22,7 @@ fun AnalysisWithCellCounts.toDomain(): Analysis =
         cellCounts =
             cellCounts
                 .sortedBy { it.position }
-                .map { CellCount(name = it.name, value = it.value) },
+                .map { CellCount(name = it.name, count = it.count, confidences = it.confidences.toConfidenceList()) },
         priority = Priority.fromName(analysis.priority),
     )
 
@@ -42,6 +42,15 @@ fun Analysis.toCellCountEntities(): List<CellCountEntity> =
             analysisId = id,
             position = index,
             name = cellCount.name,
-            value = cellCount.value,
+            count = cellCount.count,
+            confidences = cellCount.confidences.toCsv(),
         )
     }
+
+/** Serialización de las confianzas por célula como CSV con punto decimal (independiente de la localización). */
+private const val CONFIDENCE_SEPARATOR = ","
+
+private fun List<Float>.toCsv(): String = joinToString(CONFIDENCE_SEPARATOR)
+
+private fun String.toConfidenceList(): List<Float> =
+    if (isEmpty()) emptyList() else split(CONFIDENCE_SEPARATOR).map { it.toFloat() }

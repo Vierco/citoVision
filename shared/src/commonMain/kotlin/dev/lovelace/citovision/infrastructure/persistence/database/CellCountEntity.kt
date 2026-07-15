@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 
 /**
  * Entrada del conteo celular de un análisis. `position` preserva el orden original (SPEC-0004 RN-6).
- * `ON DELETE CASCADE` garantiza que borrar el análisis borra sus entradas (RN-7).
+ * `ON DELETE CASCADE` garantiza que borrar el análisis borra sus entradas (RN-7). `count` es el recuento del
+ * tipo y `confidences` las confianzas por célula (0..1) serializadas como CSV, vacío en clases no celulares
+ * (SPEC-0006 RF-2/RN-6).
  */
 @Entity(
     tableName = "cell_count_entries",
@@ -26,5 +28,6 @@ data class CellCountEntity(
     val analysisId: String,
     val position: Int,
     val name: String,
-    val value: String,
+    val count: Int,
+    val confidences: String,
 )

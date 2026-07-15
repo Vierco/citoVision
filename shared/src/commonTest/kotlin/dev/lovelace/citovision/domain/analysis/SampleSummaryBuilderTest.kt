@@ -16,8 +16,8 @@ class SampleSummaryBuilderTest {
         val detections = detectionsOf(CellClass.BLASTO to 2, CellClass.MIELOCITO to 3, CellClass.LINFOCITO to 7)
         assertEquals(
             "12 células detectadas. Prioridad de revisión: ALTA. " +
-                "Hallazgos principalmente relevantes: Mielocito 3 (25%), Blasto 2 (17%). " +
-                "Otros hallazgos encontrados en la revisión: Linfocito 7 (58%).",
+                "Hallazgos principalmente relevantes: Mielocito 3, Blasto 2. " +
+                "Otros hallazgos encontrados en la revisión: Linfocito 7.",
             SampleSummaryBuilder.build(detections, Priority.ALTA),
         )
     }
@@ -27,7 +27,7 @@ class SampleSummaryBuilderTest {
         val detections = detectionsOf(CellClass.LINFOCITO to 5)
         assertEquals(
             "5 células detectadas. Prioridad de revisión: BAJA. " +
-                "Otros hallazgos encontrados en la revisión: Linfocito 5 (100%).",
+                "Otros hallazgos encontrados en la revisión: Linfocito 5.",
             SampleSummaryBuilder.build(detections, Priority.BAJA),
         )
     }

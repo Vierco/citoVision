@@ -39,5 +39,5 @@ object SampleSummaryBuilder {
     private fun entry(
         cellClass: CellClass,
         tally: CellTally,
-    ): String = "${cellClass.label} ${tally.formattedValue(cellClass)}"
+    ): String = "${cellClass.label} ${tally.counts.getValue(cellClass)}"
 }
