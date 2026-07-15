@@ -115,6 +115,11 @@
     <string name="analysis_sync_error_title">Error de sincronización</string>
     <string name="analysis_sync_error_message">El análisis se guardó en tu historial local, pero no pudo subirse a la nube. ¿Reintentar?</string>
     <string name="analysis_sync_retry">Reintentar</string>
+    <string name="analysis_analyzing">Analizando muestra…</string>
+    <string name="analysis_no_cells_title">Sin células</string>
+    <string name="analysis_no_cells_message">No se han detectado células en la imagen. Prueba con otra muestra.</string>
+    <string name="analysis_inference_error_title">Error de análisis</string>
+    <string name="analysis_inference_error_message">No se pudo analizar la muestra. ¿Reintentar?</string>
     <string name="patients_result_header">Paciente: %1$s</string>
     <string name="patients_new_search">Nueva búsqueda</string>
     <string name="patients_refresh">Actualizar</string>

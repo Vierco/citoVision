@@ -9,9 +9,8 @@ import kotlin.time.Instant
  * [imagePath] apunta al fichero en almacenamiento privado; si es nulo o el fichero no existe, la UI muestra
  * un placeholder y se registra una advertencia: en el flujo real es una anomalía (RN-5).
  *
- * [priority] es la prioridad de revisión profesional (SPEC-0006); por defecto [Priority.BAJA] para que el
- * andamiaje temporal (SaveMockAnalysisUseCase) y los análisis antiguos migrados sigan siendo válidos hasta
- * que el análisis real la calcule.
+ * [priority] es la prioridad de revisión profesional (SPEC-0006); por defecto [Priority.BAJA] para que los
+ * análisis antiguos migrados sigan siendo válidos hasta que el análisis real la calcule.
  */
 data class Analysis(
     val id: String,

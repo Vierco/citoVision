@@ -16,7 +16,6 @@ import dev.lovelace.citovision.application.usecases.HasActiveSessionUseCase
 import dev.lovelace.citovision.application.usecases.ObserveAnalysesUseCase
 import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
 import dev.lovelace.citovision.application.usecases.PickImageUseCase
-import dev.lovelace.citovision.application.usecases.SaveMockAnalysisUseCase
 import dev.lovelace.citovision.application.usecases.SendPasswordResetUseCase
 import dev.lovelace.citovision.application.usecases.SignInAsGuestUseCase
 import dev.lovelace.citovision.application.usecases.SignInWithEmailUseCase
@@ -74,7 +73,6 @@ class AppModulesGraphTest {
         assertNotNull(koin.get<PickImageUseCase>())
         assertNotNull(koin.get<ObserveAnalysesUseCase>())
         assertNotNull(koin.get<DeleteAnalysisUseCase>())
-        assertNotNull(koin.get<SaveMockAnalysisUseCase>())
         assertNotNull(koin.get<AnalyzeSampleUseCase>())
         assertNotNull(koin.get<SubmitFeedbackUseCase>())
         assertNotNull(koin.get<SessionRepository>())
