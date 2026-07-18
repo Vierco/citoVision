@@ -60,8 +60,16 @@ class PriorityCalculatorTest {
     }
 
     @Test
-    fun `given a low confidence finding over a moderate one when calculating then priority is raised to high`() {
-        val detections = detectionsOf(CellClass.BASTONETE to 1) + reviewDetection(CellClass.BLASTO)
+    fun `given a low confidence finding over an already medium sample when calculating then it stays medium`() {
+        // Mielocito (+3) → MEDIA. Un indicio del 9 % NO puede llevar la muestra a ALTA: esa prioridad
+        // queda reservada a lo confirmado, o dos detecciones "no confirmadas" pesarían como un blasto.
+        val detections = detectionsOf(CellClass.MIELOCITO to 1) + reviewDetection(CellClass.PROMIELOCITO)
+        assertEquals(Priority.MEDIA, PriorityCalculator.priorityOf(detections))
+    }
+
+    @Test
+    fun `given a low confidence finding over a high sample when calculating then it stays high`() {
+        val detections = detectionsOf(CellClass.BLASTO to 1) + reviewDetection(CellClass.PROMIELOCITO)
         assertEquals(Priority.ALTA, PriorityCalculator.priorityOf(detections))
     }
 

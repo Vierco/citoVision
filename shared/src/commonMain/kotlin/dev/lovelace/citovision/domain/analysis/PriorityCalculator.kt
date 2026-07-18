@@ -10,8 +10,9 @@ import dev.lovelace.citovision.domain.entities.Priority
  * tipo haya. Umbrales: `0 → BAJA`, `1–4 → MEDIA`, `≥5 → ALTA`.
  *
  * Solo puntúan las detecciones [DetectionLevel.STANDARD]. Un **posible hallazgo de baja confianza** no suma
- * puntos —sería puntuar evidencia del 9 %— pero **sube la prioridad un nivel** (RN-9b): no basta para
- * afirmar nada, sí para que la muestra no se quede la última de la cola. **No es un diagnóstico** (RN-10).
+ * puntos —sería puntuar evidencia del 9 %— pero **saca la muestra de BAJA a MEDIA** (RN-9b): basta para que
+ * no se quede la última de la cola, y **nunca alcanza ALTA**, que queda reservada a lo confirmado.
+ * **No es un diagnóstico** (RN-10).
  */
 object PriorityCalculator {
     private const val HIGH_THRESHOLD = 5
@@ -31,13 +32,6 @@ object PriorityCalculator {
                 else -> Priority.BAJA
             }
         val hasReviewFinding = detections.any { it.level == DetectionLevel.LOW_CONFIDENCE_REVIEW }
-        return if (hasReviewFinding) priority.raised() else priority
+        return if (hasReviewFinding && priority == Priority.BAJA) Priority.MEDIA else priority
     }
-
-    private fun Priority.raised(): Priority =
-        when (this) {
-            Priority.BAJA -> Priority.MEDIA
-            Priority.MEDIA -> Priority.ALTA
-            Priority.ALTA -> Priority.ALTA
-        }
 }

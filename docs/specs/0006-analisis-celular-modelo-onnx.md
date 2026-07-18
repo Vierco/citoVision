@@ -167,10 +167,11 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
 - **RN-9** **Mapeo puntuación → prioridad:** `0 → BAJA`; `1–4 → MEDIA`; `≥5 → ALTA`. (Un blasto presente
   fuerza ALTA por sí solo; la presencia conjunta de hallazgos moderados puede alcanzar ALTA por suma.)
   **Solo puntúan las detecciones `STANDARD`.**
-- **RN-9b** La presencia de **al menos un posible hallazgo de baja confianza** sube la prioridad **un
-  nivel** (`BAJA → MEDIA`, `MEDIA → ALTA`, `ALTA → ALTA`), sin aportar su peso de RN-8. Puntuar el peso
-  completo convertiría evidencia del 9 % en ALTA y devaluaría el indicador; ignorarla dejaría el indicio
-  al final de la cola. El salto de nivel es el término medio: no afirma nada, pero adelanta la revisión.
+- **RN-9b** La presencia de **al menos un posible hallazgo de baja confianza** sube la prioridad de `BAJA` a
+  `MEDIA`, sin aportar su peso de RN-8 y **sin poder alcanzar nunca `ALTA`** (una muestra ya en `MEDIA` o
+  `ALTA` no se altera). Ignorar el indicio lo dejaría al final de la cola; puntuarlo como una detección
+  normal haría que dos predicciones que la propia UI llama "no confirmadas" pesaran como un blasto al 97 %.
+  **`ALTA` queda reservada a lo confirmado**, para que el badge siga significando algo.
 - **RN-10** La prioridad es **apoyo al cribado**, nunca diagnóstico (ver Propósito y límite). No se deriva
   de ella ninguna afirmación sobre enfermedad.
 
@@ -319,7 +320,8 @@ Fuera de alcance. *(Posible métrica futura: tiempo de inferencia por plataforma
   con únicamente linfocitos/neutrófilos segmentados/monocitos/eosinófilos → **BAJA**; artefactos/restos no
   alteran la prioridad (RN-8/RN-9).
 - **Hallazgos de baja confianza**: una muestra de solo linfocitos con un promielocito al 9 % → **MEDIA**, y
-  el indicio aparece en su sección aparte, nunca sumado al recuento de células (RN-9b, RF-6b).
+  el indicio aparece en su sección aparte, nunca sumado al recuento de células (RN-9b, RF-6b). Una muestra
+  con un mielocito confirmado (MEDIA) más indicios débiles **sigue siendo MEDIA**, no ALTA.
 - El **aviso de no-diagnóstico** es visible junto al resultado (RF-3c).
 - Con cuenta, el análisis real (con prioridad) se sincroniza a remoto vía outbox (SPEC-0005).
 - Provocar un fallo de inferencia → popup con "Reintentar"; no se persiste análisis a medias.
