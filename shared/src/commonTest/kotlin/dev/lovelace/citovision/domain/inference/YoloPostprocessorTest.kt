@@ -2,6 +2,7 @@ package dev.lovelace.citovision.domain.inference
 
 import dev.lovelace.citovision.domain.entities.CellClass
 import dev.lovelace.citovision.domain.entities.Detection
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -52,7 +53,6 @@ class YoloPostprocessorTest {
                 output = output,
                 attributes = ATTRIBUTES,
                 transform = identityTransform,
-                confidenceThreshold = 0.25f,
                 iouThreshold = 0.5f,
             )
 
@@ -108,7 +108,48 @@ class YoloPostprocessorTest {
             output = output,
             attributes = ATTRIBUTES,
             transform = identityTransform,
-            confidenceThreshold = 0.25f,
+            iouThreshold = 0.5f,
+        )
+    }
+
+    @Test
+    fun `given a critical class between the review thresholds when decoding then it survives for review`() {
+        val detections = decodeSingleBox(CellClass.PROMIELOCITO, score = 0.0897f)
+
+        assertEquals(1, detections.size)
+        assertEquals(CellClass.PROMIELOCITO, detections.first().cellClass)
+        assertEquals(DetectionLevel.LOW_CONFIDENCE_REVIEW, detections.first().level)
+    }
+
+    @Test
+    fun `given a critical class above its lowered threshold when decoding then it is a standard detection`() {
+        val detections = decodeSingleBox(CellClass.BLASTO, score = 0.12f)
+
+        assertEquals(DetectionLevel.STANDARD, detections.single().level)
+    }
+
+    @Test
+    fun `given a non critical class with the same weak score when decoding then it is discarded`() {
+        val detections = decodeSingleBox(CellClass.NEUTROFILO_SEGMENTADO, score = 0.0897f)
+
+        assertEquals(0, detections.size)
+    }
+
+    private fun decodeSingleBox(
+        cellClass: CellClass,
+        score: Float,
+    ): List<Detection> {
+        val anchors = 1
+        val output = FloatArray(ATTRIBUTES * anchors)
+        output[0] = 50f
+        output[1] = 50f
+        output[2] = 20f
+        output[3] = 20f
+        output[BOX_CHANNELS + cellClass.index] = score
+        return YoloPostprocessor.decode(
+            output = output,
+            attributes = ATTRIBUTES,
+            transform = identityTransform,
             iouThreshold = 0.5f,
         )
     }

@@ -24,7 +24,6 @@ class CellDetectorImpl(
     private val imageDecoder: ImageDecoder,
     private val onnxRunner: OnnxRunner,
     private val dispatcher: CoroutineDispatcher,
-    private val confidenceThreshold: Float = DEFAULT_CONFIDENCE_THRESHOLD,
     private val iouThreshold: Float = DEFAULT_IOU_THRESHOLD,
 ) : CellDetector {
     override suspend fun detect(image: SelectedImage): Result<List<Detection>, InferenceError> =
@@ -40,7 +39,6 @@ class CellDetectorImpl(
                         output = output.data,
                         attributes = output.attributes,
                         transform = preprocessed.transform,
-                        confidenceThreshold = confidenceThreshold,
                         iouThreshold = iouThreshold,
                     )
                 Result.Success(detections)
@@ -53,7 +51,6 @@ class CellDetectorImpl(
         }
 
     private companion object {
-        const val DEFAULT_CONFIDENCE_THRESHOLD = 0.25f
         const val DEFAULT_IOU_THRESHOLD = 0.45f
     }
 }

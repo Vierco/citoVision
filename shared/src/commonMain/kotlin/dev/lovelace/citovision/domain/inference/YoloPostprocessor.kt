@@ -9,8 +9,12 @@ import kotlin.math.min
 /**
  * Decodifica la salida de detección del modelo YOLO11s-seg (SPEC-0006). Se usa **solo la rama de detección**
  * `[1, atributos, anclas]` (caja `xywh` + puntuaciones de clase); los coeficientes/prototipos de máscara se
- * ignoran. Filtra por umbral de confianza, mapea las cajas a la imagen original ([LetterboxTransform]) y
- * aplica **NMS por clase**. La salida se asume con layout atributos-mayor (por defecto de Ultralytics).
+ * ignoran. La salida se asume con layout atributos-mayor (por defecto de Ultralytics).
+ *
+ * El orden importa (RN-2): se conservan los candidatos desde [ConfidencePolicy.MINIMUM_THRESHOLD], se mapean
+ * las cajas a la imagen original ([LetterboxTransform]), se aplica **NMS por clase** y **solo entonces** se
+ * asigna el nivel de cada detección. Filtrar antes por el umbral estándar descartaría los hallazgos críticos
+ * débiles antes de poder clasificarlos.
  */
 object YoloPostprocessor {
     private const val BOX_CHANNELS = 4
@@ -19,19 +23,22 @@ object YoloPostprocessor {
         output: FloatArray,
         attributes: Int,
         transform: LetterboxTransform,
-        confidenceThreshold: Float,
         iouThreshold: Float,
     ): List<Detection> {
         val anchors = output.size / attributes
-        val candidates = collectCandidates(output, anchors, transform, confidenceThreshold)
-        return nonMaxSuppression(candidates, iouThreshold)
+        val candidates = collectCandidates(output, anchors, transform)
+        return nonMaxSuppression(candidates, iouThreshold).mapNotNull(::withLevel)
     }
+
+    private fun withLevel(detection: Detection): Detection? =
+        ConfidencePolicy
+            .levelOf(detection.cellClass, detection.confidence)
+            ?.let { detection.copy(level = it) }
 
     private fun collectCandidates(
         output: FloatArray,
         anchors: Int,
         transform: LetterboxTransform,
-        confidenceThreshold: Float,
     ): List<Detection> {
         val numClasses = CellClass.entries.size
         val candidates = mutableListOf<Detection>()
@@ -45,7 +52,7 @@ object YoloPostprocessor {
                     bestClass = c
                 }
             }
-            if (bestClass < 0 || bestScore < confidenceThreshold) continue
+            if (bestClass < 0 || bestScore < ConfidencePolicy.MINIMUM_THRESHOLD) continue
             val cellClass = CellClass.fromIndex(bestClass) ?: continue
             val centerX = output[anchor]
             val centerY = output[anchors + anchor]

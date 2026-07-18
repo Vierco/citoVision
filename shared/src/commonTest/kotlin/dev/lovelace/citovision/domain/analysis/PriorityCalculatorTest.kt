@@ -3,6 +3,7 @@ package dev.lovelace.citovision.domain.analysis
 import dev.lovelace.citovision.domain.entities.BoundingBox
 import dev.lovelace.citovision.domain.entities.CellClass
 import dev.lovelace.citovision.domain.entities.Detection
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -49,9 +50,34 @@ class PriorityCalculatorTest {
         assertEquals(Priority.MEDIA, PriorityCalculator.priorityOf(detections))
     }
 
+    @Test
+    fun `given a low confidence finding over habitual cells when calculating then priority is raised`() {
+        val detections =
+            detectionsOf(CellClass.LINFOCITO to 3) +
+                reviewDetection(CellClass.PROMIELOCITO)
+        // Sin la franja de revisión sería BAJA (linfocitos, +0); el indicio la sube un nivel.
+        assertEquals(Priority.MEDIA, PriorityCalculator.priorityOf(detections))
+    }
+
+    @Test
+    fun `given a low confidence finding over a moderate one when calculating then priority is raised to high`() {
+        val detections = detectionsOf(CellClass.BASTONETE to 1) + reviewDetection(CellClass.BLASTO)
+        assertEquals(Priority.ALTA, PriorityCalculator.priorityOf(detections))
+    }
+
+    @Test
+    fun `given a low confidence finding when calculating then it does not add its own weight`() {
+        // Un blasto de baja confianza NO puntúa +5 por sí mismo: solo sube un nivel desde BAJA.
+        val detections = listOf(reviewDetection(CellClass.BLASTO))
+        assertEquals(Priority.MEDIA, PriorityCalculator.priorityOf(detections))
+    }
+
     private fun detectionsOf(vararg pairs: Pair<CellClass, Int>): List<Detection> =
         pairs.flatMap { (cellClass, count) -> List(count) { detection(cellClass) } }
 
     private fun detection(cellClass: CellClass): Detection =
         Detection(cellClass = cellClass, confidence = 0.9f, box = BoundingBox(0f, 0f, 1f, 1f))
+
+    private fun reviewDetection(cellClass: CellClass): Detection =
+        detection(cellClass).copy(confidence = 0.09f, level = DetectionLevel.LOW_CONFIDENCE_REVIEW)
 }

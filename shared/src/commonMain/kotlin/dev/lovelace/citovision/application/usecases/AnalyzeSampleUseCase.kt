@@ -14,8 +14,10 @@ import kotlin.random.Random
 import kotlin.time.Clock
 
 /**
- * Ejecuta el modelo sobre la imagen (SPEC-0006) y, si hay al menos una **célula real** (RN-7), deriva conteo,
- * resumen y prioridad de revisión y persiste el análisis en local (la imagen como fichero + la fila).
+ * Ejecuta el modelo sobre la imagen (SPEC-0006) y, si hay al menos una **célula real** (RN-7) —incluidos los
+ * posibles hallazgos de baja confianza, que también son células y por sí solos justifican guardar el
+ * análisis—, deriva conteo, resumen y prioridad de revisión y persiste el análisis en local (la imagen como
+ * fichero + la fila).
  * Sustituye al andamiaje mock temporal. Devuelve un [AnalysisOutcome] para que el ViewModel
  * gestione cada caso (guardado, sin células, fallo de inferencia o de guardado). Si la fila falla, borra la
  * imagen ya escrita para no dejarla huérfana.

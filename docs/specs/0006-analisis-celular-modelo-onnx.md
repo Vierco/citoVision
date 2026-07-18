@@ -60,7 +60,9 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
   lista de **confianzas por célula** (`confidences`, la certeza que el modelo asigna a cada detección
   individual). Las clases **no celulares** (Artefacto, Restos celulares) se muestran **solo con su
   recuento**, sin confianzas. El conteo **no incluye el porcentaje de proporción por tipo** (dato
-  descartado por no aportar sobre el recuento; ver RN-6).
+  descartado por no aportar sobre el recuento; ver RN-6). Cada entrada lleva además su **nivel** (RN-2):
+  las de `LOW_CONFIDENCE_REVIEW` se agrupan **por separado** del mismo tipo en nivel `STANDARD` (un
+  Mielocito al 97 % y otro al 9 % son **dos entradas**, nunca "Mielocito: 2").
 - **RF-3** El **resumen** (`summary`) se genera a partir del conteo, de forma **descriptiva** (qué células y
   cuántas), **sin lenguaje diagnóstico**, con esta plantilla:
 
@@ -70,6 +72,8 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
   donde `{relevantes}` son los tipos con **peso morfológico > 0** presentes (RN-8, criterio por relevancia
   clínica) y `{otros}` el resto de tipos celulares presentes (habituales, +0) más las clases no celulares;
   cada entrada como `Tipo N` (recuento, **sin porcentaje**). Las secciones vacías se omiten con naturalidad.
+  Si hay hallazgos de baja confianza se añade una frase final: *"Posibles hallazgos de baja confianza,
+  pendientes de revisión humana: {lista}."*; su recuento **no entra** en el `{total}` de células.
 - **RF-3b** Se calcula una **prioridad de revisión** (`Priority` ∈ {BAJA, MEDIA, ALTA}) según la puntuación
   de relevancia morfológica de RN-8/RN-9. La prioridad se **muestra** en la card y en el detalle con un
   indicador claro (etiqueta + color, tokens de `DESIGN.md`; no depender solo del color, AGENTS.md §15).
@@ -79,8 +83,11 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
   inferencia ocurre **fuera del hilo principal**.
 - **RF-5** Al terminar con al menos una célula, se persiste un `Analysis` real (con su `priority`; local
   SPEC-0004; remoto vía outbox SPEC-0005 si hay cuenta) y aparece en el Historial, exactamente como hoy.
-- **RF-6** Si la inferencia **no detecta ninguna célula**, se **informa** al usuario con un popup ("no se
-  han detectado células") y **no se guarda** ningún análisis (RN-7).
+- **RF-6** Si la inferencia **no detecta ninguna célula en ningún nivel**, se **informa** al usuario con un
+  popup ("no se han detectado células") y **no se guarda** ningún análisis (RN-7).
+- **RF-6b** Los **posibles hallazgos de baja confianza** se muestran en una **sección aparte** del detalle
+  ("Posibles hallazgos para revisión"), con su confianza y una indicación explícita de que **requieren
+  revisión humana** y no son una detección confirmada. Nunca comparten contador con las normales.
 - **RF-7** Si la inferencia falla (carga del modelo, decodificado de imagen, ejecución), se muestra un
   **popup de error** con opción de **reintentar**; no se persiste un análisis a medias.
 - **RF-8** El modelo se **carga una vez** y se reutiliza entre análisis (no se recarga por cada escaneo).
@@ -100,9 +107,32 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
   índice→etiqueta legible en español es **fuente única** en `commonMain`. El orden de índices **no debe
   alterarse** (coincide con la salida del modelo).
 - **RN-2** Parámetros de inferencia (de la metadata del `.onnx`): `imgsz` 640×640, NCHW, RGB, normalización
-  0..1. **Umbral de confianza** e **IoU de NMS** no vienen embebidos → valores por defecto **conf 0.25 /
-  IoU 0.45**, fijos y documentados, ajustables tras validar contra la referencia de Ultralytics.
-- **RN-3** Una detección por debajo del umbral de confianza **no cuenta**.
+  0..1. **Umbral de confianza** e **IoU de NMS** no vienen embebidos. **IoU de NMS: 0.45**, fijo. El umbral
+  de confianza **no es único**: se aplica una **política por clase**, validada sobre el split `valid` del
+  dataset reestratificado:
+
+  | Clase | Umbral | Nivel resultante |
+  |---|---|---|
+  | Crítica, confianza ≥ 0.10 | 0.10 | `STANDARD` |
+  | Crítica, 0.08 ≤ confianza < 0.10 | 0.08 | `LOW_CONFIDENCE_REVIEW` (posible hallazgo) |
+  | Crítica, confianza < 0.08 | — | descartada |
+  | No crítica, confianza ≥ 0.25 | 0.25 | `STANDARD` |
+  | No crítica, confianza < 0.25 | — | descartada |
+
+  **Clases críticas (5):** `Blasto` (3), `Linfocito atípico` (7), `Metamielocito` (8), `Mielocito` (9),
+  `Promielocito` (12). Son las clases relevantes con **sensibilidad medida** sobre `valid` (recall ≥ 0.94
+  con ambos umbrales; 0.10 elegido por dar menos falsos positivos que 0.08 a igual recall). `Basófilo` y
+  `Eritroblasto` puntúan en RN-8 pero **quedan fuera**: con 22 y 44 imágenes en todo el dataset no hay
+  métricas que respalden rebajarles el umbral. `Bastonete` tampoco entra, por el mismo motivo.
+
+  El motivo de la política es de producto: el peor error del sistema es **perder** un hallazgo relevante,
+  que es justamente lo que la herramienta existe para poner el primero en la cola de revisión. Una detección
+  de baja confianza **no es un diagnóstico ni una confirmación** (RN-10).
+- **RN-2b** El postprocesado **debe** conservar los candidatos desde **0.08** antes del NMS y asignar el
+  nivel **después** de este. Filtrar antes por 0.25 descartaría los hallazgos críticos débiles de forma
+  irreversible.
+- **RN-3** Una detección por debajo del umbral **que le corresponde según RN-2** no cuenta. Las de nivel
+  `LOW_CONFIDENCE_REVIEW` **nunca se suman al recuento normal** ni se mezclan en el mismo contador.
 - **RN-4** El paciente sigue siendo un **código seudonimizado** (hereda RN de SPEC-0004/0005); el modelo no
   procesa ni infiere identidad.
 - **RN-5** El resultado es **reproducible** para la misma imagen y modelo (inferencia determinista).
@@ -112,8 +142,10 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
   El conteo **ya no incluye el porcentaje de proporción por tipo** (se consideró redundante frente al
   recuento). En su lugar, el **detalle** muestra, para cada tipo celular real, la **confianza por célula**
   (la certeza del modelo en cada detección); las clases no celulares aparecen **solo con su recuento**.
-- **RN-7** **Cero células detectadas** → se informa y **no se persiste** análisis (RF-6). Un análisis
-  guardado tiene siempre al menos una célula.
+- **RN-7** **Cero células detectadas en cualquier nivel** → se informa y **no se persiste** análisis (RF-6).
+  Un análisis con **solo posibles hallazgos de baja confianza** (cero detecciones `STANDARD`) **sí se
+  guarda**: el resumen dirá "0 células detectadas" y listará los indicios aparte. Perder el indicio por no
+  tener nada que contar sería el peor resultado posible.
 - **RN-8** **Puntuación de relevancia morfológica.** Se calcula por **presencia** de cada tipo relevante
   (una única contribución por tipo presente con ≥1 detección sobre umbral, **independiente del número** de
   células de ese tipo — *Nota abierta 10*). Pesos:
@@ -134,6 +166,11 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
   La puntuación total es la **suma** de los pesos de los tipos relevantes presentes.
 - **RN-9** **Mapeo puntuación → prioridad:** `0 → BAJA`; `1–4 → MEDIA`; `≥5 → ALTA`. (Un blasto presente
   fuerza ALTA por sí solo; la presencia conjunta de hallazgos moderados puede alcanzar ALTA por suma.)
+  **Solo puntúan las detecciones `STANDARD`.**
+- **RN-9b** La presencia de **al menos un posible hallazgo de baja confianza** sube la prioridad **un
+  nivel** (`BAJA → MEDIA`, `MEDIA → ALTA`, `ALTA → ALTA`), sin aportar su peso de RN-8. Puntuar el peso
+  completo convertiría evidencia del 9 % en ALTA y devaluaría el indicador; ignorarla dejaría el indicio
+  al final de la cola. El salto de nivel es el término medio: no afirma nada, pero adelanta la revisión.
 - **RN-10** La prioridad es **apoyo al cribado**, nunca diagnóstico (ver Propósito y límite). No se deriva
   de ella ninguna afirmación sobre enfermedad.
 
@@ -150,8 +187,8 @@ lugar del mock, con estados de carga y error adecuados y **sin emitir diagnósti
 
 **Dominio — cambio aditivo en `Analysis`:** hoy es
 `Analysis(id, patient, performedAt, summary, imagePath, cellCounts)`. Se **añade** `priority: Priority`.
-`CellCount` **cambia de forma**: de `(name, value)` a `(name, count: Int, confidences: List<Float>)`
-(RF-2). El porcentaje de proporción por tipo se elimina; se añade la confianza por célula (solo tipos
+`CellCount` **cambia de forma**: de `(name, value)` a
+`(name, count: Int, confidences: List<Float>, level: DetectionLevel)` (RF-2). El porcentaje de proporción por tipo se elimina; se añade la confianza por célula (solo tipos
 celulares reales).
 
 > **Impacto de esquema (aditivo).** El nuevo campo `priority` obliga a: (a) ampliar la entidad de dominio
@@ -159,6 +196,12 @@ celulares reales).
 > (RULES.md §Persistencia); (c) añadir el campo al documento de Firestore y a sus DTOs/mappers (SPEC-0005).
 > Análisis antiguos sin prioridad se tratan como `null`/BAJA por defecto (a concretar en la migración).
 > *Estas specs se tocan por dependencia; requiere confirmación del owner (AGENTS.md §0.4).*
+>
+> **Nivel de detección en `CellCount` (política de umbrales, RN-2).** `CellCount` gana
+> `level: DetectionLevel`, lo que obliga a una **migración aditiva no destructiva** de Room
+> (`ADD COLUMN level TEXT NOT NULL DEFAULT 'STANDARD'` en `cell_count_entries`) y al campo equivalente en
+> Firestore, con *fallback* a `STANDARD` para los documentos y filas anteriores —que es lo correcto: se
+> generaron con umbral único de 0.25. *Autorizado por el owner.*
 >
 > **Cambio de `CellCount` (confianza por célula).** El paso de `value: String` a
 > `count: Int` + `confidences: List<Float>` obliga a otra **migración aditiva no destructiva** de Room
@@ -170,11 +213,15 @@ celulares reales).
 ```
 Priority { BAJA, MEDIA, ALTA }
 
+DetectionLevel { STANDARD, LOW_CONFIDENCE_REVIEW }
+  // lo descartado no llega a ser una Detection: se filtra en el postprocesado (RN-3)
+
 Detection
   classIndex: Int
   label:      String     // etiqueta legible del tipo celular (RN-1)
   confidence: Float      // 0..1
   box:        BoundingBox // xyxy normalizado (para posible visualización futura; ver No objetivos)
+  level:      DetectionLevel // política de umbrales por clase (RN-2)
 
 CellDetector (puerto, application/ports, commonMain)
   suspend fun detect(image: ImageInput): Result<List<Detection>, InferenceError>
@@ -202,7 +249,7 @@ PriorityCalculator (dominio, commonMain, función pura)
 | 12 | Promielocito | Promielocito | ✅ |
 | 13 | Restos celulares | Restos celulares | ❌ |
 
-**Configuración del modelo (leída de la metadata embebida en `citovision_yolo11s_seg_v1.onnx`):**
+**Configuración del modelo (leída de la metadata embebida en `citovision_yolo11s_seg_univali_stratified_v1.onnx`):**
 
 | Parámetro | Valor |
 |---|---|
@@ -222,9 +269,10 @@ PriorityCalculator (dominio, commonMain, función pura)
 > visualización, junto a las cajas.)*
 
 **Empaquetado:** fichero `.onnx` (39 MB) en **Compose Resources** →
-`shared/src/commonMain/composeResources/files/citovision_yolo11s_seg_v1.onnx`, leído con
-`Res.readBytes("files/citovision_yolo11s_seg_v1.onnx")`. Un único artefacto para las tres plataformas. Dado
-el tamaño y que el repo **no usa Git LFS**, se decide entre commit directo o habilitar LFS.
+`shared/src/commonMain/composeResources/files/citovision_yolo11s_seg_univali_stratified_v1.onnx`, leído con
+`Res.readBytes("files/...")`. Un único artefacto para las tres plataformas. Dado el tamaño y que el repo
+**no usa Git LFS**, se decide entre commit directo o habilitar LFS. **Solo debe haber un `.onnx` en esa
+carpeta**: todo lo que contiene se empaqueta en el APK y en el binario de Desktop.
 
 ## Errores
 
@@ -270,6 +318,8 @@ Fuera de alcance. *(Posible métrica futura: tiempo de inferencia por plataforma
 - **Priorización correcta**: una muestra con un blasto presente → **ALTA**; con solo un bastonete → **MEDIA**;
   con únicamente linfocitos/neutrófilos segmentados/monocitos/eosinófilos → **BAJA**; artefactos/restos no
   alteran la prioridad (RN-8/RN-9).
+- **Hallazgos de baja confianza**: una muestra de solo linfocitos con un promielocito al 9 % → **MEDIA**, y
+  el indicio aparece en su sección aparte, nunca sumado al recuento de células (RN-9b, RF-6b).
 - El **aviso de no-diagnóstico** es visible junto al resultado (RF-3c).
 - Con cuenta, el análisis real (con prioridad) se sincroniza a remoto vía outbox (SPEC-0005).
 - Provocar un fallo de inferencia → popup con "Reintentar"; no se persiste análisis a medias.
@@ -279,8 +329,12 @@ Fuera de alcance. *(Posible métrica futura: tiempo de inferencia por plataforma
 
 ## Tests requeridos
 
-- **commonTest**: `YoloPostprocessor` (decodificado + NMS con salida sintética conocida; umbral descarta
-  detecciones bajas; NMS elimina solapadas); `YoloPreprocessor` (letterbox/normalización con dimensiones
+- **commonTest**: `ConfidencePolicy` (los tres límites de RN-2: 0.24/0.25 en no crítica, 0.10 en crítica,
+  0.0897 en la franja de revisión, 0.079 descartada, y que una clase con peso RN-8 pero no crítica —
+  `Eritroblasto`, `Bastonete`— conserva el umbral estándar); `YoloPostprocessor` (decodificado + NMS con
+  salida sintética conocida; el umbral que corresponde a cada clase descarta las bajas; NMS elimina
+  solapadas; el nivel se asigna después del NMS); `PriorityCalculator` con RN-9b (el indicio sube un nivel
+  y **no** aporta su peso); `YoloPreprocessor` (letterbox/normalización con dimensiones
   conocidas → tamaños/valores esperados); mapeo índice→etiqueta (RN-1); derivación conteo/summary de
   detecciones (RF-2/RF-3); **`PriorityCalculator`** (función pura: cada peso individual, suma de moderados
   que alcanza ALTA, presencia de blasto → ALTA, solo habituales → BAJA, artefactos/restos no puntúan —
@@ -290,6 +344,12 @@ Fuera de alcance. *(Posible métrica futura: tiempo de inferencia por plataforma
   (`AppModulesGraphTest`).
 - **Integración de plataforma** (manual o instrumentada): inferencia real sobre una imagen de muestra en
   Android y Desktop, comparando detecciones con la referencia de Ultralytics (validación del pipeline).
+  Casos de referencia medidos contra PyTorch y ONNX:
+  - `img_001304.jpg` → normales: `Mielocito` 0.9728, `Neutrófilo segmentado` 0.8536; revisión:
+    `Mielocito` 0.0907, `Promielocito` 0.0897.
+  - `img_002149.jpg` → cuatro detecciones **normales**: `Neutrófilo en banda` 91 %, `Eosinófilo` 96 %,
+    `Metamielocito` 97 %, `Promielocito` 68 % (comprobación de no regresión: bajar el suelo a 0.08 no debe
+    alterar lo que ya se detectaba).
 
 ## Dependencias
 
@@ -321,14 +381,23 @@ Fuera de alcance. *(Posible métrica futura: tiempo de inferencia por plataforma
 - ✅ **Impacto de esquema** (campo `priority`: dominio + migración Room + campo Firestore): **autorizado**
   por el owner; se reflejará en SPEC-0004/0005 al implementar.
 - ✅ **Invitado ejecuta el modelo**: sí (local silencioso; remoto solo con cuenta).
-- ✅ **Empaquetado**: Compose Resources `files/citovision_yolo11s_seg_v1.onnx` (39 MB; LFS vs commit directo,
+- ✅ **Empaquetado**: Compose Resources `files/citovision_yolo11s_seg_univali_stratified_v1.onnx` (39 MB; LFS vs commit directo,
   decisión operativa, no bloquea la spec).
 - ✅ **Visualización de cajas**: **fuera de alcance**, candidata a spec futura (que ahora podría incluir
   máscaras, al ser el modelo de segmentación).
 - ✅ **Modelo real**: **YOLO11s-seg** (segmentación); SPEC-0006 usa **solo la rama de detección**, ignora
   máscaras (ver Contratos).
 - ✅ **Parámetros de inferencia** (fleco 5): leídos de la metadata → `imgsz` 640, NCHW/RGB, norm 0..1;
-  conf **0.25** / IoU **0.45** por defecto (no embebidos), ajustables tras validar (RN-2).
+  IoU **0.45** (no embebido). El umbral de confianza único de 0.25 se **sustituyó por una política por
+  clase** tras validar el modelo reentrenado (ver RN-2/RN-2b).
+- ✅ **Modelo reentrenado (2026-07-18).** El primer modelo estaba sobreajustado por un split del dataset sin
+  estratificar (ver `docs/informe-reentrenamiento-modelo.md`). Con el modelo nuevo,
+  `citovision_yolo11s_seg_univali_stratified_v1.onnx`, la app reproduce exactamente la referencia de
+  PyTorch/ONNX, lo que **valida el pipeline de `commonMain`** (layout atributos-mayor, letterbox y NMS) y
+  el binario nativo de ONNX en Desktop.
+- ✅ **Política de umbrales por clase** (RN-2/RN-2b/RN-3), **niveles de detección** (RF-2, RF-6b) y **salto
+  de nivel de prioridad** por hallazgo débil (RN-9b): autorizados por el owner el 2026-07-18, a partir de
+  la validación de umbrales sobre `valid` (`INSTRUCCIONES_UMBRALES_CITOVISION.md`).
 - ✅ **Plantilla del `summary`** (RF-3) y su **agrupación por relevancia clínica** (opción A): relevantes =
   peso >0; otros = habituales + no-células.
 
