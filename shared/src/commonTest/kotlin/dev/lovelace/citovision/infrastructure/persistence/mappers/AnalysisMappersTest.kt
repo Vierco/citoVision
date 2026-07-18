@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.persistence.mappers
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisEntity
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisWithCellCounts
@@ -127,5 +128,65 @@ class AnalysisMappersTest {
                 priority = Priority.ALTA,
             )
         assertEquals("ALTA", analysis.toEntity().priority)
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun `given a detection level when mapping in both directions then it round-trips`() {
+        val analysis =
+            Analysis(
+                id = "1",
+                patient = "PAC-2026-001",
+                performedAt = Instant.fromEpochMilliseconds(1_700_000_000_000),
+                summary = "Resumen",
+                imagePath = "/tmp/a.png",
+                cellCounts =
+                    listOf(
+                        CellCount("Mielocito", count = 1, confidences = listOf(0.97f)),
+                        CellCount(
+                            "Promielocito",
+                            count = 1,
+                            confidences = listOf(0.09f),
+                            level = DetectionLevel.LOW_CONFIDENCE_REVIEW,
+                        ),
+                    ),
+            )
+
+        val entities = analysis.toCellCountEntities()
+        assertEquals(listOf("STANDARD", "LOW_CONFIDENCE_REVIEW"), entities.map { it.level })
+
+        val row = AnalysisWithCellCounts(analysis = entity, cellCounts = entities)
+        assertEquals(analysis.cellCounts, row.toDomain().cellCounts)
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun `given a row migrated from v4 when mapping to domain then the level falls back to standard`() {
+        // Las filas anteriores a la política de umbrales se generaron con el umbral único de 0.25.
+        val row =
+            AnalysisWithCellCounts(
+                analysis = entity,
+                cellCounts =
+                    listOf(
+                        CellCountEntity(
+                            id = 1,
+                            analysisId = "1",
+                            position = 0,
+                            name = "Linfocito",
+                            count = 1,
+                            confidences = "0.9",
+                            level = "",
+                        ),
+                    ),
+            )
+
+        assertEquals(
+            DetectionLevel.STANDARD,
+            row
+                .toDomain()
+                .cellCounts
+                .single()
+                .level,
+        )
     }
 }

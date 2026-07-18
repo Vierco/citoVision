@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.persistence.mappers
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisEntity
 import dev.lovelace.citovision.infrastructure.persistence.database.AnalysisWithCellCounts
@@ -22,7 +23,14 @@ fun AnalysisWithCellCounts.toDomain(): Analysis =
         cellCounts =
             cellCounts
                 .sortedBy { it.position }
-                .map { CellCount(name = it.name, count = it.count, confidences = it.confidences.toConfidenceList()) },
+                .map {
+                    CellCount(
+                        name = it.name,
+                        count = it.count,
+                        confidences = it.confidences.toConfidenceList(),
+                        level = it.level.toDetectionLevel(),
+                    )
+                },
         priority = Priority.fromName(analysis.priority),
     )
 
@@ -44,6 +52,7 @@ fun Analysis.toCellCountEntities(): List<CellCountEntity> =
             name = cellCount.name,
             count = cellCount.count,
             confidences = cellCount.confidences.toCsv(),
+            level = cellCount.level.name,
         )
     }
 
@@ -54,3 +63,7 @@ private fun List<Float>.toCsv(): String = joinToString(CONFIDENCE_SEPARATOR)
 
 private fun String.toConfidenceList(): List<Float> =
     if (isEmpty()) emptyList() else split(CONFIDENCE_SEPARATOR).map { it.toFloat() }
+
+/** Un valor desconocido cae a `STANDARD`: mejor mostrar la entrada que perderla por un dato ilegible. */
+private fun String.toDetectionLevel(): DetectionLevel =
+    DetectionLevel.entries.firstOrNull { it.name == this } ?: DetectionLevel.STANDARD

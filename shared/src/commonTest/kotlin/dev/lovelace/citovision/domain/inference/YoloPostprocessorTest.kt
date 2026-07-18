@@ -79,9 +79,28 @@ class YoloPostprocessorTest {
         assertEquals(2, detections.size)
     }
 
+    @Test
+    fun `given a weak critical box overlapping a strong one of another class when decoding then both survive`() {
+        // El NMS es por clase: un hallazgo débil no debe desaparecer por solaparse con una detección
+        // fuerte de otro tipo, que es justo el caso de img_001304 (Promielocito 0.0897 sobre Mielocito).
+        val detections =
+            decodeTwoBoxes(
+                first = CellClass.MIELOCITO,
+                second = CellClass.PROMIELOCITO,
+                secondScore = 0.0897f,
+            )
+
+        assertEquals(2, detections.size)
+        assertEquals(
+            listOf(DetectionLevel.STANDARD, DetectionLevel.LOW_CONFIDENCE_REVIEW),
+            detections.sortedByDescending { it.confidence }.map { it.level },
+        )
+    }
+
     private fun decodeTwoBoxes(
         first: CellClass,
         second: CellClass,
+        secondScore: Float = 0.6f,
     ): List<Detection> {
         val anchors = 2
         val output = FloatArray(ATTRIBUTES * anchors)
@@ -103,7 +122,7 @@ class YoloPostprocessorTest {
         set(1, 1, 52f)
         set(2, 1, 20f)
         set(3, 1, 20f)
-        set(BOX_CHANNELS + second.index, 1, 0.6f)
+        set(BOX_CHANNELS + second.index, 1, secondScore)
         return YoloPostprocessor.decode(
             output = output,
             attributes = ATTRIBUTES,

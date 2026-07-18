@@ -66,6 +66,9 @@ import citovision.shared.generated.resources.common_close
 import citovision.shared.generated.resources.dialog_cell_count_label
 import citovision.shared.generated.resources.dialog_cell_label
 import citovision.shared.generated.resources.dialog_date_label
+import citovision.shared.generated.resources.dialog_low_confidence_entry
+import citovision.shared.generated.resources.dialog_low_confidence_label
+import citovision.shared.generated.resources.dialog_low_confidence_notice
 import citovision.shared.generated.resources.dialog_patient_label
 import citovision.shared.generated.resources.dialog_priority_label
 import citovision.shared.generated.resources.priority_badge
@@ -74,6 +77,7 @@ import citovision.shared.generated.resources.priority_low
 import citovision.shared.generated.resources.priority_medium
 import coil3.compose.SubcomposeAsyncImage
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.ui.theme.error
 import dev.lovelace.citovision.ui.theme.getTypography
@@ -143,9 +147,16 @@ fun AnalysisDetailDialog(
                     PriorityBadge(priority = priority)
                 }
 
+                val standardCounts = cellCounts.filter { it.level == DetectionLevel.STANDARD }
+                val reviewCounts = cellCounts.filter { it.level == DetectionLevel.LOW_CONFIDENCE_REVIEW }
+
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     SectionLabel(stringResource(Res.string.dialog_cell_count_label))
-                    cellCounts.forEach { cellCount -> CellCountRow(cellCount = cellCount) }
+                    standardCounts.forEach { cellCount -> CellCountRow(cellCount = cellCount) }
+                }
+
+                if (reviewCounts.isNotEmpty()) {
+                    LowConfidenceFindings(cellCounts = reviewCounts)
                 }
 
                 NonDiagnosticNotice()
@@ -276,6 +287,37 @@ private fun CellCountRow(cellCount: CellCount) {
                 )
             }
         }
+    }
+}
+
+/**
+ * Posibles hallazgos de baja confianza (SPEC-0006 RF-6b): detecciones de clases críticas en la franja
+ * 0,08–0,10 que **no son detecciones confirmadas**. Van en su propia sección, nunca sumadas al conteo, y
+ * con la advertencia de revisión humana explícita en texto (no basta el color, AGENTS.md §15).
+ */
+@Composable
+private fun LowConfidenceFindings(cellCounts: List<CellCount>) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        SectionLabel(stringResource(Res.string.dialog_low_confidence_label))
+        cellCounts.forEach { cellCount ->
+            cellCount.confidences.forEach { confidence ->
+                Text(
+                    text =
+                        stringResource(
+                            Res.string.dialog_low_confidence_entry,
+                            cellCount.name,
+                            "${(confidence * 100).roundToInt()}%",
+                        ),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+            }
+        }
+        Text(
+            text = stringResource(Res.string.dialog_low_confidence_notice),
+            style = MaterialTheme.typography.bodyMedium,
+            color = warning,
+        )
     }
 }
 

@@ -8,6 +8,7 @@ import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.BoundingBox
 import dev.lovelace.citovision.domain.entities.CellClass
 import dev.lovelace.citovision.domain.entities.Detection
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.domain.entities.SelectedImage
 import dev.lovelace.citovision.domain.errors.AnalysisError
@@ -26,7 +27,8 @@ import kotlin.test.assertTrue
 
 /**
  * Sustituto del andamiaje mock (SPEC-0006): inferencia → derivación de conteo/resumen/prioridad → guardado.
- * Cubre RN-7 (sin células no persiste), RF-7 (fallo de inferencia) y el borrado de imagen huérfana.
+ * Cubre RN-7 (sin células no persiste, pero un hallazgo de baja confianza sí basta para guardar), RF-7
+ * (fallo de inferencia) y el borrado de imagen huérfana.
  */
 class AnalyzeSampleUseCaseTest {
     private val cellDetector = mock<CellDetector>()
@@ -107,8 +109,41 @@ class AnalyzeSampleUseCaseTest {
             assertTrue(persisted.cellCounts.isNotEmpty())
         }
 
+    @Test
+    fun `given only low confidence findings when invoking then it still saves the analysis`() =
+        runTest {
+            // RN-7: perder el indicio por no tener nada que contar sería el peor resultado posible.
+            val capturingRepository = CapturingAnalysisRepository()
+            everySuspend { cellDetector.detect(any()) } returns
+                Result.Success(listOf(reviewDetection(CellClass.BLASTO)))
+            everySuspend { analysisImageStore.save(any(), any()) } returns Result.Success("/tmp/a.png")
+
+            val outcome =
+                AnalyzeSampleUseCase(cellDetector, capturingRepository, analysisImageStore)
+                    .invoke(image, "12-34")
+
+            assertTrue(outcome is AnalysisOutcome.Saved)
+            val persisted = requireNotNull(capturingRepository.saved)
+            // Cero células contadas, pero el hallazgo sube la prioridad a MEDIA (RN-9b) y queda registrado.
+            assertEquals(Priority.MEDIA, persisted.priority)
+            assertTrue(persisted.summary.startsWith("0 células detectadas."))
+            assertTrue(persisted.summary.contains("Posibles hallazgos de baja confianza"))
+            assertEquals(
+                listOf(DetectionLevel.LOW_CONFIDENCE_REVIEW),
+                persisted.cellCounts.map { it.level },
+            )
+        }
+
     private fun detectionsOf(vararg classes: CellClass): List<Detection> =
         classes.map { Detection(cellClass = it, confidence = 0.9f, box = BoundingBox(0f, 0f, 1f, 1f)) }
+
+    private fun reviewDetection(cellClass: CellClass): Detection =
+        Detection(
+            cellClass = cellClass,
+            confidence = 0.09f,
+            box = BoundingBox(0f, 0f, 1f, 1f),
+            level = DetectionLevel.LOW_CONFIDENCE_REVIEW,
+        )
 
     private class CapturingAnalysisRepository : AnalysisRepository {
         var saved: Analysis? = null

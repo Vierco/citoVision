@@ -4,6 +4,7 @@ import dev.lovelace.citovision.domain.entities.BoundingBox
 import dev.lovelace.citovision.domain.entities.CellClass
 import dev.lovelace.citovision.domain.entities.CellCount
 import dev.lovelace.citovision.domain.entities.Detection
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -58,6 +59,28 @@ class CellCountBuilderTest {
             )
         val names = CellCountBuilder.build(detections).map { it.name }
         assertEquals(listOf("Linfocito", "Blasto"), names)
+    }
+
+    @Test
+    fun `given the same type in both levels when building then they are two entries and review goes last`() {
+        val detections =
+            listOf(
+                detection(CellClass.MIELOCITO, 0.97f),
+                detection(CellClass.MIELOCITO, 0.09f).copy(level = DetectionLevel.LOW_CONFIDENCE_REVIEW),
+            )
+        // Nunca "Mielocito: 2": una detección al 9 % no se presenta junto a una del 97 % (RF-2).
+        assertEquals(
+            listOf(
+                CellCount("Mielocito", count = 1, confidences = listOf(0.97f)),
+                CellCount(
+                    "Mielocito",
+                    count = 1,
+                    confidences = listOf(0.09f),
+                    level = DetectionLevel.LOW_CONFIDENCE_REVIEW,
+                ),
+            ),
+            CellCountBuilder.build(detections),
+        )
     }
 
     private fun detection(

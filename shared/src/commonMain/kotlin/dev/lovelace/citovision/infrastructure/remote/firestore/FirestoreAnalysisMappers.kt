@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.remote.firestore
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import kotlin.time.Instant
 
@@ -38,6 +39,7 @@ private fun CellCount.toFirestoreValue(position: Int): FirestoreValue =
                         "name" to FirestoreValue(stringValue = name),
                         "count" to FirestoreValue(integerValue = count.toString()),
                         "confidences" to FirestoreValue(stringValue = confidences.toConfidenceCsv()),
+                        "level" to FirestoreValue(stringValue = level.name),
                         "position" to FirestoreValue(integerValue = position.toString()),
                     ),
             ),
@@ -59,6 +61,8 @@ internal fun FirestoreDocument.toAnalysis(): Analysis {
                     // Fallback a documentos antiguos: recuento como prefijo entero del viejo "value" ("3 (75%)").
                     count = entry["count"]?.integerValue?.toIntOrNull() ?: legacyCount(entry["value"]?.stringValue),
                     confidences = entry["confidences"]?.stringValue.toConfidenceList(),
+                    // Los documentos anteriores a la política de umbrales no tienen nivel: son normales.
+                    level = entry["level"]?.stringValue.toDetectionLevel(),
                 )
             }
     return Analysis(
@@ -80,3 +84,6 @@ private fun String?.toConfidenceList(): List<Float> =
     this?.takeIf { it.isNotEmpty() }?.split(CONFIDENCE_SEPARATOR)?.map { it.toFloat() } ?: emptyList()
 
 private fun legacyCount(value: String?): Int = value?.takeWhile { it.isDigit() }?.toIntOrNull() ?: 0
+
+private fun String?.toDetectionLevel(): DetectionLevel =
+    DetectionLevel.entries.firstOrNull { it.name == this } ?: DetectionLevel.STANDARD

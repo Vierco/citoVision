@@ -67,3 +67,19 @@ val MIGRATION_3_4 =
             )
         }
     }
+
+/**
+ * Migración v4 → v5 (SPEC-0006 RN-2): añade la columna `level` a `cell_count_entries` (`DetectionLevel`). No
+ * destructiva (RULES.md §Persistencia): solo añade la columna. Las entradas existentes toman `'STANDARD'`, y
+ * es lo correcto —se generaron con el umbral único de 0.25, así que ninguna puede ser un hallazgo de baja
+ * confianza—. El `DEFAULT` coincide con `@ColumnInfo(defaultValue = "STANDARD")` de [CellCountEntity], que
+ * Room valida al abrir.
+ */
+val MIGRATION_4_5 =
+    object : Migration(4, 5) {
+        override fun migrate(connection: SQLiteConnection) {
+            connection.execSQL(
+                "ALTER TABLE `cell_count_entries` ADD COLUMN `level` TEXT NOT NULL DEFAULT 'STANDARD'",
+            )
+        }
+    }

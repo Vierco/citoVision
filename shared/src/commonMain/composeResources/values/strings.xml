@@ -137,6 +137,9 @@
     <string name="dialog_cell_count_label">Conteo Celular (Resumen)</string>
     <string name="dialog_cell_label">Célula</string>
     <string name="dialog_priority_label">Prioridad de revisión</string>
+    <string name="dialog_low_confidence_label">Posibles hallazgos para revisión</string>
+    <string name="dialog_low_confidence_entry">Posible %1$s — confianza baja: %2$s</string>
+    <string name="dialog_low_confidence_notice">Requieren revisión humana. No son detecciones confirmadas.</string>
 
     <!-- Priority (SPEC-0006) -->
     <string name="priority_low">Baja</string>

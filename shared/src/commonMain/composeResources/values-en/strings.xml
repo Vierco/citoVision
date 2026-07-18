@@ -137,6 +137,9 @@
     <string name="dialog_cell_count_label">Cell Count (Summary)</string>
     <string name="dialog_cell_label">Cell</string>
     <string name="dialog_priority_label">Review priority</string>
+    <string name="dialog_low_confidence_label">Possible findings for review</string>
+    <string name="dialog_low_confidence_entry">Possible %1$s — low confidence: %2$s</string>
+    <string name="dialog_low_confidence_notice">These require human review. They are not confirmed detections.</string>
 
     <!-- Priority (SPEC-0006) -->
     <string name="priority_low">Low</string>

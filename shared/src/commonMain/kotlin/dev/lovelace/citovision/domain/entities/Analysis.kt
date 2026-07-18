@@ -26,9 +26,13 @@ data class Analysis(
  * Entrada del conteo celular (SPEC-0006 RN-6): [count] es el recuento del tipo detectado; [confidences] es
  * la certeza del modelo por célula (0..1), presente **solo en tipos celulares reales** y vacía en las clases
  * no celulares (`Artefacto`, `Restos celulares`).
+ *
+ * [level] separa las detecciones normales de los **posibles hallazgos de baja confianza** (RN-2): un mismo
+ * tipo con detecciones de ambos niveles produce **dos entradas**, nunca una suma (RF-2).
  */
 data class CellCount(
     val name: String,
     val count: Int,
     val confidences: List<Float>,
+    val level: DetectionLevel = DetectionLevel.STANDARD,
 )

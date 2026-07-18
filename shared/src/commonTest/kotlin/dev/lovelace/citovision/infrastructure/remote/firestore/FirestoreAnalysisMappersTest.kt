@@ -2,6 +2,7 @@ package dev.lovelace.citovision.infrastructure.remote.firestore
 
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.domain.entities.CellCount
+import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -139,6 +140,36 @@ class FirestoreAnalysisMappersTest {
         assertEquals("Leuco", first?.get("name")?.stringValue)
         assertEquals("3", first?.get("count")?.integerValue)
         assertEquals("0.9,0.8,0.7", first?.get("confidences")?.stringValue)
+        assertEquals("STANDARD", first?.get("level")?.stringValue)
+    }
+
+    @Test
+    fun `given a low confidence finding when mapping in both directions then the level round-trips`() {
+        val cellCount =
+            CellCount(
+                "Promielocito",
+                count = 1,
+                confidences = listOf(0.09f),
+                level = DetectionLevel.LOW_CONFIDENCE_REVIEW,
+            )
+        val analysis =
+            Analysis(
+                id = "a1",
+                patient = "12-34",
+                performedAt = Instant.fromEpochMilliseconds(2000),
+                summary = "resumen",
+                imagePath = null,
+                cellCounts = listOf(cellCount),
+            )
+
+        val fields = analysisToFirestoreFields(ownerUid = "u1", analysis = analysis, imageUrl = null)
+        val document =
+            FirestoreDocument(
+                name = "projects/p/databases/(default)/documents/analyses/a1",
+                fields = fields,
+            )
+
+        assertEquals(listOf(cellCount), document.toAnalysis().cellCounts)
     }
 
     @Test
