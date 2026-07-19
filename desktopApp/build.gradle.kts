@@ -87,6 +87,13 @@ compose.desktop {
             )
             packageName = "citoVIsion"
             packageVersion = "1.0.0"
+
+            // Icono del .app / .dmg. El icono que se ve al ejecutar con `run` no sale de aquí, sino del
+            // PNG de `resources/icons` que carga Main.kt: este solo aplica al paquete distribuible.
+            // El .icns se genera desde `icons/citovision-1024.png` (ver icons/README.md).
+            macOS {
+                iconFile.set(project.file("icons/citovision.icns"))
+            }
         }
     }
 }
