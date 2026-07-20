@@ -6,10 +6,30 @@ deriva de él, así que cualquier rediseño empieza por sustituir este fichero.
 
 Derivados en uso:
 
-- `citovision.icns` — icono del `.app` y del `.dmg`. Lo consume `compose.desktop.nativeDistributions.macOS`.
-- `../src/desktopMain/resources/icons/citovision.png` (512×512) — icono **en ejecución**: el Dock de macOS
-  vía `java.awt.Taskbar` y la barra de tareas de Windows/Linux vía el parámetro `icon` de la ventana.
-  No sale del `.icns`; son caminos distintos y hay que regenerar los dos.
+- `citovision.icns` — icono del `.app` y del `.dmg`, vía
+  `compose.desktop.nativeDistributions.macOS.iconFile`. **También aplica al ejecutar con `run`**: el plugin
+  lo pasa como `-Xdock:icon` al arrancar la JVM, así que en macOS el Dock ya sale de aquí.
+- `../src/desktopMain/resources/icons/citovision.png` (512×512) — lo carga `Main.kt` para el parámetro
+  `icon` de la ventana, que es lo que gobierna la barra de tareas en Windows y Linux. En macOS la llamada a
+  `java.awt.Taskbar` que hace `Main.kt` es probablemente redundante, porque el `-Xdock:icon` del plugin ya
+  ha fijado el icono del Dock antes.
+
+Son dos ficheros distintos y hay que regenerar los dos: si solo cambias uno, verás el arte nuevo en unas
+plataformas y el viejo en otras.
+
+## El nombre va aparte del icono
+
+El texto que enseña el Dock al pasar el puntero **no** viene de estos ficheros, y se fija por tres vías
+independientes que no se cubren entre sí (si solo pones una, en el resto de sitios sale «java»):
+
+| Dónde se ve | Qué lo fija |
+| --- | --- |
+| Dock con `./gradlew run` | `application.jvmArgs += "-Xdock:name=..."` |
+| Dock del `.app` / `.dmg` | `macOS.dockName` (y `packageName` nombra el bundle) |
+| Barra de menús de macOS | `apple.awt.application.name`, en `Main.kt` antes de que arranque AWT |
+
+Configurar `-Xdock:name` sobre la task `run` desde fuera **no funciona**: el plugin hace `setJvmArgs(...)` y
+reemplaza la lista entera, así que solo sobrevive lo que se declare en el bloque `application`.
 
 ## Regenerar tras cambiar el arte
 
