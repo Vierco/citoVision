@@ -132,6 +132,17 @@ compose.desktop {
                 iconFile.set(project.file("icons/citovision.icns"))
                 dockName = "citoVision"
             }
+
+            // Cada sistema exige su propio formato y ninguno acepta el de los otros: .icns en macOS, .ico en
+            // Windows y PNG en Linux. Los tres se generan desde `icons/citovision-1024.png`; el .ico con
+            // `tools/make_windows_icon.py` (ver icons/README.md).
+            windows {
+                iconFile.set(project.file("icons/citovision.ico"))
+            }
+
+            linux {
+                iconFile.set(project.file("icons/citovision.png"))
+            }
         }
     }
 }

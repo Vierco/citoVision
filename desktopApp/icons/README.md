@@ -9,6 +9,10 @@ Derivados en uso:
 - `citovision.icns` — icono del `.app` y del `.dmg`, vía
   `compose.desktop.nativeDistributions.macOS.iconFile`. **También aplica al ejecutar con `run`**: el plugin
   lo pasa como `-Xdock:icon` al arrancar la JVM, así que en macOS el Dock ya sale de aquí.
+- `citovision.ico` — icono del ejecutable en **Windows**. Contiene la misma imagen a 16, 24, 32, 48, 64, 128
+  y 256 px, porque Windows elige el tamaño según dónde la pinte. Se genera con
+  `python3 tools/make_windows_icon.py`.
+- `citovision.png` (512×512) — icono en **Linux**, que es el único formato que acepta ahí `jpackage`.
 - `../src/desktopMain/resources/icons/citovision.png` (512×512) — lo carga `Main.kt` para el parámetro
   `icon` de la ventana, que es lo que gobierna la barra de tareas en Windows y Linux. En macOS la llamada a
   `java.awt.Taskbar` que hace `Main.kt` es probablemente redundante, porque el `-Xdock:icon` del plugin ya
@@ -46,3 +50,19 @@ sips -z 512 512 citovision-1024.png --out ../src/desktopMain/resources/icons/cit
 
 `iconutil` es estricto con los nombres del `.iconset`: si alguno no encaja con el patrón
 `icon_<w>x<h>[@2x].png` falla con un escueto «Failed to generate ICNS» sin decir cuál.
+
+Y el `.ico` de Windows:
+
+```bash
+python3 tools/make_windows_icon.py
+```
+
+## Aviso sobre el arte en Windows y Linux
+
+El maestro está dibujado con la convención de **macOS**: el arte ocupa el 80,5 % del lienzo y el resto son
+márgenes transparentes, porque el sistema aplica su propia máscara de squircle. Windows y Linux **no
+recortan ni enmascaran**: pintan el PNG tal cual. Reutilizar el mismo arte funciona, pero ahí el icono se ve
+algo más pequeño que los de las apps nativas, con aire alrededor.
+
+Si molesta, la solución no es recortar el maestro por script —el recorte descuadra la sombra— sino dibujar
+una variante que llene el lienzo y usarla solo para `.ico` y el PNG de Linux.
