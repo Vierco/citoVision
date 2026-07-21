@@ -87,18 +87,18 @@ fun LoginScreen(
     onEvent: (LoginUiEvent) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val tertiaryColor = MaterialTheme.colorScheme.tertiary
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
                 .drawBehind {
-                    // Fondo blanco base
-                    drawRect(Color.White)
+                    // Fondo base del tema
+                    drawRect(backgroundColor)
 
                     // Efecto de resplandor azul y morado vertical (mezclados en el centro)
-                    val primaryColor = Color(0xFF2FA7F0)
-                    val tertiaryColor = Color(0xFFA56AE3)
-
                     scale(scaleX = 2.2f, scaleY = 2.5f, pivot = center) {
                         // Resplandor Azul (Posicionado más arriba)
                         val blueCenter = Offset(center.x, center.y - size.height * 0.15f)
@@ -149,14 +149,14 @@ fun LoginScreen(
             Text(
                 text = stringResource(Res.string.app_name),
                 style = MaterialTheme.typography.displayLarge,
-                color = Color(0xFFA56AE3), // Tertiary de DESIGN.md
+                color = MaterialTheme.colorScheme.tertiary,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = stringResource(Res.string.login_secure_access),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF6F6F6F), // onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -168,7 +168,7 @@ fun LoginScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
                 colors =
                     CardDefaults.cardColors(
-                        containerColor = Color.White.copy(alpha = 0.85f),
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
                     ),
             ) {
                 Column(
@@ -182,7 +182,7 @@ fun LoginScreen(
                         text = stringResource(Res.string.login_email_label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF282828), // onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
@@ -212,7 +212,7 @@ fun LoginScreen(
                         text = stringResource(Res.string.login_password_label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF282828),
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
@@ -268,7 +268,7 @@ fun LoginScreen(
                         Text(
                             text = stringResource(Res.string.login_forgot_password),
                             style = MaterialTheme.typography.labelLarge,
-                            color = Color(0xFF2FA7F0), // primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     }
 
@@ -283,7 +283,7 @@ fun LoginScreen(
                                 .height(56.dp),
                         colors =
                             ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF2FA7F0), // Primary
+                                containerColor = MaterialTheme.colorScheme.primary,
                             ),
                         shape = RoundedCornerShape(16.dp), // medium
                         enabled = !uiState.isLoading,
@@ -291,7 +291,7 @@ fun LoginScreen(
                         if (uiState.isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp),
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 strokeWidth = 2.dp,
                             )
                         } else {
@@ -299,12 +299,15 @@ fun LoginScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center,
                             ) {
-                                Text(stringResource(Res.string.login_button_sign_in), color = Color.White)
+                                Text(
+                                    text = stringResource(Res.string.login_button_sign_in),
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
                                 )
                             }
                         }
@@ -317,13 +320,19 @@ fun LoginScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray)
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                        )
                         Text(
                             text = stringResource(Res.string.login_or_separator),
                             modifier = Modifier.padding(horizontal = 12.dp),
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray)
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -351,7 +360,7 @@ fun LoginScreen(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = stringResource(Res.string.login_google_button),
-                                color = Color(0xFF282828),
+                                color = MaterialTheme.colorScheme.onBackground,
                             )
                         }
                     }
@@ -369,11 +378,11 @@ fun LoginScreen(
                     Text(
                         text = stringResource(Res.string.login_guest_button),
                         style = MaterialTheme.typography.labelLarge,
-                        color = Color(0xFF282828),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(">", color = Color(0xFF282828))
+                    Text(">", color = MaterialTheme.colorScheme.onBackground)
                 }
             }
         }
@@ -384,13 +393,13 @@ fun LoginScreen(
             onDismissRequest = { onEvent(LoginUiEvent.DismissError) },
             confirmButton = {
                 OutlinedButton(onClick = { onEvent(LoginUiEvent.DismissError) }) {
-                    Text(stringResource(Res.string.common_close), color = Color(0xFF2FA7F0))
+                    Text(stringResource(Res.string.common_close), color = MaterialTheme.colorScheme.primary)
                 }
             },
             title = {
                 Text(
                     stringResource(Res.string.login_error_title),
-                    color = Color(0xFF282828),
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleMedium,
                 )
             },
@@ -400,7 +409,7 @@ fun LoginScreen(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             },
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(28.dp),
         )
     }
@@ -413,17 +422,20 @@ fun LoginScreen(
                 Button(
                     onClick = { onEvent(LoginUiEvent.SendPasswordReset) },
                     enabled = !uiState.forgotSending,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2FA7F0)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     if (uiState.forgotSending) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(20.dp),
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             strokeWidth = 2.dp,
                         )
                     } else {
-                        Text(stringResource(Res.string.forgot_send_button), color = Color.White)
+                        Text(
+                            text = stringResource(Res.string.forgot_send_button),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
                     }
                 }
             },
@@ -432,13 +444,13 @@ fun LoginScreen(
                     onClick = { onEvent(LoginUiEvent.DismissForgotPassword) },
                     enabled = !uiState.forgotSending,
                 ) {
-                    Text(stringResource(Res.string.common_cancel), color = Color(0xFF6F6F6F))
+                    Text(stringResource(Res.string.common_cancel), color = MaterialTheme.colorScheme.onSurface)
                 }
             },
             title = {
                 Text(
                     stringResource(Res.string.forgot_dialog_title),
-                    color = Color(0xFF282828),
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleMedium,
                 )
             },
@@ -447,7 +459,7 @@ fun LoginScreen(
                     Text(
                         stringResource(Res.string.forgot_dialog_desc),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF6F6F6F),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -477,12 +489,12 @@ fun LoginScreen(
                         Text(
                             stringResource(err),
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFF53A63), // error
+                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
             },
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(28.dp),
         )
     }
@@ -493,13 +505,13 @@ fun LoginScreen(
             onDismissRequest = { onEvent(LoginUiEvent.DismissResetConfirmation) },
             confirmButton = {
                 OutlinedButton(onClick = { onEvent(LoginUiEvent.DismissResetConfirmation) }) {
-                    Text(stringResource(Res.string.common_close), color = Color(0xFF2FA7F0))
+                    Text(stringResource(Res.string.common_close), color = MaterialTheme.colorScheme.primary)
                 }
             },
             title = {
                 Text(
                     stringResource(Res.string.reset_sent_title),
-                    color = Color(0xFF282828),
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleMedium,
                 )
             },
@@ -509,7 +521,7 @@ fun LoginScreen(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             },
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(28.dp),
         )
     }

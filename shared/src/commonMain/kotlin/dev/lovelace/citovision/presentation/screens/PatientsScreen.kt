@@ -34,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -189,8 +188,8 @@ private fun SearchInput(
                 KeyboardActions(onSearch = { if (isValid) onEvent(PatientsUiEvent.Search) }),
             colors =
                 OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
                     focusedPlaceholderColor = hint,
                     unfocusedPlaceholderColor = hint,
                     disabledPlaceholderColor = hint,
