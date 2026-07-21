@@ -81,6 +81,7 @@ import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
 import dev.lovelace.citovision.ui.theme.error
 import dev.lovelace.citovision.ui.theme.getTypography
+import dev.lovelace.citovision.ui.theme.hint
 import dev.lovelace.citovision.ui.theme.secondaryDark
 import dev.lovelace.citovision.ui.theme.warning
 import org.jetbrains.compose.resources.stringResource
@@ -309,7 +310,7 @@ private fun LowConfidenceFindings(cellCounts: List<CellCount>) {
                             "${(confidence * 100).roundToInt()}%",
                         ),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = hint,
                 )
             }
         }

@@ -39,6 +39,11 @@ sealed interface SettingsUiEvent {
     /** Cerrar el aviso de error al enviar el feedback (el diálogo permanece para reintentar). */
     data object DismissFeedbackError : SettingsUiEvent
 
+    /** Abrir una URL externa (licencias de terceros) en el navegador del sistema. */
+    data class OpenExternalUrl(
+        val url: String,
+    ) : SettingsUiEvent
+
     /** Volver a la pantalla anterior. */
     data object NavigateBack : SettingsUiEvent
 }

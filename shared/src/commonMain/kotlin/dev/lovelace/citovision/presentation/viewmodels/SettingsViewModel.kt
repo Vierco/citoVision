@@ -2,6 +2,7 @@ package dev.lovelace.citovision.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.lovelace.citovision.application.ports.UrlOpener
 import dev.lovelace.citovision.application.usecases.DeleteAllAnalysesUseCase
 import dev.lovelace.citovision.application.usecases.ObserveCurrentUserUseCase
 import dev.lovelace.citovision.application.usecases.ObserveSessionStatusUseCase
@@ -31,6 +32,7 @@ class SettingsViewModel(
     private val signOut: SignOutUseCase,
     private val deleteAllAnalyses: DeleteAllAnalysesUseCase,
     private val submitFeedback: SubmitFeedbackUseCase,
+    private val urlOpener: UrlOpener,
     observeSessionStatus: ObserveSessionStatusUseCase,
     observeCurrentUser: ObserveCurrentUserUseCase,
 ) : ViewModel() {
@@ -118,6 +120,9 @@ class SettingsViewModel(
 
             SettingsUiEvent.DismissFeedbackError ->
                 feedbackForm.update { it.copy(errorVisible = false) }
+
+            is SettingsUiEvent.OpenExternalUrl ->
+                urlOpener.open(event.url)
 
             SettingsUiEvent.NavigateBack ->
                 viewModelScope.launch {
