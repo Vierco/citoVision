@@ -135,7 +135,7 @@ import coil3.compose.AsyncImage
 import dev.lovelace.citovision.application.usecases.SessionStatus
 import dev.lovelace.citovision.presentation.events.SettingsUiEvent
 import dev.lovelace.citovision.presentation.state.SettingsUiState
-import dev.lovelace.citovision.ui.theme.hint
+import dev.lovelace.citovision.ui.theme.LocalAppColors
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -515,7 +515,7 @@ fun SettingsScreen(
             Text(
                 text = stringResource(Res.string.settings_copyright),
                 style = MaterialTheme.typography.bodyMedium,
-                color = hint,
+                color = LocalAppColors.current.hint,
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -624,9 +624,9 @@ private fun FeedbackDialog(
                         KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                     colors =
                         OutlinedTextFieldDefaults.colors(
-                            focusedPlaceholderColor = hint,
-                            unfocusedPlaceholderColor = hint,
-                            disabledPlaceholderColor = hint,
+                            focusedPlaceholderColor = LocalAppColors.current.hint,
+                            unfocusedPlaceholderColor = LocalAppColors.current.hint,
+                            disabledPlaceholderColor = LocalAppColors.current.hint,
                         ),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -649,9 +649,9 @@ private fun FeedbackDialog(
                     shape = RoundedCornerShape(12.dp),
                     colors =
                         OutlinedTextFieldDefaults.colors(
-                            focusedPlaceholderColor = hint,
-                            unfocusedPlaceholderColor = hint,
-                            disabledPlaceholderColor = hint,
+                            focusedPlaceholderColor = LocalAppColors.current.hint,
+                            unfocusedPlaceholderColor = LocalAppColors.current.hint,
+                            disabledPlaceholderColor = LocalAppColors.current.hint,
                         ),
                 )
             }
@@ -793,7 +793,7 @@ private fun ThirdPartyDialog(
                         Text(
                             text = stringResource(Res.string.third_party_ultralytics_pending),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = hint,
+                            color = LocalAppColors.current.hint,
                             modifier = Modifier.padding(start = 20.dp),
                         )
                     }

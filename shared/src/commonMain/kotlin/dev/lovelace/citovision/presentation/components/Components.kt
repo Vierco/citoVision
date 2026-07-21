@@ -79,11 +79,8 @@ import coil3.compose.SubcomposeAsyncImage
 import dev.lovelace.citovision.domain.entities.CellCount
 import dev.lovelace.citovision.domain.entities.DetectionLevel
 import dev.lovelace.citovision.domain.entities.Priority
-import dev.lovelace.citovision.ui.theme.error
+import dev.lovelace.citovision.ui.theme.LocalAppColors
 import dev.lovelace.citovision.ui.theme.getTypography
-import dev.lovelace.citovision.ui.theme.hint
-import dev.lovelace.citovision.ui.theme.secondaryDark
-import dev.lovelace.citovision.ui.theme.warning
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.roundToInt
@@ -208,17 +205,17 @@ fun PriorityBadge(
     val levelLabel: String
     when (priority) {
         Priority.ALTA -> {
-            color = error
+            color = MaterialTheme.colorScheme.error
             icon = Icons.Filled.KeyboardDoubleArrowUp
             levelLabel = stringResource(Res.string.priority_high)
         }
         Priority.MEDIA -> {
-            color = warning
+            color = LocalAppColors.current.warning
             icon = Icons.Filled.Remove
             levelLabel = stringResource(Res.string.priority_medium)
         }
         Priority.BAJA -> {
-            color = secondaryDark
+            color = LocalAppColors.current.secondaryDark
             icon = Icons.Filled.KeyboardDoubleArrowDown
             levelLabel = stringResource(Res.string.priority_low)
         }
@@ -310,14 +307,14 @@ private fun LowConfidenceFindings(cellCounts: List<CellCount>) {
                             "${(confidence * 100).roundToInt()}%",
                         ),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = hint,
+                    color = LocalAppColors.current.hint,
                 )
             }
         }
         Text(
             text = stringResource(Res.string.dialog_low_confidence_notice),
             style = MaterialTheme.typography.bodyMedium,
-            color = warning,
+            color = LocalAppColors.current.warning,
         )
     }
 }

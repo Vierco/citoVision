@@ -77,7 +77,7 @@ import citovision.shared.generated.resources.reset_sent_desc
 import citovision.shared.generated.resources.reset_sent_title
 import dev.lovelace.citovision.presentation.events.LoginUiEvent
 import dev.lovelace.citovision.presentation.state.LoginUiState
-import dev.lovelace.citovision.ui.theme.hint
+import dev.lovelace.citovision.ui.theme.LocalAppColors
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -199,9 +199,9 @@ fun LoginScreen(
                             KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                         colors =
                             OutlinedTextFieldDefaults.colors(
-                                focusedPlaceholderColor = hint,
-                                unfocusedPlaceholderColor = hint,
-                                disabledPlaceholderColor = hint,
+                                focusedPlaceholderColor = LocalAppColors.current.hint,
+                                unfocusedPlaceholderColor = LocalAppColors.current.hint,
+                                disabledPlaceholderColor = LocalAppColors.current.hint,
                             ),
                     )
 
@@ -254,9 +254,9 @@ fun LoginScreen(
                             ),
                         colors =
                             OutlinedTextFieldDefaults.colors(
-                                focusedPlaceholderColor = hint,
-                                unfocusedPlaceholderColor = hint,
-                                disabledPlaceholderColor = hint,
+                                focusedPlaceholderColor = LocalAppColors.current.hint,
+                                unfocusedPlaceholderColor = LocalAppColors.current.hint,
+                                disabledPlaceholderColor = LocalAppColors.current.hint,
                             ),
                     )
 
@@ -479,9 +479,9 @@ fun LoginScreen(
                             ),
                         colors =
                             OutlinedTextFieldDefaults.colors(
-                                focusedPlaceholderColor = hint,
-                                unfocusedPlaceholderColor = hint,
-                                disabledPlaceholderColor = hint,
+                                focusedPlaceholderColor = LocalAppColors.current.hint,
+                                unfocusedPlaceholderColor = LocalAppColors.current.hint,
+                                disabledPlaceholderColor = LocalAppColors.current.hint,
                             ),
                     )
                     uiState.forgotError?.let { err ->

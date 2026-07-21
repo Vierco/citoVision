@@ -280,7 +280,7 @@ onTertiary: "#FFFFFF" # Texto sobre morado
 
 # Background
 background: "#111318" # Fondo principal (oscuro con tinte azulado)
-surface: "#1B1E24"    # Superficie (algo más clara que el fondo, para cards)
+surface: "#262A33"    # Superficie (claramente más clara que el fondo, para diferenciar las cards)
 onBackground: "#ECECEC" # Texto principal
 onSurface: "#A8A8A8"    # Texto secundario/aclaratorio
 hint: "#707070"         # Texto suave: placeholders/hints (más tenue que onSurface)
