@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -47,6 +49,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,18 +58,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
@@ -164,6 +172,7 @@ fun SettingsScreen(
                         showLogoutDialog = false
                         onEvent(SettingsUiEvent.SignOut)
                     },
+                    modifier = Modifier.focusRequester(rememberDialogPrimaryFocus()),
                     colors =
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
@@ -219,6 +228,7 @@ fun SettingsScreen(
                         showClearAnalysesDialog = false
                         onEvent(SettingsUiEvent.ClearLocalAnalyses)
                     },
+                    modifier = Modifier.focusRequester(rememberDialogPrimaryFocus()),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                     shape = RoundedCornerShape(16.dp),
                 ) {
@@ -257,6 +267,7 @@ fun SettingsScreen(
             confirmButton = {
                 Button(
                     onClick = { onEvent(SettingsUiEvent.DismissClearedConfirmation) },
+                    modifier = Modifier.focusRequester(rememberDialogPrimaryFocus()),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp),
                 ) {
@@ -291,6 +302,7 @@ fun SettingsScreen(
             confirmButton = {
                 Button(
                     onClick = { onEvent(SettingsUiEvent.DismissFeedbackSent) },
+                    modifier = Modifier.focusRequester(rememberDialogPrimaryFocus()),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp),
                 ) {
@@ -321,6 +333,7 @@ fun SettingsScreen(
             confirmButton = {
                 Button(
                     onClick = { onEvent(SettingsUiEvent.DismissFeedbackError) },
+                    modifier = Modifier.focusRequester(rememberDialogPrimaryFocus()),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp),
                 ) {
@@ -573,6 +586,7 @@ private fun FeedbackDialog(
     uiState: SettingsUiState,
     onEvent: (SettingsUiEvent) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
     AlertDialog(
         onDismissRequest = { onEvent(SettingsUiEvent.CancelFeedback) },
         title = {
@@ -605,6 +619,9 @@ private fun FeedbackDialog(
                     singleLine = true,
                     enabled = !uiState.feedbackSending,
                     shape = RoundedCornerShape(12.dp),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions =
+                        KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                     colors =
                         OutlinedTextFieldDefaults.colors(
                             focusedPlaceholderColor = hint,
@@ -728,6 +745,7 @@ private fun LicenseDialog(onClose: () -> Unit) {
         confirmButton = {
             Button(
                 onClick = onClose,
+                modifier = Modifier.focusRequester(rememberDialogPrimaryFocus()),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(16.dp),
             ) {
@@ -785,6 +803,7 @@ private fun ThirdPartyDialog(
         confirmButton = {
             Button(
                 onClick = onClose,
+                modifier = Modifier.focusRequester(rememberDialogPrimaryFocus()),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(16.dp),
             ) {
@@ -874,6 +893,18 @@ private val thirdPartyLibraries: List<Pair<StringResource, String>> =
         Res.string.third_party_coroutines_datetime to "https://www.apache.org/licenses/LICENSE-2.0",
         Res.string.third_party_filekit to "https://opensource.org/license/mit",
     )
+
+/**
+ * Enfoca el botón primario de un diálogo al abrirse. En escritorio, un botón con foco se activa con Enter
+ * por la semántica `clickable` de Compose, así que basta con darle el foco para que Enter equivalga a
+ * pulsarlo. Solo se usa en diálogos sin campo de texto, para no robar el foco a la escritura.
+ */
+@Composable
+private fun rememberDialogPrimaryFocus(): FocusRequester {
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+    return focusRequester
+}
 
 @Composable
 private fun SettingsSectionCard(

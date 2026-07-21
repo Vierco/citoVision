@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -39,11 +41,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -81,6 +86,7 @@ fun LoginScreen(
     uiState: LoginUiState,
     onEvent: (LoginUiEvent) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
     Box(
         modifier =
             Modifier
@@ -188,6 +194,9 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         enabled = !uiState.isLoading,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions =
+                            KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                         colors =
                             OutlinedTextFieldDefaults.colors(
                                 focusedPlaceholderColor = hint,
@@ -238,6 +247,11 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         enabled = !uiState.isLoading,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+                        keyboardActions =
+                            KeyboardActions(
+                                onGo = { if (!uiState.isLoading) onEvent(LoginUiEvent.Submit) },
+                            ),
                         colors =
                             OutlinedTextFieldDefaults.colors(
                                 focusedPlaceholderColor = hint,
@@ -446,6 +460,11 @@ fun LoginScreen(
                         singleLine = true,
                         isError = uiState.forgotError != null,
                         enabled = !uiState.forgotSending,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions =
+                            KeyboardActions(
+                                onDone = { if (!uiState.forgotSending) onEvent(LoginUiEvent.SendPasswordReset) },
+                            ),
                         colors =
                             OutlinedTextFieldDefaults.colors(
                                 focusedPlaceholderColor = hint,
