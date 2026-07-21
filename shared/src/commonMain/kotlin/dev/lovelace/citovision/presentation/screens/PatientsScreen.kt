@@ -65,6 +65,7 @@ import dev.lovelace.citovision.presentation.events.PatientsUiEvent
 import dev.lovelace.citovision.presentation.format.formatAnalysisDateTime
 import dev.lovelace.citovision.presentation.state.PatientsUiState
 import dev.lovelace.citovision.presentation.viewmodels.PatientsViewModel
+import dev.lovelace.citovision.ui.theme.hint
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -184,6 +185,9 @@ private fun SearchInput(
                 OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
+                    focusedPlaceholderColor = hint,
+                    unfocusedPlaceholderColor = hint,
+                    disabledPlaceholderColor = hint,
                 ),
         )
         Spacer(modifier = Modifier.height(24.dp))

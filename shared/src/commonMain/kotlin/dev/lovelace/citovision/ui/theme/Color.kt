@@ -22,6 +22,7 @@ val background = Color(0xFFFFFFFF)
 val surface = Color(0xFFFFFFFF)
 val onBackground = Color(0xFF282828)
 val onSurface = Color(0xFF6F6F6F)
+val hint = Color(0xFF9E9E9E)
 
 // Semantic Colors
 val success = Color(0xFF2FD38A)

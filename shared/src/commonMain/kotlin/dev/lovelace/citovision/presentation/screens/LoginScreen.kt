@@ -32,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -71,6 +72,7 @@ import citovision.shared.generated.resources.reset_sent_desc
 import citovision.shared.generated.resources.reset_sent_title
 import dev.lovelace.citovision.presentation.events.LoginUiEvent
 import dev.lovelace.citovision.presentation.state.LoginUiState
+import dev.lovelace.citovision.ui.theme.hint
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -186,6 +188,12 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         enabled = !uiState.isLoading,
+                        colors =
+                            OutlinedTextFieldDefaults.colors(
+                                focusedPlaceholderColor = hint,
+                                unfocusedPlaceholderColor = hint,
+                                disabledPlaceholderColor = hint,
+                            ),
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -230,6 +238,12 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         enabled = !uiState.isLoading,
+                        colors =
+                            OutlinedTextFieldDefaults.colors(
+                                focusedPlaceholderColor = hint,
+                                unfocusedPlaceholderColor = hint,
+                                disabledPlaceholderColor = hint,
+                            ),
                     )
 
                     TextButton(
@@ -432,6 +446,12 @@ fun LoginScreen(
                         singleLine = true,
                         isError = uiState.forgotError != null,
                         enabled = !uiState.forgotSending,
+                        colors =
+                            OutlinedTextFieldDefaults.colors(
+                                focusedPlaceholderColor = hint,
+                                unfocusedPlaceholderColor = hint,
+                                disabledPlaceholderColor = hint,
+                            ),
                     )
                     uiState.forgotError?.let { err ->
                         Spacer(modifier = Modifier.height(8.dp))

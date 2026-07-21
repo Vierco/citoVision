@@ -43,6 +43,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -102,6 +103,7 @@ import coil3.compose.AsyncImage
 import dev.lovelace.citovision.application.usecases.SessionStatus
 import dev.lovelace.citovision.presentation.events.SettingsUiEvent
 import dev.lovelace.citovision.presentation.state.SettingsUiState
+import dev.lovelace.citovision.ui.theme.hint
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -632,6 +634,12 @@ private fun FeedbackDialog(
                     singleLine = true,
                     enabled = !uiState.feedbackSending,
                     shape = RoundedCornerShape(12.dp),
+                    colors =
+                        OutlinedTextFieldDefaults.colors(
+                            focusedPlaceholderColor = hint,
+                            unfocusedPlaceholderColor = hint,
+                            disabledPlaceholderColor = hint,
+                        ),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -651,6 +659,12 @@ private fun FeedbackDialog(
                     placeholder = { Text(stringResource(Res.string.feedback_message_placeholder)) },
                     enabled = !uiState.feedbackSending,
                     shape = RoundedCornerShape(12.dp),
+                    colors =
+                        OutlinedTextFieldDefaults.colors(
+                            focusedPlaceholderColor = hint,
+                            unfocusedPlaceholderColor = hint,
+                            disabledPlaceholderColor = hint,
+                        ),
                 )
             }
         },

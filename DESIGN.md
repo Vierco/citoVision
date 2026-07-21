@@ -81,7 +81,9 @@ background: "#FFFFFF" # Fondo principal
 surface: "#FFFFFF"    # Superficie
 onBackground: "#282828" # Texto principal
 onSurface: "#6F6F6F"    # Texto secundario/aclaratorio
+hint: "#9E9E9E"         # Texto suave: placeholders/hints de campos de texto (tercer nivel, más tenue que onSurface)
 ```
+> Nota de accesibilidad: `hint` (#9E9E9E) tiene un contraste ~2.9:1 sobre blanco, por debajo de WCAG AA (4.5:1). Se admite únicamente para el texto de *placeholder* de los campos, que no es contenido esencial (cada campo lleva su label visible encima) y desaparece al escribir. No usar `hint` para contenido de lectura.
 
 ## Semantic Colors
 
