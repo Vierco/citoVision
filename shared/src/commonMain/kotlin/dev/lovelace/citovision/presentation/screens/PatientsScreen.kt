@@ -115,7 +115,7 @@ private fun PatientsContent(
 
     uiState.detail?.let { analysis ->
         AnalysisDetailDialog(
-            title = stringResource(Res.string.analysis_card_title),
+            title = analysis.sampleName ?: stringResource(Res.string.analysis_card_title),
             patient = analysis.patient,
             date = analysis.performedAt.formatAnalysisDateTime(),
             priority = analysis.priority,
@@ -259,7 +259,7 @@ private fun ResultsView(
         ) {
             items(results) { analysis ->
                 AnalysisCard(
-                    title = title,
+                    title = analysis.sampleName ?: title,
                     date = analysis.performedAt.formatAnalysisDateTime(),
                     patient = analysis.patient,
                     description = analysis.summary,
