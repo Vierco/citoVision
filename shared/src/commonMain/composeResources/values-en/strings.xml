@@ -11,7 +11,8 @@
     <string name="login_password_placeholder">••••••••</string>
     <string name="login_forgot_password">Forgot your password?</string>
     <string name="login_button_sign_in">Sign In</string>
-    <string name="login_or_separator">or</string>
+    <string name="login_or_separator">or</string>Actualiz LA rm -rf ~/.citovision
+
     <string name="login_google_button">Login with Google</string>
     <string name="login_guest_button">Continue as guest</string>
     <string name="login_show_password">Show password</string>

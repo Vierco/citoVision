@@ -2,6 +2,7 @@ package dev.lovelace.citovision.presentation.viewmodels
 
 import dev.lovelace.citovision.application.ports.AnalysisRepository
 import dev.lovelace.citovision.application.ports.AuthService
+import dev.lovelace.citovision.application.ports.PatientCodeRepository
 import dev.lovelace.citovision.application.ports.RemoteFeedback
 import dev.lovelace.citovision.application.ports.SessionRepository
 import dev.lovelace.citovision.application.ports.ThemeRepository
@@ -55,7 +56,8 @@ class SettingsViewModelTest {
     private val remoteFeedback = mock<RemoteFeedback>()
     private val urlOpener = mock<UrlOpener>()
     private val themeRepository = mock<ThemeRepository>()
-    private val signOut = SignOutUseCase(authService, sessionRepository)
+    private val patientCodeRepository = mock<PatientCodeRepository>()
+    private val signOut = SignOutUseCase(authService, sessionRepository, patientCodeRepository)
     private val deleteAllAnalyses = DeleteAllAnalysesUseCase(analysisRepository)
     private val submitFeedback = SubmitFeedbackUseCase(remoteFeedback, authService)
     private val observeSessionStatus = ObserveSessionStatusUseCase(authService, sessionRepository)
@@ -100,6 +102,7 @@ class SettingsViewModelTest {
         runTest(dispatcher) {
             // Given
             everySuspend { sessionRepository.setGuestSession(false) } returns Unit
+            everySuspend { patientCodeRepository.clear() } returns Unit
             everySuspend { authService.signOut() } returns Result.Success(Unit)
             val viewModel = buildViewModel()
 
