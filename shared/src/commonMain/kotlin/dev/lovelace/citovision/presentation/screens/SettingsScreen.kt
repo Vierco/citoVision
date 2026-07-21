@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -47,6 +48,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -115,6 +117,10 @@ import citovision.shared.generated.resources.settings_logout
 import citovision.shared.generated.resources.settings_section_actions
 import citovision.shared.generated.resources.settings_section_others
 import citovision.shared.generated.resources.settings_section_support
+import citovision.shared.generated.resources.settings_theme_dark
+import citovision.shared.generated.resources.settings_theme_light
+import citovision.shared.generated.resources.settings_theme_system
+import citovision.shared.generated.resources.settings_theme_title
 import citovision.shared.generated.resources.settings_third_party
 import citovision.shared.generated.resources.settings_version
 import citovision.shared.generated.resources.settings_version_value
@@ -133,6 +139,7 @@ import citovision.shared.generated.resources.third_party_univali
 import citovision.shared.generated.resources.third_party_yolo
 import coil3.compose.AsyncImage
 import dev.lovelace.citovision.application.usecases.SessionStatus
+import dev.lovelace.citovision.domain.settings.ThemePreference
 import dev.lovelace.citovision.presentation.events.SettingsUiEvent
 import dev.lovelace.citovision.presentation.state.SettingsUiState
 import dev.lovelace.citovision.ui.theme.LocalAppColors
@@ -488,6 +495,29 @@ fun SettingsScreen(
                     text = stringResource(Res.string.settings_feedback),
                     icon = Icons.Default.Feedback,
                     onClick = { onEvent(SettingsUiEvent.OpenFeedback) },
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Sección Tema
+            SettingsSectionCard(title = stringResource(Res.string.settings_theme_title)) {
+                ThemeOption(
+                    label = stringResource(Res.string.settings_theme_light),
+                    selected = uiState.themePreference == ThemePreference.LIGHT,
+                    onClick = { onEvent(SettingsUiEvent.SetTheme(ThemePreference.LIGHT)) },
+                )
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
+                ThemeOption(
+                    label = stringResource(Res.string.settings_theme_dark),
+                    selected = uiState.themePreference == ThemePreference.DARK,
+                    onClick = { onEvent(SettingsUiEvent.SetTheme(ThemePreference.DARK)) },
+                )
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
+                ThemeOption(
+                    label = stringResource(Res.string.settings_theme_system),
+                    selected = uiState.themePreference == ThemePreference.SYSTEM,
+                    onClick = { onEvent(SettingsUiEvent.SetTheme(ThemePreference.SYSTEM)) },
                 )
             }
 
@@ -904,6 +934,31 @@ private fun rememberDialogPrimaryFocus(): FocusRequester {
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
     return focusRequester
+}
+
+/** Una opción de tema (Claro/Oscuro/Seguir sistema): fila seleccionable con radio + etiqueta. */
+@Composable
+private fun ThemeOption(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+    }
 }
 
 @Composable

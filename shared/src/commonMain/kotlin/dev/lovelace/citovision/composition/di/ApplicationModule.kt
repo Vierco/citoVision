@@ -16,6 +16,8 @@ import dev.lovelace.citovision.application.usecases.SignInAsGuestUseCase
 import dev.lovelace.citovision.application.usecases.SignInWithEmailUseCase
 import dev.lovelace.citovision.application.usecases.SignInWithGoogleUseCase
 import dev.lovelace.citovision.application.usecases.SignOutUseCase
+import dev.lovelace.citovision.application.usecases.ObserveThemePreferenceUseCase
+import dev.lovelace.citovision.application.usecases.SetThemePreferenceUseCase
 import dev.lovelace.citovision.application.usecases.SubmitFeedbackUseCase
 import dev.lovelace.citovision.application.usecases.SyncAnalysisUseCase
 import org.koin.core.module.dsl.factoryOf
@@ -43,4 +45,6 @@ val applicationModule =
         factoryOf(::SearchPatientAnalysesUseCase)
         factoryOf(::DeleteRemoteAnalysisUseCase)
         factoryOf(::SubmitFeedbackUseCase)
+        factoryOf(::ObserveThemePreferenceUseCase)
+        factoryOf(::SetThemePreferenceUseCase)
     }

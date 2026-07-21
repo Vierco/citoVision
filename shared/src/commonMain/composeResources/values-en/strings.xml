@@ -18,7 +18,7 @@
     <string name="login_hide_password">Hide password</string>
     <string name="login_error_email_format">Invalid email format</string>
     <string name="login_error_password_chars">Invalid characters</string>
-    <string name="login_error_password_desc">Only uppercase, lowercase letters and numbers are allowed.</string>
+    <string name="login_error_password_desc">Only uppercase, lowercase letters and numbers are allowed.</string>Vale he detactado
     <string name="login_error_title">Sign-in failed</string>
     <string name="login_error_password_length">Password must be at least 6 characters.</string>
     <string name="login_error_invalid_credentials">Incorrect email or password.</string>
@@ -34,7 +34,7 @@
     <string name="common_cancel">Cancel</string>
     <string name="common_close">Close</string>
 
-    <!-- Settings -->
+    <!-- Settings -->Perfect
     <string name="settings_guest">Guest</string>
     <string name="settings_login">Sign in with an account</string>
     <string name="settings_logout">Sign out</string>
@@ -43,6 +43,10 @@
     <string name="settings_section_actions">Actions</string>
     <string name="settings_section_support">Support</string>
     <string name="settings_section_others">Others</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_system">Follow system</string>
     <string name="settings_clear_analysis">Clear all local analysis</string>
     <string name="settings_clear_confirm_title">Delete all local analyses?</string>
     <string name="settings_clear_confirm_message">All analyses stored on this device will be removed. This action cannot be undone.</string>
@@ -61,7 +65,7 @@
     <string name="settings_license">License</string>
     <string name="settings_version">Version</string>
     <string name="settings_version_value">1.0.0 (Build 1)</string>
-    <string name="settings_copyright">2026 - Lovelaced</string>
+    <string name="settings_copyright">2026 - Lovelaced / Sergio Álvarez.</string>
     <string name="settings_third_party">Third party</string>
     <string name="third_party_yolo">Ultralytics YOLO — AGPL-3.0</string>
     <string name="third_party_ultralytics_pending">Ultralytics commercial license pending</string>
