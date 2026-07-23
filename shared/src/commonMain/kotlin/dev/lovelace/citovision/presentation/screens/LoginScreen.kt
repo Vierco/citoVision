@@ -141,7 +141,7 @@ fun LoginScreen(
                 Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -159,7 +159,7 @@ fun LoginScreen(
                 color = MaterialTheme.colorScheme.onSurface,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Card con elevación y ligera transparencia
             Card(
@@ -174,7 +174,7 @@ fun LoginScreen(
                 Column(
                     modifier =
                         Modifier
-                            .padding(16.dp)
+                            .padding(24.dp)
                             .fillMaxWidth(),
                 ) {
                     // Campo Usuario
@@ -184,7 +184,7 @@ fun LoginScreen(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = uiState.email,
                         onValueChange = { onEvent(LoginUiEvent.EmailChanged(it)) },
@@ -205,7 +205,7 @@ fun LoginScreen(
                             ),
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     // Campo Contraseña
                     Text(
@@ -214,7 +214,7 @@ fun LoginScreen(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = uiState.password,
                         onValueChange = { onEvent(LoginUiEvent.PasswordChanged(it)) },
@@ -272,7 +272,7 @@ fun LoginScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     // Botón Iniciar Sesión (Primary)
                     Button(
@@ -313,7 +313,7 @@ fun LoginScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     // Separador "o"
                     Row(
@@ -335,7 +335,7 @@ fun LoginScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     // Login con Google
                     OutlinedButton(
@@ -367,12 +367,11 @@ fun LoginScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Footer Continuar como invitado
             TextButton(
                 onClick = { onEvent(LoginUiEvent.GuestAccess) },
-                modifier = Modifier.padding(bottom = 16.dp),
                 enabled = !uiState.isLoading,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -462,7 +461,7 @@ fun LoginScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = uiState.forgotEmail,
                         onValueChange = { onEvent(LoginUiEvent.ForgotEmailChanged(it)) },
@@ -486,7 +485,7 @@ fun LoginScreen(
                             ),
                     )
                     uiState.forgotError?.let { err ->
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             stringResource(err),
                             style = MaterialTheme.typography.bodySmall,

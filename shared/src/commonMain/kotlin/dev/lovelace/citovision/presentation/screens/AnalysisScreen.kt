@@ -100,11 +100,11 @@ private fun AnalysisContent(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp),
+                .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Text(
             text = stringResource(Res.string.analysis_upload_title),
@@ -113,7 +113,7 @@ private fun AnalysisContent(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = stringResource(Res.string.analysis_upload_desc),
@@ -122,7 +122,7 @@ private fun AnalysisContent(
             color = MaterialTheme.colorScheme.onSurface,
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(48.dp))
 
         // Zona de carga: vacía (selector) o con la imagen seleccionada (preview).
         val outlineColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
@@ -207,7 +207,7 @@ private fun AnalysisContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Botón de escáner: habilitado y en verde secundario solo cuando hay imagen (SPEC-0003 RF-5).
         // Al pulsar ejecuta el modelo (SPEC-0006); mientras analiza muestra un indicador de progreso.
@@ -291,19 +291,19 @@ private fun EmptyUploadContent(
         Box(
             modifier =
                 Modifier
-                    .size(80.dp)
+                    .size(100.dp)
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f), CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Default.FileUpload,
                 contentDescription = null,
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.primary,
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = { onEvent(AnalysisUiEvent.SelectImage) },
@@ -323,7 +323,7 @@ private fun EmptyUploadContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = stringResource(Res.string.analysis_supported_formats),
@@ -429,7 +429,7 @@ private fun InferenceErrorDialog(
 }
 
 /** Altura máxima de la zona de preview; también la altura fija del estado vacío. */
-private val MAX_PREVIEW_HEIGHT = 240.dp
+private val MAX_PREVIEW_HEIGHT = 280.dp
 
 /** Borde punteado redondeado reutilizable para la zona de carga/preview (SPEC-0003). */
 private fun Modifier.dashedBorder(color: Color): Modifier =
