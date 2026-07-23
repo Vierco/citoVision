@@ -35,6 +35,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,9 +87,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun AnalysisScreen() {
+fun AnalysisScreen(onAnalysisSaved: (analysisId: String) -> Unit) {
     val viewModel = koinViewModel<AnalysisViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(viewModel) {
+        viewModel.savedEvents.collect { analysisId -> onAnalysisSaved(analysisId) }
+    }
     AnalysisContent(uiState = uiState, onEvent = viewModel::onEvent)
 }
 

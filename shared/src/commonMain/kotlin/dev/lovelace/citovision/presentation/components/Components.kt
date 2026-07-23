@@ -1,5 +1,6 @@
 package dev.lovelace.citovision.presentation.components
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -8,6 +9,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +44,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -330,9 +333,15 @@ private fun NonDiagnosticNotice() {
     )
 }
 
+/** Pulsos y duración del destello del borde de una card recién creada. DESIGN.md no define tokens de motion. */
+private const val HIGHLIGHT_PULSES = 2
+private const val HIGHLIGHT_PULSE_MILLIS = 320
+
 /**
  * Card de un análisis del historial. [onLongClick] ofrece el borrado (SPEC-0004 RF-5).
  * Si [imagePath] es nulo o el fichero no existe, se muestra un placeholder gris (RN-5).
+ * Si [highlight] es `true`, el borde destella para señalar una card recién creada y avisa con
+ * [onHighlightFinished] al terminar (para que el llamante marque el destello como consumido).
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -346,12 +355,31 @@ fun AnalysisCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onLongClick: (() -> Unit)? = null,
+    highlight: Boolean = false,
+    onHighlightFinished: () -> Unit = {},
 ) {
+    // Destello del borde: un par de pulsos suaves en color terciario (el outline de card de DESIGN.md)
+    // que se desvanecen. Sutil y calmado (DESIGN.md), pero perceptible. Termina solo.
+    val highlightAlpha = remember { Animatable(0f) }
+    val highlightColor = MaterialTheme.colorScheme.tertiary
+    LaunchedEffect(highlight) {
+        if (highlight) {
+            repeat(HIGHLIGHT_PULSES) {
+                highlightAlpha.animateTo(1f, animationSpec = tween(durationMillis = HIGHLIGHT_PULSE_MILLIS))
+                highlightAlpha.animateTo(0f, animationSpec = tween(durationMillis = HIGHLIGHT_PULSE_MILLIS))
+            }
+            onHighlightFinished()
+        }
+    }
     Card(
         modifier =
             modifier
                 .fillMaxWidth()
-                .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+                .border(
+                    width = 3.dp,
+                    color = highlightColor.copy(alpha = highlightAlpha.value),
+                    shape = RoundedCornerShape(16.dp),
+                ).combinedClickable(onClick = onClick, onLongClick = onLongClick),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
