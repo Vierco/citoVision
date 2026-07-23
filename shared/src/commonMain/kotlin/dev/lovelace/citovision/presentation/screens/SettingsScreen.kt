@@ -359,6 +359,7 @@ fun SettingsScreen(
         modifier =
             Modifier
                 .fillMaxSize()
+                .padding(top = 16.dp)
                 .drawBehind {
                     // Fondo base del tema
                     drawRect(backgroundColor)
