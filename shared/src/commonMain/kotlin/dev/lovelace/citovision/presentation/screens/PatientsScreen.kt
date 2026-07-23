@@ -118,6 +118,7 @@ private fun PatientsContent(
             title = analysis.sampleName ?: stringResource(Res.string.analysis_card_title),
             patient = analysis.patient,
             date = analysis.performedAt.formatAnalysisDateTime(),
+            imagePath = analysis.imagePath,
             priority = analysis.priority,
             cellCounts = analysis.cellCounts,
             onDismissRequest = { onEvent(PatientsUiEvent.DismissDetail) },

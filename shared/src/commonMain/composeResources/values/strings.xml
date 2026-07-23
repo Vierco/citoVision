@@ -120,6 +120,8 @@
     <string name="analysis_select_image">Seleccionar Imagen</string>
     <string name="analysis_change_image">Cambiar Imagen</string>
     <string name="analysis_remove_image">Quitar imagen</string>
+    <string name="analysis_image_desc">Imagen de la muestra</string>
+    <string name="analysis_image_zoom">Ver imagen ampliada</string>
     <string name="analysis_supported_formats">Formatos soportados: JPG, PNG</string>
     <string name="analysis_button_scan">Iniciar Escáner</string>
     <string name="analysis_scan_hint">*Requiere cargar una imagen válida para iniciar</string>

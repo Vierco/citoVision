@@ -121,6 +121,8 @@
     <string name="analysis_select_image">Select Image</string>
     <string name="analysis_change_image">Change Image</string>
     <string name="analysis_remove_image">Remove image</string>
+    <string name="analysis_image_desc">Sample image</string>
+    <string name="analysis_image_zoom">View enlarged image</string>
     <string name="analysis_supported_formats">Supported formats: JPG, PNG</string>
     <string name="analysis_button_scan">Start Scanner</string>
     <string name="analysis_scan_hint">*Requires loading a valid image to start</string>
