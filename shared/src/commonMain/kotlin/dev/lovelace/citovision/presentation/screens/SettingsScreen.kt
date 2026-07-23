@@ -140,6 +140,7 @@ import citovision.shared.generated.resources.third_party_yolo
 import coil3.compose.AsyncImage
 import dev.lovelace.citovision.application.usecases.SessionStatus
 import dev.lovelace.citovision.domain.settings.ThemePreference
+import dev.lovelace.citovision.presentation.components.dongleIconAlign
 import dev.lovelace.citovision.presentation.events.SettingsUiEvent
 import dev.lovelace.citovision.presentation.state.SettingsUiState
 import dev.lovelace.citovision.ui.theme.LocalAppColors
@@ -1004,7 +1005,7 @@ private fun SettingsItem(
             imageVector = icon,
             contentDescription = null,
             tint = color,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(24.dp).dongleIconAlign(),
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
@@ -1028,7 +1029,7 @@ private fun SettingsVersionItem() {
             imageVector = Icons.Default.Info,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(24.dp).dongleIconAlign(),
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
