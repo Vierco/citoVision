@@ -39,9 +39,8 @@ solo puede consultar sus propios pacientes; nunca los de otro usuario.
 
 ## No objetivos
 
-- **Reglas de seguridad definitivas de Firestore/Storage.** Durante el desarrollo las reglas serán
-  **públicas** y solo se usarán **datos ficticios** (ver Seguridad y privacidad). Cerrarlas es tarea
-  posterior, previa a la entrega.
+- ~~**Reglas de seguridad definitivas de Firestore/Storage.**~~ → **cerradas el 24-jul-2026**
+  (ver Seguridad y privacidad). Durante el desarrollo fueron públicas y solo se usaron datos ficticios.
 - Sincronización bidireccional o resolución de conflictos local↔remoto. Son bases **independientes**.
 - ~~Borrado remoto desde la app~~ → **movido a alcance (RF-10)** por decisión posterior del owner; el
   borrado local del Historial sigue siendo independiente (RF-9).
@@ -129,7 +128,9 @@ solo puede consultar sus propios pacientes; nunca los de otro usuario.
   el comportamiento actual.
 - **RN-6** El id del análisis local y el del documento remoto **coinciden** (mismo UUID), para
   correlacionarlos y hacer la escritura idempotente, aunque sus ciclos de vida sean independientes (RF-9).
-- **RN-7** **Solo datos ficticios** mientras las reglas remotas sean públicas (ver Seguridad y privacidad).
+- **RN-7** ~~Solo datos ficticios mientras las reglas remotas sean públicas.~~ **Obsoleta desde el
+  24-jul-2026**: las reglas están cerradas y la autorización la impone el servidor (ver Seguridad y
+  privacidad).
 - **RN-8** Política del outbox: al fallar el empuje de una entrada, **un reintento automático**; si persiste,
   la entrada permanece pendiente y se notifica al usuario con un popup que permite **reintentar**
   manualmente. Las entradas pendientes son duraderas (sobreviven al cierre de la app) y se reintentan
@@ -235,17 +236,23 @@ Fuera de alcance en esta fase.
 
 ## Seguridad y privacidad
 
-- **Desviación aceptada explícitamente por el usuario:** durante el desarrollo, las **reglas de Firestore
-  y Storage serán públicas**. Esto contraviene AGENTS.md §11 y SECURITY_MOBILE §Autenticación/§Networking
-  ("nunca implementar autenticación solo en cliente"; "el cliente nunca es frontera de seguridad"). En
-  consecuencia, *mientras las reglas sean públicas*, las garantías "solo cuenta iniciada" y "solo tus
-  pacientes" **no existen en el servidor**: el popup de cuenta y el filtro por `ownerUid` son de UI, y
-  cualquiera con la API key (embebida en la app) podría leer/escribir toda la base. **Mitigación acordada:
-  solo se usarán datos ficticios** mientras esté abierta (RN-7).
-- **Deuda de cierre (previa a entrega):** cerrar las reglas a `request.auth != null` y
-  `ownerUid == request.auth.uid`; enviar el **Firebase ID token** en cada petición mediante el
-  **interceptor de autenticación** centralizado de Ktor (RULES.md §Interceptors), no petición a petición.
-- Paciente seudonimizado (RN-2) → la exposición durante la ventana pública es acotada, pero real.
+- **Autorización en el servidor (cerrada el 24-jul-2026).** Las reglas exigen `request.auth != null` y que
+  el dueño coincida con el usuario del token: en `analyses`, contra el campo `ownerUid` del documento
+  (read/create/update/delete); en Storage, contra el `{ownerUid}` del path
+  `analyses/{ownerUid}/{analysisId}`. Todo lo demás se deniega por defecto. Las reglas se versionan en el
+  repositorio (`firestore.rules`, `storage.rules`, `firebase.json`).
+- **ID token en cada petición.** El cliente Ktor autorizado adjunta `Authorization: Bearer <ID token>` a
+  Firestore y Storage mediante un plugin centralizado (RULES.md §Interceptors), no petición a petición; el
+  cliente sin credenciales queda reservado para Identity Toolkit, donde el token aún no existe. Lo aporta
+  el puerto `AuthTokenProvider`: GitLive en Android y la sesión en memoria de Identity Toolkit en Desktop,
+  renovada contra Secure Token antes de caducar (ADR-0002).
+- **Desviación histórica (cerrada).** Mientras las reglas fueron públicas, "solo cuenta iniciada" y "solo
+  tus pacientes" existían únicamente en la UI; la mitigación acordada fue usar solo datos ficticios (RN-7).
+- **Desviación vigente asumida:** la URL de descarga de Storage incorpora un *download token* y da acceso
+  al objeto **sin evaluar las reglas**. Esa URL solo viaja dentro del documento Firestore del análisis, que
+  sí está protegido, pero quien la obtenga puede ver la imagen. Cerrarlo exigiría firmar cada descarga y
+  tocar el ImageLoader de Coil en las tres plataformas; se asume para el MVP.
+- Paciente seudonimizado (RN-2).
 - HTTPS obligatorio; timeouts explícitos; sin certificados autofirmados (SECURITY_MOBILE §Networking).
 - Sin secretos en el repositorio (config de Firebase por build).
 
@@ -263,6 +270,7 @@ Fuera de alcance en esta fase.
 - Entrar en Pacientes como invitado → aviso en línea de "requiere cuenta", sin listado.
 - Sin red al cargar el listado → aviso de error con "Reintentar" que vuelve a intentarlo.
 - Borrar una card en Historial → el documento remoto **permanece**; y viceversa (RF-9).
+- Consultar un análisis de otro `ownerUid` → lo deniega el servidor, no solo la UI.
 - Card remota visualmente idéntica a la local, imagen incluida.
 - Un usuario **no** ve pacientes de otro `ownerUid` (verificable en cliente ahora; en servidor al cerrar
   reglas).
