@@ -91,6 +91,7 @@ import citovision.shared.generated.resources.feedback_error_message
 import citovision.shared.generated.resources.feedback_error_title
 import citovision.shared.generated.resources.feedback_message_label
 import citovision.shared.generated.resources.feedback_message_placeholder
+import citovision.shared.generated.resources.feedback_requires_account
 import citovision.shared.generated.resources.feedback_send
 import citovision.shared.generated.resources.feedback_sent_message
 import citovision.shared.generated.resources.feedback_sent_title
@@ -634,6 +635,17 @@ private fun FeedbackDialog(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+                // El feedback se guarda en la base remota, que solo acepta escritura con cuenta: al
+                // invitado se le explica por qué "Enviar" está deshabilitado en vez de dejarlo mudo.
+                if (uiState.feedbackRequiresAccount) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(Res.string.feedback_requires_account),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(Res.string.login_email_label),

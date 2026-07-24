@@ -62,6 +62,7 @@
     <string name="feedback_send">Enviar</string>
     <string name="feedback_sent_title">¡Gracias!</string>
     <string name="feedback_sent_message">Hemos recibido tu feedback.</string>
+    <string name="feedback_requires_account">Necesitas iniciar sesión con una cuenta para enviar feedback.</string>
     <string name="feedback_error_title">No se pudo enviar</string>
     <string name="feedback_error_message">Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="settings_license">Licencia</string>

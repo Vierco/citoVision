@@ -30,8 +30,9 @@ import kotlin.coroutines.cancellation.CancellationException
  * - Listado de pacientes: `:runQuery` filtrando solo `ownerUid` con **proyección** de `patientCode`
  *   (RF-4b); los duplicados y el orden se resuelven en cliente.
  *
- * Con reglas públicas (dev) no hace falta token; la `apiKey` (Web API key, pública) identifica el
- * proyecto. Al cerrar reglas se añadirá el ID token vía el interceptor de auth. Los DTO no salen de aquí.
+ * El [client] inyectado es el **autorizado**: adjunta el ID token del usuario, que es lo que evalúan las
+ * reglas (`request.auth.uid == resource.data.ownerUid`). La `apiKey` (Web API key, pública) identifica al
+ * proyecto, no al usuario. Los DTO no salen de aquí.
  */
 class FirestoreAnalysisDataSource(
     private val client: HttpClient,

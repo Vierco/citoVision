@@ -63,6 +63,7 @@
     <string name="feedback_send">Send</string>
     <string name="feedback_sent_title">Thank you!</string>
     <string name="feedback_sent_message">We've received your feedback.</string>
+    <string name="feedback_requires_account">You need to sign in with an account to send feedback.</string>
     <string name="feedback_error_title">Couldn't send</string>
     <string name="feedback_error_message">Check your connection and try again.</string>
     <string name="settings_license">License</string>
