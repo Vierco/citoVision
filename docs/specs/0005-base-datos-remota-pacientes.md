@@ -73,15 +73,26 @@ solo puede consultar sus propios pacientes; nunca los de otro usuario.
   fallo (imagen o documento) **reintenta una vez automáticamente**; si el reintento también falla, la
   entrada queda **pendiente** en el outbox y se muestra un **popup** informando del error de sincronización
   con opción de **reintentar** (RN-8).
-- **RF-4** La pestaña **Pacientes** presenta un campo para introducir el código de paciente y un botón de
-  **buscar**.
+- **RF-4** La pestaña **Pacientes** presenta un campo de texto para el código de paciente. *(Ajuste tras
+  feedback de la 1.0-beta: el campo deja de ser una búsqueda libre con botón y pasa a ser el **filtro**
+  del listado de RF-4b; el botón "Buscar" desaparece. Ver RF-4b/RF-4c.)*
+- **RF-4b** Debajo del campo se muestra el **listado de códigos de paciente del usuario**, obtenido del
+  remoto y acotado a su `ownerUid` (RN-3), sin duplicados y en orden ascendente. Al escribir en el campo,
+  el listado se **criba** en vivo y solo permanecen los códigos que contienen lo escrito. El listado se
+  (re)carga al entrar en la pestaña y al volver a él con "Nueva búsqueda".
+- **RF-4c** **Pulsar un código del listado** es la forma de consultar un paciente: abre sus análisis
+  (RF-5). No existe forma de lanzar una consulta sobre un código inexistente. La acción "buscar" del
+  teclado sobre el campo solo abre paciente si lo escrito identifica a **uno solo** (coincidencia exacta
+  o criba con un único superviviente); en caso contrario no hace nada.
 - **RF-5** Con cuenta iniciada y resultados: la pantalla muestra un texto superior **"Paciente: &lt;CÓDIGO&gt;"**,
   debajo las cards del paciente **en orden cronológico**, y un botón **"Nueva búsqueda"** que devuelve al
   estado de entrada de código.
 - **RF-6** Con cuenta iniciada y sin resultados: se muestra un **popup** indicando que no se han encontrado
-  resultados, con un **botón primario de cerrar**.
-- **RF-7** Sin cuenta (invitado): al pulsar buscar, se muestra un **popup** indicando que la función
-  **requiere una cuenta de usuario**.
+  resultados, con un **botón primario de cerrar**. *(Tras RF-4c este caso solo puede darse si los análisis
+  del paciente se han borrado entre la carga del listado y la selección.)*
+- **RF-7** Sin cuenta (invitado): la zona del listado informa **en línea** de que la función **requiere una
+  cuenta de usuario**, sin listado ni consulta. *(Ajuste tras feedback de la 1.0-beta: antes era un popup
+  al pulsar "Buscar", botón que ya no existe; el aviso pasa a mostrarse al entrar en la pestaña.)*
 - **RF-8** Las cards remotas usan **el mismo componente y los mismos datos** que las locales, imagen
   incluida (cargada desde Storage con Coil).
 - **RF-9** **Independencia de bases**: borrar en la local (Historial) **no** borra en remoto; borrar en
@@ -134,12 +145,17 @@ solo puede consultar sus propios pacientes; nunca los de otro usuario.
   con el error y un botón **"Reintentar"** (además de cerrar). La card local permanece intacta.
 
 **Pestaña Pacientes:**
-- **Entrada**: campo de código + botón buscar (estado inicial y tras "Nueva búsqueda").
-- **Cargando**: consulta remota en curso.
+- **Selección**: campo de filtro + listado de códigos del usuario (estado inicial y tras "Nueva búsqueda").
+  La zona del listado resuelve por sí sola sus estados, todos excluyentes:
+  - *Cargando el listado*: indicador de progreso.
+  - *Sin cuenta*: aviso "requiere cuenta" (RF-7).
+  - *Error al cargar el listado*: aviso con botón **"Reintentar"**.
+  - *Sin pacientes*: aviso de que aún no hay pacientes con análisis en la nube.
+  - *Sin coincidencias con el filtro*: aviso de que ningún código coincide.
+- **Cargando**: consulta remota del paciente seleccionado en curso.
 - **Resultados**: cabecera "Paciente: &lt;código&gt;" + lista de cards + "Nueva búsqueda".
-- **Sin resultados**: popup con botón primario de cerrar → vuelve a Entrada.
-- **Sin cuenta**: popup "requiere cuenta" con botón de cerrar.
-- **Error de red**: mensaje de error con posibilidad de reintentar.
+- **Sin resultados**: popup con botón primario de cerrar → vuelve a Selección.
+- **Error de red** al consultar un paciente: popup de error.
 
 ## Contratos de datos
 
@@ -180,6 +196,10 @@ sube a Storage, escribe el documento Firestore y **elimina** la entrada del outb
   existentes).
 - **Endpoints** centralizados: Firestore REST (`:runQuery` para la consulta por `ownerUid`+`patientCode`,
   `PATCH`/`POST` para la escritura) y Storage REST (upload/download). URL base por `projectId`.
+- **Listado de códigos (RF-4b)**: `:runQuery` filtrando solo `ownerUid` y con **proyección** (`select`) del
+  campo `patientCode`, de modo que la respuesta no arrastra resúmenes, conteos ni URLs. Los duplicados y el
+  orden ascendente se resuelven en cliente. Se asume volumen bajo por usuario, coherente con el
+  no-objetivo de paginación.
 
 ## Errores
 
@@ -203,7 +223,9 @@ Las excepciones de Ktor se capturan en el DataSource y se transforman en estos e
   empujará al recuperar red o al reabrir la app; si el intento inmediato falla, popup de reintento.
 - **App cerrada a mitad de sincronización**: la entrada duradera del outbox se reintenta al reabrir.
 - **Código inválido** (vacío, solo guiones `--`, o sin la forma mínima `XX-YY` como `1234` o `1-2`):
-  rechazado por RN-1; el botón de confirmar permanece deshabilitado.
+  rechazado por RN-1 en el diálogo del escáner (RF-2); el botón de confirmar permanece deshabilitado. En
+  la pestaña Pacientes el campo es un **filtro** (RF-4), así que no valida: un texto que no case con
+  ningún código simplemente vacía el listado cribado.
 - **Imagen ausente**: `imageUrl` null; la card remota muestra el placeholder gris (como la local).
 - **Mismo código buscado dos veces**: consulta idempotente, sin efectos secundarios.
 
@@ -233,10 +255,13 @@ Fuera de alcance en esta fase.
   outbox, documento en Firestore + imagen en Storage con `ownerUid` correcto.
 - Escanear sin red → card local presente, entrada PENDING en el outbox y popup de reintento; al recuperar
   red y reintentar, se sincroniza **sin duplicar** (idempotencia).
-- Buscar en Pacientes un código propio con resultados → cabecera "Paciente: &lt;código&gt;", cards
-  cronológicas y "Nueva búsqueda".
-- Buscar un código sin resultados → popup de "sin resultados" con botón cerrar.
-- Buscar como invitado → popup de "requiere cuenta".
+- Entrar en Pacientes con cuenta → el listado muestra los códigos propios, sin duplicados y ordenados.
+- Escribir en el campo → el listado se criba y solo quedan los códigos que contienen lo escrito; si no
+  queda ninguno, se informa.
+- Pulsar un código del listado → cabecera "Paciente: &lt;código&gt;", cards cronológicas y "Nueva búsqueda".
+- Un paciente cuyos análisis se han borrado entre medias → popup de "sin resultados" con botón cerrar.
+- Entrar en Pacientes como invitado → aviso en línea de "requiere cuenta", sin listado.
+- Sin red al cargar el listado → aviso de error con "Reintentar" que vuelve a intentarlo.
 - Borrar una card en Historial → el documento remoto **permanece**; y viceversa (RF-9).
 - Card remota visualmente idéntica a la local, imagen incluida.
 - Un usuario **no** ve pacientes de otro `ownerUid` (verificable en cliente ahora; en servidor al cerrar
@@ -247,9 +272,10 @@ Fuera de alcance en esta fase.
 - **commonTest**: validación de RN-1; mappers DTO ↔ dominio; `RemoteAnalysisDataSource` con Ktor
   `MockEngine` (respuestas de `:runQuery`, vacío, error); **procesador del outbox** (reintento automático,
   idempotencia al reintentar, marca PENDING/eliminación al éxito, orden de subida imagen→documento); use
-  cases (encolar en outbox, buscar por paciente, filtro por `ownerUid`); `PatientsViewModel` (estados
-  entrada/cargando/resultados/sin-resultados/sin-cuenta); ampliar el flujo de escaneo (código + guardado
-  local + alta en outbox con cuenta, invitado solo local + popup de reintento en fallo).
+  cases (encolar en outbox, buscar por paciente, filtro por `ownerUid`, **listar códigos de paciente**);
+  `PatientsViewModel` (estados selección/cargando/resultados/sin-resultados/sin-cuenta, **criba del
+  listado y selección de un código**); ampliar el flujo de escaneo (código + guardado local + alta en
+  outbox con cuenta, invitado solo local + popup de reintento en fallo).
 - **DAO del outbox** (test de persistencia, estilo `AnalysisDaoTest` de SPEC-0004): alta atómica junto al
   análisis, consulta de pendientes, borrado al completar.
 - **Grafo Koin**: el nuevo módulo de networking + DataSource + use cases + ViewModel resuelven.
