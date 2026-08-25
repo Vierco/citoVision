@@ -63,7 +63,12 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "shared"
-            isStatic = true
+            // Dinámico (no estático): con framework estático, Xcode 26 rechaza el enlazado del app
+            // contra frameworks privados del sistema que arrastra Compose ("cannot link directly with
+            // 'SwiftUICore'... not an allowed client", "framework 'UIUtilities' not found"). En dinámico,
+            // ese enlazado lo resuelve el propio framework y esos errores desaparecen. `embedAndSign`
+            // (build phase del proyecto Xcode) lo embebe y firma en el bundle de la app.
+            isStatic = false
         }
     }
 
