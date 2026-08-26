@@ -18,3 +18,4 @@ struct ContentView: View {
             .ignoresSafeArea(.keyboard) // Compose gestiona sus propios insets/teclado.
     }
 }
+
