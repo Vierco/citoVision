@@ -9,9 +9,9 @@ import dev.lovelace.citovision.application.ports.GoogleSignInLauncher
 import dev.lovelace.citovision.application.ports.ImageDecoder
 import dev.lovelace.citovision.application.ports.OnnxRunner
 import dev.lovelace.citovision.application.ports.UrlOpener
+import dev.lovelace.citovision.infrastructure.auth.IosGoogleSignInLauncher
 import dev.lovelace.citovision.infrastructure.auth.KeychainTokenStore
 import dev.lovelace.citovision.infrastructure.auth.RestFirebaseAuthService
-import dev.lovelace.citovision.infrastructure.auth.StubGoogleSignInLauncher
 import dev.lovelace.citovision.infrastructure.auth.TokenStore
 import dev.lovelace.citovision.infrastructure.auth.remote.IdentityToolkitAuthDataSource
 import dev.lovelace.citovision.infrastructure.image.OkioAnalysisImageStore
@@ -50,7 +50,7 @@ actual val platformModule: Module =
         single {
             RestFirebaseAuthService(remote = get(), tokenStore = get())
         }.binds(arrayOf(AuthService::class, AuthTokenProvider::class))
-        singleOf(::StubGoogleSignInLauncher) bind GoogleSignInLauncher::class
+        singleOf(::IosGoogleSignInLauncher) bind GoogleSignInLauncher::class
         // `Accept-Encoding: identity` para pedir la respuesta sin comprimir. NSURLSession añade por su
         // cuenta `gzip` y descomprime de forma transparente, pero deja la cabecera `Content-Length` del
         // contenido comprimido; Ktor la compara con los bytes ya descomprimidos y aborta con
