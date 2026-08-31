@@ -15,7 +15,15 @@ struct ComposeView: UIViewControllerRepresentable {
 struct ContentView: View {
     var body: some View {
         ComposeView()
-            .ignoresSafeArea(.keyboard) // Compose gestiona sus propios insets/teclado.
+            // Se ignoran TODAS las regiones seguras (`.container` + `.keyboard`), no solo el teclado.
+            // SwiftUI aplica por defecto los insets del dispositivo a un UIViewControllerRepresentable,
+            // así que Compose recibía un lienzo recortado y el fondo blanco de la ventana asomaba como dos
+            // bandas: bajo la Dynamic Island y sobre el indicador de inicio.
+            //
+            // Con la pantalla completa, quien aplica los insets es Compose, igual que en Android con
+            // `enableEdgeToEdge()`: el degradado de `MainScreen` cubre todo y son `TopAppBar` y
+            // `NavigationBar` (Material 3) las que se separan solas de las barras del sistema.
+            .ignoresSafeArea()
     }
 }
 
