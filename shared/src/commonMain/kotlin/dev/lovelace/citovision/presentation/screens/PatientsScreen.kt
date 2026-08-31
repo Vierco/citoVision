@@ -76,7 +76,9 @@ import citovision.shared.generated.resources.patients_search_title
 import dev.lovelace.citovision.domain.entities.Analysis
 import dev.lovelace.citovision.presentation.components.AnalysisCard
 import dev.lovelace.citovision.presentation.components.AnalysisDetailDialog
+import dev.lovelace.citovision.presentation.components.ModalOverlayEffect
 import dev.lovelace.citovision.presentation.components.dongleIconAlign
+import dev.lovelace.citovision.presentation.components.floatingNavigationBarPadding
 import dev.lovelace.citovision.presentation.events.PatientsUiEvent
 import dev.lovelace.citovision.presentation.format.formatAnalysisDateTime
 import dev.lovelace.citovision.presentation.state.PatientsUiState
@@ -259,7 +261,7 @@ private fun ColumnScope.PatientCodeList(
             else ->
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 16.dp),
+                    contentPadding = PaddingValues(bottom = 16.dp + floatingNavigationBarPadding()),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(items = uiState.filteredCodes, key = { it }) { code ->
@@ -401,7 +403,7 @@ private fun ResultsView(
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 16.dp),
+            contentPadding = PaddingValues(bottom = 16.dp + floatingNavigationBarPadding()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(results) { analysis ->
@@ -426,6 +428,7 @@ private fun InfoDialog(
     message: String,
     onDismiss: () -> Unit,
 ) {
+    ModalOverlayEffect()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
@@ -443,6 +446,7 @@ private fun DeleteConfirmationDialog(
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
 ) {
+    ModalOverlayEffect()
     AlertDialog(
         onDismissRequest = onCancel,
         title = { Text(stringResource(Res.string.history_delete_title)) },

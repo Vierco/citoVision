@@ -78,7 +78,9 @@ import citovision.shared.generated.resources.common_cancel
 import citovision.shared.generated.resources.common_close
 import citovision.shared.generated.resources.scan
 import coil3.compose.rememberAsyncImagePainter
+import dev.lovelace.citovision.presentation.components.ModalOverlayEffect
 import dev.lovelace.citovision.presentation.components.dongleIconAlign
+import dev.lovelace.citovision.presentation.components.floatingNavigationBarPadding
 import dev.lovelace.citovision.presentation.events.AnalysisUiEvent
 import dev.lovelace.citovision.presentation.state.AnalysisUiState
 import dev.lovelace.citovision.presentation.viewmodels.AnalysisViewModel
@@ -106,7 +108,8 @@ private fun AnalysisContent(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+                // El extra inferior despeja la barra flotante de iOS; 0 en Android y Desktop.
+                .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 24.dp + floatingNavigationBarPadding()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
@@ -359,6 +362,7 @@ private fun PatientCodeDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    ModalOverlayEffect()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Res.string.analysis_code_dialog_title)) },
@@ -390,6 +394,7 @@ private fun SyncErrorDialog(
     onRetry: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    ModalOverlayEffect()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Res.string.analysis_sync_error_title)) },
@@ -410,6 +415,7 @@ private fun SyncErrorDialog(
 /** Popup informativo cuando el modelo no detecta ninguna célula (SPEC-0006 RF-6): no se guarda nada. */
 @Composable
 private fun NoCellsDialog(onDismiss: () -> Unit) {
+    ModalOverlayEffect()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Res.string.analysis_no_cells_title)) },
@@ -428,6 +434,7 @@ private fun InferenceErrorDialog(
     onRetry: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    ModalOverlayEffect()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Res.string.analysis_inference_error_title)) },

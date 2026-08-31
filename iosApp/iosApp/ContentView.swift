@@ -14,6 +14,15 @@ struct ComposeView: UIViewControllerRepresentable {
 
 struct ContentView: View {
     var body: some View {
+        ZStack(alignment: .bottom) {
+            composeContent
+            // La barra nativa va POR ENCIMA de Compose a propósito (ADR-0008): así tiene contenido real
+            // debajo que desenfocar. Dentro de Compose, con UIKitView, quedaría detrás de su superficie.
+            NativeTabBar()
+        }
+    }
+
+    private var composeContent: some View {
         ComposeView()
             // Se ignoran TODAS las regiones seguras (`.container` + `.keyboard`), no solo el teclado.
             // SwiftUI aplica por defecto los insets del dispositivo a un UIViewControllerRepresentable,
@@ -21,8 +30,8 @@ struct ContentView: View {
             // bandas: bajo la Dynamic Island y sobre el indicador de inicio.
             //
             // Con la pantalla completa, quien aplica los insets es Compose, igual que en Android con
-            // `enableEdgeToEdge()`: el degradado de `MainScreen` cubre todo y son `TopAppBar` y
-            // `NavigationBar` (Material 3) las que se separan solas de las barras del sistema.
+            // `enableEdgeToEdge()`: el degradado de `MainScreen` cubre todo y son sus barras superior e
+            // inferior las que se separan solas de las del sistema.
             .ignoresSafeArea()
     }
 }
