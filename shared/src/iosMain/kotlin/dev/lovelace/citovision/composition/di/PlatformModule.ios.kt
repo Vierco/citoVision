@@ -1,5 +1,7 @@
 package dev.lovelace.citovision.composition.di
 
+// `setValue:forHTTPHeaderField:` vive en la categoría NSMutableHTTPURLRequest, y Kotlin/Native expone los
+// métodos de categoría como extensiones que hay que importar explícitamente.
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import dev.lovelace.citovision.application.ports.AnalysisImageStore
@@ -28,14 +30,12 @@ import dev.lovelace.citovision.infrastructure.platform.IosUrlOpener
 import dev.lovelace.citovision.infrastructure.remote.FIREBASE_WEB_API_KEY_PROPERTY
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.darwin.Darwin
-// `setValue:forHTTPHeaderField:` vive en la categoría NSMutableHTTPURLRequest, y Kotlin/Native expone los
-// métodos de categoría como extensiones que hay que importar explícitamente.
-import platform.Foundation.setValue
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import platform.Foundation.setValue
 
 // Auth por Identity Toolkit REST, compartida con Desktop (ADR-0006): iOS no enlaza el SDK nativo de
 // Firebase. Google Sign-In sigue en stub hasta que exista el puente Swift con el cliente OAuth de iOS.

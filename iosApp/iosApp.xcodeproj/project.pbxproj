@@ -12,7 +12,9 @@
 		AA0000000000000000000042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000032 /* Assets.xcassets */; };
 		AA0000000000000000000043 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000033 /* Preview Assets.xcassets */; };
 		AA0000000000000000000044 /* GoogleSignInPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000036 /* GoogleSignInPresenter.swift */; };
+		AA0000000000000000000045 /* OnnxRuntimeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000037 /* OnnxRuntimeBridge.swift */; };
 		D35D0224303F5DA700F2E758 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = D35D0223303F5DA700F2E758 /* GoogleSignIn */; };
+		D3F023FC3045DD3200FCC521 /* onnxruntime in Frameworks */ = {isa = PBXBuildFile; productRef = D3F023FB3045DD3200FCC521 /* onnxruntime */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,7 @@
 		AA0000000000000000000034 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA0000000000000000000035 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		AA0000000000000000000036 /* GoogleSignInPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInPresenter.swift; sourceTree = "<group>"; };
+		AA0000000000000000000037 /* OnnxRuntimeBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnnxRuntimeBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3F023FC3045DD3200FCC521 /* onnxruntime in Frameworks */,
 				D35D0224303F5DA700F2E758 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -61,6 +65,7 @@
 				AA0000000000000000000030 /* iOSApp.swift */,
 				AA0000000000000000000031 /* ContentView.swift */,
 				AA0000000000000000000036 /* GoogleSignInPresenter.swift */,
+				AA0000000000000000000037 /* OnnxRuntimeBridge.swift */,
 				AA0000000000000000000032 /* Assets.xcassets */,
 				AA0000000000000000000006 /* Preview Content */,
 				AA0000000000000000000034 /* Info.plist */,
@@ -131,6 +136,7 @@
 			mainGroup = AA0000000000000000000002;
 			packageReferences = (
 				D35D0222303F5DA700F2E758 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				D3F023FA3045DD3200FCC521 /* XCRemoteSwiftPackageReference "onnxruntime-swift-package-manager" */,
 			);
 			productRefGroup = AA0000000000000000000003 /* Products */;
 			projectDirPath = "";
@@ -182,6 +188,7 @@
 			files = (
 				AA0000000000000000000041 /* ContentView.swift in Sources */,
 				AA0000000000000000000044 /* GoogleSignInPresenter.swift in Sources */,
+				AA0000000000000000000045 /* OnnxRuntimeBridge.swift in Sources */,
 				AA0000000000000000000040 /* iOSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -349,6 +356,14 @@
 				minimumVersion = 9.2.0;
 			};
 		};
+		D3F023FA3045DD3200FCC521 /* XCRemoteSwiftPackageReference "onnxruntime-swift-package-manager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/microsoft/onnxruntime-swift-package-manager";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.24.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -356,6 +371,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D35D0222303F5DA700F2E758 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		D3F023FB3045DD3200FCC521 /* onnxruntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D3F023FA3045DD3200FCC521 /* XCRemoteSwiftPackageReference "onnxruntime-swift-package-manager" */;
+			productName = onnxruntime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

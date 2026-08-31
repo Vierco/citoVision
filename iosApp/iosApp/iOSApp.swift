@@ -9,6 +9,8 @@ struct iOSApp: App {
         MainViewControllerKt.bootstrap()
         // Google Sign-In vive en Swift; Kotlin solo recibe el ID token por el puente (ADR-0006).
         GoogleSignInPresenter.install()
+        // ONNX Runtime también vive en Swift; Kotlin le pasa el tensor por el puente (ADR-0007).
+        OnnxRuntimeBridge.install()
     }
 
     var body: some Scene {
