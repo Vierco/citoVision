@@ -55,7 +55,14 @@ ContentView (SwiftUI)
 Navigation3/Material3 alpha.
 
 - **Android y Desktop**: delegan en una implementación Material 3 compartida en `commonMain`, para no
-  duplicar el código real en dos *source sets*.
+  duplicar el código real en dos *source sets*. Usa **`ShortNavigationBar`**, la barra de **Material 3
+  Expressive**, que ya viene en el artefacto que trae Compose Multiplatform 1.10.3
+  (`org.jetbrains.compose.material3:material3:1.9.0`) y **no exige opt-in experimental**. Con los valores
+  por defecto la diferencia visible frente al `NavigationBar` clásico es **solo el alto del contenedor**
+  (64 dp frente a 80 dp): el indicador activo y la disposición del ítem son idénticos. Se adopta por ser el
+  componente al que Material da continuidad y por dejar disponibles `arrangement` e `iconPosition`, hoy sin
+  usar. Material mantiene además a propósito la navegación **anclada y a todo el ancho**, al contrario que
+  iOS 26.
 - **iOS**: no dibuja nada **ni reserva hueco**. La barra *flota*, así que el contenido debe llegar hasta el
   borde inferior y pasar **por debajo** del cristal —es lo que hace que el efecto tenga sentido, y el patrón
   de cualquier app de iOS. Dos piezas lo consiguen:

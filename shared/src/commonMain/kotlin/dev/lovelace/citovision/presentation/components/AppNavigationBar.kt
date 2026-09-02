@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.ShortNavigationBar
+import androidx.compose.material3.ShortNavigationBarItem
+import androidx.compose.material3.ShortNavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -58,6 +58,18 @@ expect fun floatingNavigationBarPadding(): Dp
 /**
  * Implementación Material 3, compartida por los `actual` de Android y Desktop para no duplicarla en dos
  * *source sets*. Fondo transparente porque el degradado lo pinta la pantalla que la contiene.
+ *
+ * Usa **`ShortNavigationBar`**, la barra de navegación de **Material 3 Expressive**, en lugar del
+ * `NavigationBar` clásico, que es el componente al que Material da continuidad.
+ *
+ * Conviene no esperar de ella más de lo que da: con los parámetros por defecto el indicador activo y la
+ * disposición del ítem son **idénticos**, y lo único que cambia es el alto del contenedor (64 dp frente a
+ * los 80 dp de `TallContainerHeight`). Su valor real está en dos capacidades que el componente antiguo no
+ * tiene y que aquí **no se usan**: `arrangement` (`Centered` agrupa las pestañas, recomendado solo para
+ * pantallas medianas) e `iconPosition` (`Start` pone el icono junto a la etiqueta).
+ *
+ * Material mantiene además a propósito la navegación **anclada al borde inferior y a todo el ancho**, al
+ * contrario que iOS 26, que la despega (ADR-0008).
  */
 @Composable
 internal fun MaterialAppNavigationBar(
@@ -65,9 +77,9 @@ internal fun MaterialAppNavigationBar(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
 ) {
-    NavigationBar(containerColor = Color.Transparent) {
+    ShortNavigationBar(containerColor = Color.Transparent) {
         items.forEachIndexed { index, item ->
-            NavigationBarItem(
+            ShortNavigationBarItem(
                 selected = index == selectedIndex,
                 onClick = { onSelect(index) },
                 icon = {
@@ -79,9 +91,9 @@ internal fun MaterialAppNavigationBar(
                 },
                 label = { Text(item.label) },
                 colors =
-                    NavigationBarItemDefaults.colors(
+                    ShortNavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.onSecondary,
-                        indicatorColor = MaterialTheme.colorScheme.secondary,
+                        selectedIndicatorColor = MaterialTheme.colorScheme.secondary,
                     ),
             )
         }
