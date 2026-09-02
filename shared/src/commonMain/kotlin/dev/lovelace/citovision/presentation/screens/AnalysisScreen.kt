@@ -59,6 +59,9 @@ import citovision.shared.generated.resources.analysis_change_image
 import citovision.shared.generated.resources.analysis_code_confirm
 import citovision.shared.generated.resources.analysis_code_dialog_hint
 import citovision.shared.generated.resources.analysis_code_dialog_title
+import citovision.shared.generated.resources.analysis_image_source_notice_message
+import citovision.shared.generated.resources.analysis_image_source_notice_retap
+import citovision.shared.generated.resources.analysis_image_source_notice_title
 import citovision.shared.generated.resources.analysis_inference_error_message
 import citovision.shared.generated.resources.analysis_inference_error_title
 import citovision.shared.generated.resources.analysis_no_cells_message
@@ -286,6 +289,13 @@ private fun AnalysisContent(
         )
     }
 
+    if (uiState.imageSourceNoticeVisible) {
+        ImageSourceNoticeDialog(
+            needsRetap = uiState.imageSourceNoticeNeedsRetap,
+            onDismiss = { onEvent(AnalysisUiEvent.DismissImageSourceNotice) },
+        )
+    }
+
     if (uiState.noCellsVisible) {
         NoCellsDialog(onDismiss = { onEvent(AnalysisUiEvent.DismissNoCells) })
     }
@@ -407,6 +417,42 @@ private fun SyncErrorDialog(
         dismissButton = {
             OutlinedButton(onClick = onDismiss) {
                 Text(stringResource(Res.string.common_close))
+            }
+        },
+    )
+}
+
+/**
+ * Aviso que se muestra **una sola vez**, mientras el usuario no haya elegido su primera imagen ni lo
+ * haya dado por leído (SPEC-0003).
+ *
+ * Existe por un problema de visibilidad: fototeca y ficheros son selectores nativos distintos y ninguno
+ * ve el contenido del otro, así que quien guarde las muestras como ficheros abriría una galería vacía
+ * sin ninguna pista de que la fuente se cambia en Ajustes.
+ *
+ * Es una tarjeta dentro de la pantalla y **no un diálogo**, por dos motivos. El de diseño: así el
+ * consejo se lee *antes* de pulsar, que es cuando sirve, y seleccionar imagen sigue costando un solo
+ * toque. El técnico: en iOS los diálogos de Compose viven en una `UIWindow` aparte a nivel alerta y,
+ * mientras existe, FileKit presenta el selector sobre ella y se queda colgado sin posible recuperación
+ * (el detalle, en `AnalysisViewModel`). Sin diálogo, ese problema no llega a existir.
+ */
+@Composable
+private fun ImageSourceNoticeDialog(
+    needsRetap: Boolean,
+    onDismiss: () -> Unit,
+) {
+    val message = stringResource(Res.string.analysis_image_source_notice_message)
+    // La coletilla solo aparece donde cerrar el aviso NO abre el selector, hoy únicamente iOS: en el
+    // resto sería mentira, porque allí el selector se abre solo al aceptar.
+    val retap = stringResource(Res.string.analysis_image_source_notice_retap)
+    ModalOverlayEffect()
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.analysis_image_source_notice_title)) },
+        text = { Text(if (needsRetap) "$message\n\n$retap" else message) },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text(stringResource(Res.string.common_accept))
             }
         },
     )
