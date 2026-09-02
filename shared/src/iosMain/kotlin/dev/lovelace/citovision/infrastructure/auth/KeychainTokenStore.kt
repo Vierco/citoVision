@@ -89,6 +89,15 @@ class KeychainTokenStore(
     }
 
     override suspend fun clear() {
+        purge()
+    }
+
+    /**
+     * Borrado sincrónico del ítem. El Keychain es una API bloqueante y aquí no hay nada que suspender,
+     * así que [FreshInstallSessionGuard] puede invocarlo durante el arranque del proceso, antes de que
+     * exista el grafo de Koin.
+     */
+    internal fun purge() {
         memScoped {
             val query = newQuery()
             SecItemDelete(query)
