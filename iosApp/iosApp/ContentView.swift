@@ -18,7 +18,12 @@ struct ContentView: View {
             composeContent
             // La barra nativa va POR ENCIMA de Compose a propósito (ADR-0008): así tiene contenido real
             // debajo que desenfocar. Dentro de Compose, con UIKitView, quedaría detrás de su superficie.
+            //
+            // Ignora la región segura del teclado porque SwiftUI, por defecto, empuja sus vistas por
+            // encima de él: la barra se despegaba del borde inferior y tapaba el campo de texto. Lo
+            // nativo es que se quede abajo y el teclado la cubra.
             NativeTabBar()
+                .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
 
