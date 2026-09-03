@@ -15,19 +15,26 @@ import platform.Foundation.NSUserDefaults
  * al desinstalar. Si la marca no está, se trata de una instalación nueva y el Keychain se limpia antes
  * de que nadie llegue a leer la sesión.
  *
+ * Depende de [KeychainStorage] y no de [KeychainTokenStore] por dos motivos: aquí solo hace falta
+ * borrar —no deserializar nada— y el acceso al Keychain es sincrónico, así que puede invocarse durante
+ * el arranque del proceso, antes de que exista el grafo de Koin.
+ *
  * Nada de lo que se registra identifica al usuario ni contiene tokens (AGENTS.md §11).
  */
-class FreshInstallSessionGuard(
-    private val tokenStore: KeychainTokenStore,
+class FreshInstallSessionGuard internal constructor(
+    private val storage: KeychainStorage,
     private val defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults,
 ) {
+    /** Constructor de producción: el ítem real del Keychain de la app. */
+    constructor() : this(SecItemKeychainStorage())
+
     /**
      * Idempotente: en cuanto queda escrita la marca, las siguientes llamadas no vuelven a tocar el
      * Keychain. Debe invocarse en el arranque del proceso, antes de restaurar sesión (SPEC-0001 RF-8).
      */
     fun clearSessionIfReinstalled() {
         if (defaults.boolForKey(INSTALL_MARK_KEY)) return
-        tokenStore.purge()
+        storage.delete()
         defaults.setBool(true, INSTALL_MARK_KEY)
         Napier.i("Instalación nueva: se descarta la sesión heredada del Keychain", tag = "Auth")
     }
